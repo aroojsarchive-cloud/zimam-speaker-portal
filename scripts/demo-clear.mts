@@ -16,7 +16,7 @@ try {
     const slides = await sql`select file_path from slide_submissions where person_id = any(${ids})`;
     if (slides.length) await admin.storage.from("slides").remove(slides.map((s) => s.file_path as string));
     await sql`delete from slide_submissions where person_id = any(${ids})`;
-    await sql`update assignments set reviewed_at = null, no_slides = false, checked_in_at = null where person_id = any(${ids})`;
+    await sql`update assignments set reviewed_at = null, no_slides = false, slides_sent_at = null, checked_in_at = null where person_id = any(${ids})`;
     await sql`update people set details_status = 'unconfirmed', details_confirmed_at = null, guidelines_ack_at = null, photo_path = null, auth_user_id = null where id = any(${ids})`;
     await sql`update people_private set email = null, last_login_at = null, last_seen_changes_at = null, change_request_note = null where person_id = any(${ids})`;
     for (const u of (await admin.auth.admin.listUsers({ perPage: 1000 })).data.users)

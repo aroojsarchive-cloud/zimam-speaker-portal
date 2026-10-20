@@ -15,6 +15,7 @@ type Note = {
   summary: string | null;
   objectives: string | null;
   key_questions: KeyQuestion[];
+  questions_text: string | null;
   format_notes: string | null;
   file_path: string | null;
   file_name: string | null;
@@ -29,7 +30,7 @@ async function Editor({ params }: { params: PageProps<"/sessions/[id]/brief">["p
   const [{ data: session }, { data: stage }, { data: notes }] = await Promise.all([
     supabase.from("sessions").select("id, title").eq("id", id).maybeSingle(),
     supabase.from("assignments").select("role, person:people!inner(id, salutation, full_name, is_placeholder)").eq("session_id", id),
-    supabase.from("concept_notes").select("kind, summary, objectives, key_questions, format_notes, file_path, file_name, version").eq("session_id", id),
+    supabase.from("concept_notes").select("kind, summary, objectives, key_questions, questions_text, format_notes, file_path, file_name, version").eq("session_id", id),
   ]);
   type Member = { role: string; person: { id: string; salutation: string | null; full_name: string; is_placeholder: boolean } };
   const members = (stage ?? []) as unknown as Member[];
@@ -56,7 +57,7 @@ async function Editor({ params }: { params: PageProps<"/sessions/[id]/brief">["p
           initial={{
             summary: draft?.summary ?? "",
             objectives: draft?.objectives ?? "",
-            key_questions: draft?.key_questions?.length ? draft.key_questions : [{ text: "", person_id: null }],
+            questions_text: draft?.questions_text ?? (draft?.key_questions ?? []).map((q) => q.text).join("\n"),
             format_notes: draft?.format_notes ?? "",
             file_path: draft?.file_path ?? null,
             file_name: draft?.file_name ?? null,

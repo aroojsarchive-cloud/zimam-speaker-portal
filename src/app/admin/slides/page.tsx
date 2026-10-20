@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { eventConfig as ev } from "@/config/event";
 import { requireProducer } from "@/lib/admin";
 import { createClient } from "@/lib/supabase/server";
-import { signedUrls } from "@/lib/speaker-data";
 import { displayName, roleLabel } from "@/lib/labels";
-import { formatDay, formatRange, formatStamp } from "@/lib/time";
+import { formatDay, formatLongDay, formatRange, formatStamp } from "@/lib/time";
+import { SLIDES_DUE_DAYS_BEFORE } from "@/config/guidelines";
 
 export const metadata: Metadata = { title: "Slides" };
 
@@ -14,80 +15,71 @@ type Session = {
   start_time: string;
   end_time: string;
   track: { name: string; room: string | null };
-  assignments: { role: string; presents: boolean; person: { id: string; salutation: string | null; full_name: string; is_placeholder: boolean } }[];
+  assignments: {
+    role: string;
+    presents: boolean;
+    no_slides: boolean;
+    slides_sent_at: string | null;
+    person: { id: string; salutation: string | null; full_name: string; is_placeholder: boolean };
+  }[];
 };
-type Submission = { session_id: string; person_id: string; file_name: string; file_path: string; uploaded_at: string; size_bytes: number | null };
 
 async function SlidesList() {
   await requireProducer();
-  const supabase = await createClient();
-  const [{ data: sessions, error }, { data: subs }] = await Promise.all([
-    supabase
-      .from("sessions")
-      .select("id, title, start_time, end_time, track:tracks!inner(name, room), assignments(role, presents, person:people!inner(id, salutation, full_name, is_placeholder))")
-      .eq("session_type", "speaking")
-      .order("start_time"),
-    supabase.from("slide_submissions").select("session_id, person_id, file_name, file_path, uploaded_at, size_bytes").order("uploaded_at", { ascending: false }),
-  ]);
+  const { data, error } = await (await createClient())
+    .from("sessions")
+    .select(
+      "id, title, start_time, end_time, track:tracks!inner(name, room), assignments(role, presents, no_slides, slides_sent_at, person:people!inner(id, salutation, full_name, is_placeholder))",
+    )
+    .eq("session_type", "speaking")
+    .eq("status", "published")
+    .order("start_time");
   if (error) throw new Error(error.message);
 
-  // Latest file per person per session.
-  const latest = new Map<string, Submission>();
-  for (const s of (subs ?? []) as Submission[]) {
-    const k = `${s.session_id}/${s.person_id}`;
-    if (!latest.has(k)) latest.set(k, s);
-  }
-  const urls = await signedUrls("slides", [...latest.values()].map((s) => s.file_path), 6 * 3600);
-
-  const rows = ((sessions ?? []) as unknown as Session[])
+  const rows = ((data ?? []) as unknown as Session[])
     .map((s) => ({ ...s, presenters: s.assignments.filter((a) => !a.person.is_placeholder && a.presents) }))
     .filter((s) => s.presenters.length);
-  const total = rows.reduce((n, s) => n + s.presenters.length, 0);
-  const received = rows.reduce((n, s) => n + s.presenters.filter((a) => latest.has(`${s.id}/${a.person.id}`)).length, 0);
+  const all = rows.flatMap((s) => s.presenters);
+  const sent = all.filter((a) => a.slides_sent_at).length;
+  const none = all.filter((a) => !a.slides_sent_at && a.no_slides).length;
 
   return (
     <>
-      <p className="mt-2 text-ink-muted">
-        <span className="font-semibold text-ink">{received}</span> of {total} presenters have uploaded. Only people marked as
-        presenting are listed; panelists and moderators aren&apos;t asked for slides.
+      <p className="mt-2 max-w-3xl text-ink-muted">
+        Presenters email their slides to <span className="font-semibold text-ink">{ev.slidesEmail}</span> and tick &ldquo;I&apos;ve
+        emailed them&rdquo; in the portal. <span className="font-semibold text-ink">{sent}</span> of {all.length} say they&apos;ve sent
+        them; {none} aren&apos;t using slides. Only people marked as presenting are listed.
       </p>
       <div className="mt-6 space-y-4">
-        {rows.map((s) => (
-          <section key={s.id} className="rounded-2xl bg-surface p-5 shadow-[0_1px_0_var(--line)]">
-            <p className="text-sm text-ink-muted">
-              {formatDay(s.start_time)} · {formatRange(s.start_time, s.end_time)} · {s.track.room ?? "Room TBC"} · {s.track.name}
-            </p>
-            <h2 className="font-semibold">{s.title}</h2>
-            <ul className="mt-3 divide-y divide-line">
-              {s.presenters.map((a) => {
-                const sub = latest.get(`${s.id}/${a.person.id}`);
-                const url = sub ? urls.get(sub.file_path) : null;
-                return (
+        {rows.map((s) => {
+          const due = formatLongDay(new Date(new Date(s.start_time).getTime() - SLIDES_DUE_DAYS_BEFORE * 86400000).toISOString());
+          return (
+            <section key={s.id} className="rounded-2xl bg-surface p-5 shadow-[0_1px_0_var(--line)]">
+              <p className="text-sm text-ink-muted">
+                {formatDay(s.start_time)} · {formatRange(s.start_time, s.end_time)} · {s.track.room ?? "Room TBC"} · {s.track.name} · due{" "}
+                {due}
+              </p>
+              <h2 className="font-semibold">{s.title}</h2>
+              <ul className="mt-3 divide-y divide-line">
+                {s.presenters.map((a) => (
                   <li key={a.person.id + a.role} className="flex flex-wrap items-center justify-between gap-3 py-2 text-sm">
                     <span>
                       <span className="font-semibold">{displayName(a.person)}</span>{" "}
                       <span className="text-ink-muted">· {roleLabel(a.role)}</span>
                     </span>
-                    {sub ? (
-                      <span className="flex items-center gap-3">
-                        <span className="text-ink-muted">{formatStamp(sub.uploaded_at)}</span>
-                        {url ? (
-                          <a href={url} className="font-semibold text-brand-strong underline underline-offset-4">
-                            {sub.file_name}
-                          </a>
-                        ) : (
-                          sub.file_name
-                        )}
-                      </span>
+                    {a.slides_sent_at ? (
+                      <span className="font-semibold text-success">✓ Says sent · {formatStamp(a.slides_sent_at)}</span>
+                    ) : a.no_slides ? (
+                      <span className="text-ink-muted">Not using slides</span>
                     ) : (
-                      <span className="text-ink-muted">Not yet</span>
+                      <span className="font-semibold text-warning">Not yet</span>
                     )}
                   </li>
-                );
-              })}
-            </ul>
-          </section>
-        ))}
+                ))}
+              </ul>
+            </section>
+          );
+        })}
       </div>
     </>
   );

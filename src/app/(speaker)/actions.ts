@@ -43,14 +43,14 @@ export async function checkIn(assignmentId: string, sessionId: string): Promise<
   return { ok: true };
 }
 
-export async function recordSlides(sessionId: string, path: string, fileName: string, size: number): Promise<Result> {
-  const me = await getMe();
-  if (!path.startsWith(`${sessionId}/${me.personId}/`)) return { ok: false, message: "Upload failed. Please try again." };
-  const { error } = await (await createClient())
-    .from("slide_submissions")
-    .insert({ session_id: sessionId, person_id: me.personId, file_path: path, file_name: fileName, size_bytes: size });
-  if (error) return { ok: false, message: "We couldn't save your slides. Please try again." };
+export async function markSlidesSent(assignmentIds: string[], sessionId: string, sent: boolean): Promise<Result> {
+  const supabase = await createClient();
+  for (const id of assignmentIds) {
+    const { error } = await supabase.rpc("mark_slides_sent", { p_assignment: id, p_sent: sent });
+    if (error) return { ok: false, message: "We couldn't save that. Please try again." };
+  }
   revalidatePath(`/sessions/${sessionId}`);
+  revalidatePath("/");
   return { ok: true };
 }
 

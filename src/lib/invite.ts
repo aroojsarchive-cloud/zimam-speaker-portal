@@ -14,6 +14,6 @@ export function inviteMessage(opts: { salutation: string | null; fullName: strin
     ``,
     `It shows your session time, room and role, your brief, who you're on stage with, and the full agenda, always up to date. No password needed: the link signs you straight in.`,
     ``,
-    `Please check your name, title and photo, as this is how you'll appear on screen and in print, and upload your slides there if you're presenting.`,
+    `Please check your name, title and photo, as this is how you'll appear on screen and in print, and email us your slides if you're presenting.`,
   ].join("\n");
 }

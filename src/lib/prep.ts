@@ -15,6 +15,7 @@ export type PrepEngagement = {
   room: string | null;
   reviewedAt: string | null;
   noSlides: boolean;
+  /** The speaker has told us they emailed their slides. */
   hasSlides: boolean;
   /** Set from the programme: only presenters are asked for slides. */
   presents: boolean;
@@ -67,8 +68,8 @@ export function prepSteps(opts: { detailsConfirmed: boolean; guidelinesAck: bool
     const todo = slideables.filter((e) => !e.hasSlides && !e.noSlides);
     steps.push({
       key: "slides",
-      label: "Upload your presentation",
-      detail: todo.length ? "Or tell us you're not using slides." : "Done, thank you.",
+      label: "Send your presentation",
+      detail: todo.length ? "Email your slides to us, or tell us you're not using slides." : "Done, thank you.",
       done: todo.length === 0,
       href: todo[0] ? `/sessions/${todo[0].sessionId}#slides-h` : null,
     });

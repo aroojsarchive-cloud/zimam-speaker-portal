@@ -30,6 +30,7 @@ type Row = {
     reviewed_at: string | null;
     no_slides: boolean;
     presents: boolean;
+    slides_sent_at: string | null;
     checked_in_at: string | null;
     session: {
       id: string;
@@ -56,18 +57,16 @@ async function Tracker({ searchParams }: { searchParams: PageProps<"/admin">["se
   await requireProducer();
   const { view = "" } = (await searchParams) as { view?: string };
   const supabase = await createClient();
-  const [{ data, error }, { data: subs }] = await Promise.all([
+  const [{ data, error }] = await Promise.all([
     supabase
       .from("people")
       .select(
-        "id, salutation, full_name, organisation, photo_path, details_status, guidelines_ack_at, private:people_private(email, last_login_at), assignments(id, role, sort_order, reviewed_at, no_slides, presents, checked_in_at, session:sessions(id, title, label, start_time, end_time, session_type, track:tracks(room, sort_order, short_name, name), notes:concept_notes(kind)))",
+        "id, salutation, full_name, organisation, photo_path, details_status, guidelines_ack_at, private:people_private(email, last_login_at), assignments(id, role, sort_order, reviewed_at, no_slides, presents, slides_sent_at, checked_in_at, session:sessions(id, title, label, start_time, end_time, session_type, track:tracks(room, sort_order, short_name, name), notes:concept_notes(kind)))",
       )
       .eq("is_placeholder", false)
       .eq("app_role", "participant"),
-    supabase.from("slide_submissions").select("person_id, session_id"),
   ]);
   if (error) throw new Error(error.message);
-  const slides = new Set((subs ?? []).map((s) => `${s.person_id}/${s.session_id}`));
 
   const all = ((data ?? []) as unknown as Row[])
     .filter((r) => r.assignments.some((a) => a.session))
@@ -85,7 +84,7 @@ async function Tracker({ searchParams }: { searchParams: PageProps<"/admin">["se
           room: a.session!.track.room,
           reviewedAt: a.reviewed_at,
           noSlides: a.no_slides,
-          hasSlides: slides.has(`${r.id}/${a.session!.id}`),
+          hasSlides: !!a.slides_sent_at,
           presents: a.presents,
           briefPublished: a.session!.notes.some((n) => n.kind === "published"),
           checkedInAt: a.checked_in_at,

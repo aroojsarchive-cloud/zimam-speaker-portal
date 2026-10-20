@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { getMe } from "@/lib/me";
 import { createClient } from "@/lib/supabase/server";
 import { guidelines, SLIDES_DUE_DAYS_BEFORE } from "@/config/guidelines";
+import { eventConfig as ev } from "@/config/event";
 import { formatLongDay } from "@/lib/time";
 import { AcknowledgeButton } from "@/components/AcknowledgeButton";
 
@@ -37,7 +38,19 @@ async function Content() {
               <div className="mt-2 space-y-2 leading-relaxed">
                 {s.body.map((p) => (
                   <p key={p}>
-                    {p.split("{slidesDue}").flatMap((part, i) => (i ? [<strong key={i}>{due}</strong>, part] : [part]))}
+                    {p
+                      .split(/(\{slidesDue\}|\{slidesEmail\})/)
+                      .map((part, i) =>
+                        part === "{slidesDue}" ? (
+                          <strong key={i}>{due}</strong>
+                        ) : part === "{slidesEmail}" ? (
+                          <a key={i} href={`mailto:${ev.slidesEmail}`} className="font-semibold text-brand-strong underline underline-offset-4">
+                            {ev.slidesEmail}
+                          </a>
+                        ) : (
+                          part
+                        ),
+                      )}
                   </p>
                 ))}
               </div>

@@ -33,6 +33,8 @@ export type ConceptNote = {
   summary: string | null;
   objectives: string | null;
   key_questions: KeyQuestion[];
+  /** Free-text questions pasted by the moderator (replaces key_questions). */
+  questions_text: string | null;
   format_notes: string | null;
   run_of_show: string | null;
   file_path: string | null;
@@ -74,6 +76,7 @@ export type Engagement = {
   reviewed_at: string | null;
   no_slides: boolean;
   presents: boolean;
+  slides_sent_at: string | null;
   session: SessionInfo & { track: TrackInfo; notes: { kind: string; updated_at: string }[] };
 };
 
@@ -82,7 +85,7 @@ export async function getMyEngagements(personId: string): Promise<Engagement[]> 
   const { data, error } = await supabase
     .from("assignments")
     .select(
-      "id, role, status, checked_in_at, reviewed_at, no_slides, presents, session:sessions!inner(id, title, label, block_label, format, session_type, start_time, end_time, sequence, description, updated_at, track:tracks!inner(id, name, room, colour, strapline), notes:concept_notes(kind, updated_at))",
+      "id, role, status, checked_in_at, reviewed_at, no_slides, presents, slides_sent_at, session:sessions!inner(id, title, label, block_label, format, session_type, start_time, end_time, sequence, description, updated_at, track:tracks!inner(id, name, room, colour, strapline), notes:concept_notes(kind, updated_at))",
     )
     .eq("person_id", personId);
   if (error) throw new Error(error.message);
@@ -117,7 +120,7 @@ export async function getSessionDetail(sessionId: string) {
       .order("sort_order"),
     supabase
       .from("concept_notes")
-      .select("summary, objectives, key_questions, format_notes, run_of_show, file_path, file_name, version, updated_at")
+      .select("summary, objectives, key_questions, questions_text, format_notes, run_of_show, file_path, file_name, version, updated_at")
       .eq("session_id", sessionId)
       .eq("kind", "published")
       .maybeSingle(),

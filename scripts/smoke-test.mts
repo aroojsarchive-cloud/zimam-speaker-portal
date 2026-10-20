@@ -135,7 +135,7 @@ async function main() {
     const j = await signIn(julietEmail);
     const c = j.cookie();
     await page("/", c, { contains: ["Hi Juliet", "Get ready", "Read the speaker guidelines", "Questions?"] });
-    await page("/guidelines", c, { contains: ["Keeping to time", "5 minutes left", "USB"] });
+    await page("/guidelines", c, { contains: ["Keeping to time", "5 minutes left", "USB", "arooj@mwanevents.com"] });
     const agenda = await page("/agenda", c, { contains: ["Programme at a glance", "At a glance"] });
     const tabs = [...new Set([...agenda.matchAll(/href="\/agenda\?tab=([^"&]+)"/g)].map((m) => m[1]))];
     check("agenda has At a glance + 5 programme tabs", tabs.length === 6, tabs);
@@ -176,7 +176,7 @@ async function main() {
   await page("/admin/people", pc, { contains: ["Copy invite", "Presenting slides"] });
   await page("/admin/people?filter=no-email", pc);
   await page("/admin/people?q=ibrahim", pc);
-  await page("/admin/slides", pc, { contains: ["presenters have uploaded"] });
+  await page("/admin/slides", pc, { contains: ["arooj@mwanevents.com", "say they"] });
   await page("/admin/programme", pc, { contains: ["Programme", "Edit programme details", "+ Add session at the end"] });
   for (const d of ["2026-11-04", "2026-11-05", "2026-11-06"]) await page(`/admin/programme?day=${d}`, pc);
   await page("/admin/print", pc, { contains: ["Print / Save as PDF", "Day 1", "Printed from live data"] });
@@ -249,10 +249,23 @@ async function main() {
   check("flag a change works", !(await S.rpc("request_details_change", { p_person: spk.id, p_note: "Title should be X" })).error);
   check("empty change note is refused", !!(await S.rpc("request_details_change", { p_person: spk.id, p_note: "  " })).error);
   check("acknowledge guidelines works", !(await S.rpc("acknowledge_guidelines", { p_person: spk.id })).error);
+  check("'I've emailed my slides' works", !(await S.rpc("mark_slides_sent", { p_assignment: spk.assignment, p_sent: true })).error);
+  check("cannot mark someone else's slides as sent", !!(await S.rpc("mark_slides_sent", { p_assignment: pan.assignment, p_sent: true })).error);
   check("mark session checked works", !(await S.rpc("mark_session_reviewed", { p_assignment: spk.assignment })).error);
   check("cannot mark someone else's session", !!(await S.rpc("mark_session_reviewed", { p_assignment: pan.assignment })).error);
   check("'not using slides' works", !(await S.rpc("set_no_slides", { p_assignment: spk.assignment, p_value: true })).error);
   check("check-in is refused before the event day", !!(await S.rpc("check_in", { p_assignment: spk.assignment })).error);
+  // On the day: a session today in the throwaway event.
+  const [todaySes] = await sql`insert into sessions (track_id, start_time, end_time, sequence, title, format, status)
+    values (${trk.id}, now() + interval '10 minutes', now() + interval '40 minutes', 9, 'Today', 'lecture', 'published') returning id`;
+  const [todayA] = await sql`insert into assignments (person_id, session_id, role) values (${spk.id}, ${todaySes.id}, 'speaker') returning id`;
+  const [panToday] = await sql`insert into assignments (person_id, session_id, role) values (${pan.id}, ${todaySes.id}, 'panelist') returning id`;
+  const first = await S.rpc("check_in", { p_assignment: todayA.id });
+  check("on the day, 'I'm in the room' works", !first.error && !!first.data, first.error);
+  const again = await S.rpc("check_in", { p_assignment: todayA.id });
+  check("checking in twice keeps the first time", again.data === first.data, { first: first.data, again: again.data });
+  check("cannot check someone else in", !!(await S.rpc("check_in", { p_assignment: panToday.id })).error);
+  await sql`delete from sessions where id = ${todaySes.id}`;
   const { data: edited } = await S.from("people").update({ full_name: "Hacked" }).eq("id", spk.id).select("id");
   check("speaker cannot edit their name directly", (edited ?? []).length === 0);
   const { data: sesEdit } = await S.from("sessions").update({ title: "x" }).eq("id", ses.id).select("id");
@@ -280,14 +293,14 @@ async function main() {
   check("cannot upload someone else's photo", !!(await S.storage.from("photos").upload(`${pan.id}/x.png`, png)).error);
 
   check("speaker cannot write a brief", !!(await S.from("concept_notes").insert({ session_id: ses.id, kind: "draft", summary: "x" })).error);
-  check("moderator can save a draft brief", !(await M.from("concept_notes").insert({ session_id: ses.id, kind: "draft", summary: "Smoke brief", key_questions: [{ text: "Q for speaker", person_id: spk.id }] })).error);
+  check("moderator can save a draft brief", !(await M.from("concept_notes").insert({ session_id: ses.id, kind: "draft", summary: "Smoke brief", questions_text: "1. A question for everyone\n2. Speaker, what do you think?" })).error);
   const { data: early } = await S.from("concept_notes").select("id").eq("session_id", ses.id);
   check("speaker cannot see the draft before it's published", (early ?? []).length === 0);
   check("speaker cannot publish", !!(await S.rpc("publish_brief", { p_session: ses.id })).error);
   const pub = await M.rpc("publish_brief", { p_session: ses.id });
   check("moderator can publish (version 1)", pub.data === 1, pub);
-  const { data: late } = await S.from("concept_notes").select("summary, key_questions").eq("session_id", ses.id);
-  check("speaker sees the published brief with their tagged question", late?.length === 1 && late[0].summary === "Smoke brief", late);
+  const { data: late } = await S.from("concept_notes").select("summary, questions_text").eq("session_id", ses.id);
+  check("speaker sees the published brief with the pasted questions", late?.length === 1 && late[0].summary === "Smoke brief" && (late[0].questions_text ?? "").includes("what do you think"), late);
   check("republishing bumps the version", (await M.rpc("publish_brief", { p_session: ses.id })).data === 2);
   check("moderator cannot publish a session they don't moderate", !!(await M.rpc("publish_brief", { p_session: drf.id })).error);
 

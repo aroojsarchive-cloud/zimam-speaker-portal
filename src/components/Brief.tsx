@@ -3,7 +3,7 @@ import type { ConceptNote } from "@/lib/speaker-data";
 
 const lines = (t: string | null) => (t ?? "").split("\n").map((l) => l.trim()).filter(Boolean);
 
-export function Brief({ note, me, fileUrl }: { note: ConceptNote | null; me: string; fileUrl: string | null }) {
+export function Brief({ note, me, meName = null, fileUrl }: { note: ConceptNote | null; me: string; meName?: string | null; fileUrl: string | null }) {
   if (!note)
     return (
       <div className="rounded-2xl bg-paper px-5 py-4">
@@ -13,7 +13,11 @@ export function Brief({ note, me, fileUrl }: { note: ConceptNote | null; me: str
     );
 
   const objectives = lines(note.objectives);
-  const hasStructured = note.summary || objectives.length || note.key_questions.length || note.format_notes;
+  const questionLines = lines(note.questions_text ?? "");
+  const hasStructured = note.summary || objectives.length || questionLines.length || note.key_questions.length || note.format_notes;
+  // Lines that mention this speaker (full name or surname) are highlighted as theirs.
+  const names = meName ? [meName, meName.split(" ").slice(-1)[0]].filter((n) => n.length > 3).map((n) => n.toLowerCase()) : [];
+  const isMine = (line: string) => names.some((n) => line.toLowerCase().includes(n));
 
   return (
     <div className="space-y-6">
@@ -37,7 +41,27 @@ export function Brief({ note, me, fileUrl }: { note: ConceptNote | null; me: str
         </div>
       )}
 
-      {note.key_questions.length > 0 && (
+      {questionLines.length > 0 && (
+        <div>
+          <h3 className="font-display text-lg font-semibold">Key questions</h3>
+          <div className="mt-2 space-y-1.5">
+            {questionLines.map((q, k) =>
+              isMine(q) ? (
+                <p key={k} className="rounded-xl bg-brand-soft px-3 py-2 ring-1 ring-brand/40">
+                  <span className="block text-xs font-bold uppercase tracking-[0.12em] text-brand-strong">For you</span>
+                  {q}
+                </p>
+              ) : (
+                <p key={k} className="px-3">
+                  {q}
+                </p>
+              ),
+            )}
+          </div>
+        </div>
+      )}
+
+      {!questionLines.length && note.key_questions.length > 0 && (
         <div>
           <h3 className="font-display text-lg font-semibold">Key questions</h3>
           <ol className="mt-2 space-y-2">

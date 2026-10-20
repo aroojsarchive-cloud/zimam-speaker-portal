@@ -24,11 +24,11 @@ export function BoardingCard({ e, roles, slides }: { e: Engagement; roles: strin
       <div className="grid grid-cols-[1fr_auto] items-end gap-4 px-5 pt-2 pb-4 font-display">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">Time</p>
-          <p className="text-[2.1rem] font-semibold leading-none tabular-nums">{formatRange(s.start_time, s.end_time)}</p>
+          <p className="whitespace-nowrap text-[1.85rem] font-semibold leading-none tabular-nums">{formatRange(s.start_time, s.end_time)}</p>
         </div>
         <div className="text-right">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">Room</p>
-          <p className="text-[2.1rem] font-semibold leading-none">{s.track.room ?? "TBC"}</p>
+          <p className="whitespace-nowrap text-[1.85rem] font-semibold leading-none">{s.track.room ?? "TBC"}</p>
         </div>
       </div>
 
@@ -54,7 +54,7 @@ export function BoardingCard({ e, roles, slides }: { e: Engagement; roles: strin
             </span>
             {slides && (
               <span className={slides === "received" ? "font-semibold text-success" : "font-semibold text-brand-strong"}>
-                {slides === "received" ? "● Slides received" : "+ Add your slides"}
+                {slides === "received" ? "● Slides sent" : "+ Email your slides"}
               </span>
             )}
           </span>

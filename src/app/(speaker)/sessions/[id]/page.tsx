@@ -6,14 +6,15 @@ import { eventConfig as ev } from "@/config/event";
 import { getMe } from "@/lib/me";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionDetail, signedUrls } from "@/lib/speaker-data";
-import { formatLabel, roleLabel } from "@/lib/labels";
+import { displayName, formatLabel, roleLabel } from "@/lib/labels";
 import { eventDateKey, eventToday, formatLongDay, formatRange, formatTime, minutesBetween } from "@/lib/time";
 import { RunningOrder } from "@/components/RunningOrder";
 import { StageList } from "@/components/StageList";
 import { Brief } from "@/components/Brief";
 import { CheckIn } from "@/components/CheckIn";
-import { SlideUpload } from "@/components/SlideUpload";
-import { NoSlidesToggle, ReviewedButton } from "@/components/PrepButtons";
+import { SlidesByEmail } from "@/components/SlidesByEmail";
+import { eventConfig as evc } from "@/config/event";
+import { ReviewedButton } from "@/components/PrepButtons";
 import { arriveBy } from "@/lib/prep";
 import { SLIDES_DUE_DAYS_BEFORE } from "@/config/guidelines";
 
@@ -40,7 +41,7 @@ async function SessionContent({ params }: { params: PageProps<"/sessions/[id]">[
 
   const { data: mine } = await (await createClient())
     .from("assignments")
-    .select("id, role, checked_in_at, reviewed_at, no_slides, presents")
+    .select("id, role, checked_in_at, reviewed_at, no_slides, presents, slides_sent_at")
     .eq("session_id", id)
     .eq("person_id", me.personId);
   const myRoles = (mine ?? []).map((a) => a.role);
@@ -49,18 +50,10 @@ async function SessionContent({ params }: { params: PageProps<"/sessions/[id]">[
   const noSlides = (mine ?? []).length > 0 && (mine ?? []).every((a) => a.no_slides);
   // Only people presenting in this session (set from the programme) are asked for slides.
   const presents = (mine ?? []).some((a) => a.presents) && s.session_type === "speaking";
-  const { data: mySlides } = presents
-    ? await (await createClient())
-        .from("slide_submissions")
-        .select("id, file_name, file_path, uploaded_at, size_bytes")
-        .eq("session_id", id)
-        .eq("person_id", me.personId)
-        .order("uploaded_at", { ascending: false })
-    : { data: [] };
-  const [photos, files, slideUrls] = await Promise.all([
+  const slidesSentAt = (mine ?? []).map((a) => a.slides_sent_at).find(Boolean) ?? null;
+  const [photos, files] = await Promise.all([
     signedUrls("photos", stage.map((m) => m.person.photo_path)),
     signedUrls("briefs", [note?.file_path ?? null]),
-    signedUrls("slides", (mySlides ?? []).map((x) => x.file_path)),
   ]);
   const isToday = eventDateKey(s.start_time) === eventToday();
 
@@ -86,7 +79,7 @@ async function SessionContent({ params }: { params: PageProps<"/sessions/[id]">[
           <dl className="mt-5 grid grid-cols-2 gap-4 border-t border-white/15 pt-4 font-display">
             <div>
               <dt className="text-xs font-semibold uppercase tracking-[0.12em] text-white/60">Time</dt>
-              <dd className="text-[1.9rem] font-semibold leading-none tabular-nums">{formatRange(s.start_time, s.end_time)}</dd>
+              <dd className="whitespace-nowrap text-[1.7rem] font-semibold leading-none tabular-nums">{formatRange(s.start_time, s.end_time)}</dd>
             </div>
             <div className="text-right">
               <dt className="text-xs font-semibold uppercase tracking-[0.12em] text-white/60">Room</dt>
@@ -145,17 +138,15 @@ async function SessionContent({ params }: { params: PageProps<"/sessions/[id]">[
 
         {presents && (
           <Section id="slides-h" title="Your slides">
-            {noSlides && !(mySlides ?? []).length ? (
-              <p className="rounded-2xl bg-paper px-4 py-3 text-ink-muted">You&apos;ve told us you&apos;re not using slides.</p>
-            ) : (
-              <SlideUpload
-                sessionId={s.id}
-                personId={me.personId}
-                submissions={(mySlides ?? []).map((x) => ({ ...x, url: slideUrls.get(x.file_path) ?? null }))}
-                due={formatLongDay(new Date(new Date(s.start_time).getTime() - SLIDES_DUE_DAYS_BEFORE * 86400000).toISOString())}
-              />
-            )}
-            {!(mySlides ?? []).length && <NoSlidesToggle ids={myIds} sessionId={s.id} noSlides={noSlides} />}
+            <SlidesByEmail
+              ids={myIds}
+              sessionId={s.id}
+              email={evc.slidesEmail}
+              due={formatLongDay(new Date(new Date(s.start_time).getTime() - SLIDES_DUE_DAYS_BEFORE * 86400000).toISOString())}
+              subject={`Slides: ${displayName({ salutation: me.salutation, full_name: me.fullName })} · ${s.title}`}
+              sentAt={slidesSentAt}
+              noSlides={noSlides}
+            />
           </Section>
         )}
 
@@ -169,7 +160,7 @@ async function SessionContent({ params }: { params: PageProps<"/sessions/[id]">[
                 {note ? "Edit the brief" : "Write the brief for your panel"}
               </Link>
             )}
-            <Brief note={note} me={me.personId} fileUrl={note?.file_path ? (files.get(note.file_path) ?? null) : null} />
+            <Brief note={note} me={me.personId} meName={me.fullName} fileUrl={note?.file_path ? (files.get(note.file_path) ?? null) : null} />
           </Section>
         )}
       </div>

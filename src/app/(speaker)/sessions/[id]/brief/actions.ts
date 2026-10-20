@@ -8,7 +8,7 @@ type Result = { ok: true; version?: number } | { ok: false; message: string };
 const Draft = z.object({
   summary: z.string().max(4000),
   objectives: z.string().max(4000),
-  key_questions: z.array(z.object({ text: z.string().max(600), person_id: z.string().uuid().nullable() })).max(30),
+  questions_text: z.string().max(10000),
   format_notes: z.string().max(4000),
   file_path: z.string().nullable(),
   file_name: z.string().nullable(),
@@ -24,7 +24,7 @@ export async function saveDraft(sessionId: string, input: DraftInput): Promise<R
   const row = {
     summary: d.summary.trim() || null,
     objectives: d.objectives.trim() || null,
-    key_questions: d.key_questions.filter((q) => q.text.trim()),
+    questions_text: d.questions_text.trim() || null,
     format_notes: d.format_notes.trim() || null,
     file_path: d.file_path,
     file_name: d.file_name,

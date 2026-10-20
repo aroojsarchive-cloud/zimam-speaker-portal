@@ -51,15 +51,6 @@ export function BriefEditor({
   }, [d, sessionId]);
 
   const set = <K extends keyof DraftInput>(k: K, v: DraftInput[K]) => setD((x) => ({ ...x, [k]: v }));
-  const setQ = (i: number, patch: Partial<DraftInput["key_questions"][number]>) =>
-    set("key_questions", d.key_questions.map((q, k) => (k === i ? { ...q, ...patch } : q)));
-  const move = (i: number, dir: -1 | 1) => {
-    const qs = [...d.key_questions];
-    const j = i + dir;
-    if (j < 0 || j >= qs.length) return;
-    [qs[i], qs[j]] = [qs[j], qs[i]];
-    set("key_questions", qs);
-  };
 
   async function upload(file: File) {
     setMessage(null);
@@ -74,7 +65,7 @@ export function BriefEditor({
     setD((x) => ({ ...x, file_path: path, file_name: file.name }));
   }
 
-  const empty = !d.summary.trim() && !d.objectives.trim() && !d.key_questions.some((q) => q.text.trim()) && !d.format_notes.trim() && !d.file_path;
+  const empty = !d.summary.trim() && !d.objectives.trim() && !d.questions_text.trim() && !d.format_notes.trim() && !d.file_path;
 
   if (preview)
     return (
@@ -88,11 +79,13 @@ export function BriefEditor({
         <div className="rounded-3xl bg-surface p-5 shadow-[0_1px_0_var(--line)]">
           <Brief
             me={me}
+            meName={null}
             fileUrl={d.file_path ? "#" : null}
             note={{
               summary: d.summary || null,
               objectives: d.objectives || null,
-              key_questions: d.key_questions.filter((q) => q.text.trim()),
+              key_questions: [],
+              questions_text: d.questions_text || null,
               format_notes: d.format_notes || null,
               run_of_show: null,
               file_path: d.file_path,
@@ -125,60 +118,14 @@ export function BriefEditor({
         <textarea className={box} rows={4} value={d.objectives} onChange={(e) => set("objectives", e.target.value)} />
       </label>
 
-      <fieldset>
-        <legend className="font-semibold">Key questions</legend>
-        <span className="block text-sm text-ink-muted">Tag a question to a panelist and it&apos;s highlighted for them.</span>
-        <ol className="mt-2 space-y-3">
-          {d.key_questions.map((q, i) => (
-            <li key={i} className="rounded-2xl border border-line bg-surface p-3">
-              <div className="flex items-start gap-2">
-                <span className="mt-2 font-display text-lg font-semibold text-ink-muted">{i + 1}</span>
-                <textarea
-                  aria-label={`Question ${i + 1}`}
-                  className="block w-full rounded-lg border border-line bg-paper px-3 py-2 outline-none focus:border-brand-strong"
-                  rows={2}
-                  value={q.text}
-                  onChange={(e) => setQ(i, { text: e.target.value })}
-                />
-              </div>
-              <div className="mt-2 flex flex-wrap items-center gap-2 pl-6">
-                <select
-                  aria-label={`Who answers question ${i + 1}`}
-                  value={q.person_id ?? ""}
-                  onChange={(e) => setQ(i, { person_id: e.target.value || null })}
-                  className="h-10 rounded-lg border border-line bg-paper px-2 text-sm"
-                >
-                  <option value="">For everyone</option>
-                  {panel.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      For {p.name}
-                    </option>
-                  ))}
-                </select>
-                <span className="ml-auto flex gap-1">
-                  <button type="button" onClick={() => move(i, -1)} aria-label="Move up" className="h-10 w-10 rounded-lg border border-line">↑</button>
-                  <button type="button" onClick={() => move(i, 1)} aria-label="Move down" className="h-10 w-10 rounded-lg border border-line">↓</button>
-                  <button
-                    type="button"
-                    onClick={() => set("key_questions", d.key_questions.filter((_, k) => k !== i))}
-                    aria-label={`Remove question ${i + 1}`}
-                    className="h-10 rounded-lg px-3 text-sm text-danger"
-                  >
-                    Remove
-                  </button>
-                </span>
-              </div>
-            </li>
-          ))}
-        </ol>
-        <button
-          type="button"
-          onClick={() => set("key_questions", [...d.key_questions, { text: "", person_id: null }])}
-          className="mt-3 h-11 rounded-xl border border-dashed border-line px-4 font-semibold"
-        >
-          + Add a question
-        </button>
-      </fieldset>
+      <label className="block">
+        <span className="font-semibold">Key questions</span>
+        <span className="block text-sm text-ink-muted">
+          Paste them in as they are, in any format. Mention a panelist by name and that line is highlighted for them
+          {panel.length ? `: ${panel.map((p) => p.name).join(", ")}` : ""}.
+        </span>
+        <textarea className={box} rows={10} value={d.questions_text} onChange={(e) => set("questions_text", e.target.value)} />
+      </label>
 
       <label className="block">
         <span className="font-semibold">How it will run</span>

@@ -256,6 +256,14 @@ async function main() {
   const reconfirm = await rows(`select details_status from people where id = '${spk}'`);
   check("a new photo after confirming asks to re-confirm", reconfirm[0].details_status === "unconfirmed", reconfirm);
 
+  console.log("Slides by email");
+  check("speaker can say they've emailed their slides",
+    !((await as(ids.spkU, "spk@x.org", () => rows(`select mark_slides_sent($1, true)`, [spkAssign]))) instanceof Error));
+  check("speaker cannot mark someone else's slides as sent",
+    (await as(ids.spkU, "spk@x.org", () => rows(`select mark_slides_sent($1, true)`, [modAssign]))) instanceof Error);
+  const sent = await rows(`select slides_sent_at is not null as s from assignments where id = $1`, [spkAssign]);
+  check("slides-sent is saved", sent[0].s === true, sent);
+
   console.log("Guidelines");
   check("speaker can acknowledge the guidelines",
     !((await as(ids.spkU, "spk@x.org", () => rows(`select acknowledge_guidelines('${spk}')`))) instanceof Error));

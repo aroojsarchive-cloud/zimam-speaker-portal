@@ -11,7 +11,7 @@ export const guidelines = {
       heading: "Your slides",
       presentersOnly: true,
       body: [
-        "Please upload your slides here by {slidesDue}, so our AV team can load and test them in good time.",
+        "Please email your slides to {slidesEmail} by {slidesDue}, so our AV team can load and test them in good time.",
         "If they're not quite ready by then, no problem: just bring them on a USB stick and hand them to the AV team in your room when you arrive.",
       ],
     },

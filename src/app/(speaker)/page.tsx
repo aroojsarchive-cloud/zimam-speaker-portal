@@ -13,7 +13,6 @@ import { MarkSeen } from "@/components/MarkSeen";
 import { Checklist } from "@/components/Checklist";
 import { needsSlides, prepSteps, type PrepEngagement } from "@/lib/prep";
 import { CheckIn } from "@/components/CheckIn";
-import { createClient } from "@/lib/supabase/server";
 import { eventDateKey, eventToday } from "@/lib/time";
 import { signOut } from "@/app/auth/confirm/actions";
 
@@ -26,11 +25,7 @@ async function MyEventContent() {
     getMyProfile(me.personId),
     getMyEngagements(me.personId),
   ]);
-  const [photos, { data: mySlides }] = await Promise.all([
-    signedUrls("photos", [profile.photo_path]),
-    (await createClient()).from("slide_submissions").select("session_id").eq("person_id", me.personId),
-  ]);
-  const slideSessions = new Set((mySlides ?? []).map((x) => x.session_id));
+  const photos = await signedUrls("photos", [profile.photo_path]);
   const today = eventToday();
   const photoUrl = profile.photo_path ? (photos.get(profile.photo_path) ?? null) : null;
 
@@ -44,7 +39,7 @@ async function MyEventContent() {
     room: e.session.track.room,
     reviewedAt: e.reviewed_at,
     noSlides: e.no_slides,
-    hasSlides: slideSessions.has(e.session.id),
+    hasSlides: !!e.slides_sent_at,
     presents: e.presents,
     briefPublished: e.session.notes.some((x) => x.kind === "published"),
     checkedInAt: e.checked_in_at,

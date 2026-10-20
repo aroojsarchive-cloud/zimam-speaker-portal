@@ -1,6 +1,6 @@
 "use client";
 import { useState, useTransition } from "react";
-import { markReviewed, setNoSlides } from "@/app/(speaker)/actions";
+import { markReviewed } from "@/app/(speaker)/actions";
 
 export function ReviewedButton({ ids, sessionId, reviewed }: { ids: string[]; sessionId: string; reviewed: boolean }) {
   const [pending, start] = useTransition();
@@ -25,19 +25,5 @@ export function ReviewedButton({ ids, sessionId, reviewed }: { ids: string[]; se
       <p className="mt-2 text-center text-sm text-ink-muted">Time, room, running order and who you&apos;re with all look right.</p>
       {error && <p role="alert" className="mt-2 text-center text-danger">{error}</p>}
     </div>
-  );
-}
-
-export function NoSlidesToggle({ ids, sessionId, noSlides }: { ids: string[]; sessionId: string; noSlides: boolean }) {
-  const [pending, start] = useTransition();
-  return (
-    <button
-      type="button"
-      disabled={pending}
-      onClick={() => start(async () => void (await setNoSlides(ids, sessionId, !noSlides)))}
-      className="mt-2 h-11 w-full text-sm font-semibold text-ink-muted underline underline-offset-4 disabled:opacity-60"
-    >
-      {pending ? "Saving…" : noSlides ? "Actually, I will use slides" : "I'm not using slides"}
-    </button>
   );
 }
