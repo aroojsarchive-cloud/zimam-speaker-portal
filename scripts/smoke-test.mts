@@ -177,6 +177,8 @@ async function main() {
   await page("/admin/people?filter=no-email", pc);
   await page("/admin/people?q=ibrahim", pc);
   await page("/admin/slides", pc, { contains: ["presenters have uploaded"] });
+  await page("/admin/programme", pc, { contains: ["Programme", "Edit programme details", "+ Add session at the end"] });
+  for (const d of ["2026-11-04", "2026-11-05", "2026-11-06"]) await page(`/admin/programme?day=${d}`, pc);
   await page("/admin/live", pc);
   await page("/admin/live?at=2026-11-04T14:40", pc, { contains: ["Rehearsal time", "Now"] });
   await page("/agenda", pc);
@@ -279,6 +281,34 @@ async function main() {
   check("speaker sees the published brief with their tagged question", late?.length === 1 && late[0].summary === "Smoke brief", late);
   check("republishing bumps the version", (await M.rpc("publish_brief", { p_session: ses.id })).data === 2);
   check("moderator cannot publish a session they don't moderate", !!(await M.rpc("publish_brief", { p_session: drf.id })).error);
+
+  // Producer editing (the Programme page's actions) in the throwaway event.
+  const prodEmail = `smoke-prod-${tag}@example.org`;
+  const prodPass = randomUUID();
+  const [tp] = await sql`insert into people (event_id, full_name, app_role) values (${tev.id}, 'Smoke Producer', 'producer') returning id`;
+  await sql`insert into people_private (person_id, email) values (${tp.id}, ${prodEmail})`;
+  const { data: tpu } = await admin.auth.admin.createUser({ email: prodEmail, password: prodPass, email_confirm: true });
+  emails.push(prodEmail);
+  void tpu;
+  const PR = (await signIn(prodEmail, prodPass)).client;
+  const moved = await PR.from("sessions").update({ start_time: "2026-11-04T06:05:00Z", end_time: "2026-11-04T06:45:00Z" }).eq("id", ses.id).select("id");
+  check("producer can change a session's time", (moved.data ?? []).length === 1, moved.error);
+  const { data: newSes } = await PR.from("sessions").insert({ track_id: trk.id, start_time: "2026-11-04T08:00:00Z", end_time: "2026-11-04T08:15:00Z", sequence: 3, title: "Added by producer", format: "other", status: "draft" }).select("id").single();
+  check("producer can add a session", !!newSes?.id);
+  const { data: ph } = await PR.from("people").insert({ event_id: tev.id, full_name: "Panelist (TBC)", is_placeholder: true }).select("id").single();
+  check("producer can add a TBC slot", !!ph?.id);
+  check("producer can put people on a session", !(await PR.from("assignments").insert({ person_id: ph!.id, session_id: newSes!.id, role: "panelist", status: "tbc" })).error);
+  const { data: rolech } = await PR.from("assignments").update({ role: "moderator", presents: false }).eq("id", pan.assignment).select("id");
+  check("producer can change someone's role", (rolech ?? []).length === 1);
+  check("producer can delete a session", !(await PR.from("sessions").delete().eq("id", newSes!.id)).error);
+  const { data: trackEdit } = await PR.from("tracks").update({ room: "Room Z" }).eq("id", trk.id).select("id");
+  check("producer can change a room", (trackEdit ?? []).length === 1);
+  const { data: sEdit2 } = await S.from("tracks").update({ room: "Hacked" }).eq("id", trk.id).select("id");
+  check("speaker cannot change a room", (sEdit2 ?? []).length === 0);
+  const { data: modEdit } = await M.from("sessions").update({ title: "x" }).eq("id", ses.id).select("id");
+  check("moderator cannot edit the session itself", (modEdit ?? []).length === 0);
+  const edits = await sql`select field from change_log where event_id = ${tev.id} and entity = 'sessions' and field in ('start_time', 'end_time')`;
+  check("time changes are recorded in the change log", edits.length >= 2, edits);
 
   const [st] = await sql`select details_status, guidelines_ack_at is not null as g from people where id = ${spk.id}`;
   const [as] = await sql`select reviewed_at is not null as r, no_slides from assignments where id = ${spk.assignment}`;
