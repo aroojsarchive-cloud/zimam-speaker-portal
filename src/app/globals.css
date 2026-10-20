@@ -38,3 +38,16 @@ body {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* Printable backup agenda (/admin/print): A4, one room or day per page. */
+@page {
+  size: A4;
+  margin: 12mm 12mm 14mm;
+}
+@media print {
+  html, body { background: #fff !important; }
+  .print-page { break-after: page; margin: 0; }
+  .print-page:last-child { break-after: auto; }
+  .break-inside-avoid { break-inside: avoid; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

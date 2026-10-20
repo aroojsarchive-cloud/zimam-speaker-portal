@@ -8,6 +8,7 @@ const TABS = [
   { href: "/admin/people", label: "People" },
   { href: "/admin/slides", label: "Slides" },
   { href: "/admin/live", label: "Live" },
+  { href: "/admin/print", label: "Print" },
   { href: "/agenda", label: "Agenda ↗" },
 ];
 

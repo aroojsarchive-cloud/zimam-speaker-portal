@@ -6,7 +6,7 @@ import { signOut } from "@/app/auth/confirm/actions";
 export default function AdminLayout({ children }: LayoutProps<"/admin">) {
   return (
     <div className="flex-1">
-      <header className="border-b border-line bg-surface">
+      <header className="border-b border-line bg-surface print:hidden">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-6 px-6">
           <div className="flex items-center gap-6">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -20,7 +20,7 @@ export default function AdminLayout({ children }: LayoutProps<"/admin">) {
           </form>
         </div>
       </header>
-      <main className="mx-auto w-full max-w-6xl px-6 py-8">{children}</main>
+      <main className="mx-auto w-full max-w-6xl px-6 py-8 print:max-w-none print:p-0">{children}</main>
     </div>
   );
 }

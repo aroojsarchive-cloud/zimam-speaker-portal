@@ -179,6 +179,15 @@ async function main() {
   await page("/admin/slides", pc, { contains: ["presenters have uploaded"] });
   await page("/admin/programme", pc, { contains: ["Programme", "Edit programme details", "+ Add session at the end"] });
   for (const d of ["2026-11-04", "2026-11-05", "2026-11-06"]) await page(`/admin/programme?day=${d}`, pc);
+  await page("/admin/print", pc, { contains: ["Print / Save as PDF", "Day 1", "Printed from live data"] });
+  const rooms = await page("/admin/print?view=rooms", pc, { contains: ["Running order", "On stage"] });
+  if (process.env.SAVE_PRINT_HTML) {
+    const { writeFileSync } = await import("node:fs");
+    const agenda = await (await fetch(`${BASE}/admin/print`, { headers: { cookie: pc } })).text();
+    const base = `<base href="${BASE}/">`;
+    writeFileSync(`${process.env.SAVE_PRINT_HTML}/agenda.html`, agenda.replace("<head>", `<head>${base}`));
+    writeFileSync(`${process.env.SAVE_PRINT_HTML}/rooms.html`, rooms.replace("<head>", `<head>${base}`));
+  }
   await page("/admin/live", pc);
   await page("/admin/live?at=2026-11-04T14:40", pc, { contains: ["Rehearsal time", "Now"] });
   await page("/agenda", pc);
