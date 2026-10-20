@@ -1,0 +1,7 @@
+# Never upload local settings, keys or scratch files to Vercel.
+.env
+.env.*
+.scratch
+.next
+node_modules
+*.tsbuildinfo

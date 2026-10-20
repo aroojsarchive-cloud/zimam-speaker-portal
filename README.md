@@ -1,36 +1,23 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ZIMAM Speaker Portal
 
-## Getting Started
+One live source of truth for speakers, moderators, the producer and the design team.
+Spec: `~/Downloads/zimam-speaker-portal-spec.md`.
 
-First, run the development server:
+## Setup
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Fill in `.env.local` (Supabase URL + keys, `DATABASE_URL` session-pooler URI, `PRODUCER_EMAILS`).
+2. `npm run db:migrate`: creates tables, permissions (RLS), storage buckets.
+3. `npm run import -- seed/zimam-2026.json`: loads the programme and prints things to resolve.
+4. `npm run dev`: http://localhost:3010
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Without `RESEND_API_KEY`, sign-in emails are printed in the dev-server terminal instead of sent.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Checks
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run test:rls`: runs the real migrations in an in-memory Postgres and checks every permission rule
+  (speaker can't see drafts or other people's contact details, moderators edit only their own sessions, etc.).
+  Run it after any schema change.
 
-## Learn More
+## Re-skinning for another event
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Edit `src/config/event.ts` and replace the files in `public/brand/`. Nothing else.
