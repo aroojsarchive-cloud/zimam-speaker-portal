@@ -15,7 +15,8 @@
     "add-producer": "tsx scripts/add-producer.mts",
     "demo": "tsx scripts/demo-speaker.mts",
     "demo:clear": "tsx scripts/demo-clear.mts",
-    "smoke": "tsx scripts/smoke-test.mts"
+    "smoke": "tsx scripts/smoke-test.mts",
+    "load": "tsx scripts/load-test.mts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
