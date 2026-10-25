@@ -40,3 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .scratch/
+
+# Speaker lists contain personal data (emails, phones, passport columns): keep off GitHub.
+seed/*.xlsx
+seed/*.csv

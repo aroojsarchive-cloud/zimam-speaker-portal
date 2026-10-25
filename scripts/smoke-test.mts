@@ -128,13 +128,21 @@ async function main() {
 
   // ───────────── 3. Speaker pages (example speaker Juliet) ─────────────
   section("Speaker pages");
-  const julietEmail = "juliet.ibrahim@example.org";
-  const [juliet] = await sql`select person_id from people_private where email = ${julietEmail}`;
-  if (!juliet) check("example speaker exists (run npm run demo)", false);
-  else {
+  // A temporary speaker on a real presenting slot (removed at the end).
+  const julietEmail = `smoke-speaker-${Date.now()}@example.org`;
+  const [slot] = await sql`select id from sessions where event_id = ${ev.id} and status = 'published' and session_type = 'speaking' and format in ('lecture', 'keynote') order by start_time limit 1`;
+  const [tmp] = await sql`insert into people (event_id, salutation, full_name) values (${ev.id}, 'Dr', 'Smokey Tester') returning id`;
+  await sql`insert into people_private (person_id, email) values (${tmp.id}, ${julietEmail})`;
+  await sql`insert into assignments (person_id, session_id, role, presents) values (${tmp.id}, ${slot.id}, 'speaker', true)`;
+  cleanups.push(() => sql`delete from people where id = ${tmp.id}`);
+  cleanups.push(async () => {
+    for (const u of (await admin.auth.admin.listUsers({ perPage: 1000 })).data.users) if (u.email === julietEmail) await admin.auth.admin.deleteUser(u.id);
+  });
+  const juliet = { person_id: tmp.id };
+  {
     const j = await signIn(julietEmail);
     const c = j.cookie();
-    await page("/", c, { contains: ["Hi Juliet", "Get ready", "Read the speaker guidelines", "Questions?"] });
+    await page("/", c, { contains: ["Hi Smokey", "Get ready", "Read the speaker guidelines", "Send your presentation", "Questions?"] });
     await page("/guidelines", c, { contains: ["Keeping to time", "5 minutes left", "USB", "arooj@mwanevents.com"] });
     const agenda = await page("/agenda", c, { contains: ["Programme at a glance", "At a glance"] });
     const tabs = [...new Set([...agenda.matchAll(/href="\/agenda\?tab=([^"&]+)"/g)].map((m) => m[1]))];
