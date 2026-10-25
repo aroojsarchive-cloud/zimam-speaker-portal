@@ -48,7 +48,7 @@ async function main() {
     await Promise.all(cookies.slice(0, 5).map((c) => fetch(`${BASE}/`, { headers: { cookie: c } })));
 
     for (const round of [
-      { name: `${N} speakers open the portal at once`, paths: (i: number) => ["/"] },
+      { name: `${N} speakers open the portal at once`, paths: () => ["/"] },
       { name: `${N} speakers open home, agenda and a session at once`, paths: (i: number) => ["/", "/agenda?tab=glance", `/sessions/${people[i % people.length].session}`] },
     ]) {
       const times: number[] = [];
