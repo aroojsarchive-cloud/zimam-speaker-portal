@@ -9,6 +9,7 @@ import { eventDateKey, formatLongDay, formatRange, formatTime } from "@/lib/time
 import { LiveRefresh } from "@/components/LiveRefresh";
 import { AutoRefresh } from "@/components/AutoRefresh";
 import { LiveTick } from "@/components/LiveTick";
+import { RoomDelay } from "@/components/RoomDelay";
 
 export const metadata: Metadata = { title: "Live" };
 
@@ -26,7 +27,10 @@ type Session = {
   start_time: string;
   end_time: string;
   session_type: string;
-  track: { id: string; name: string; room: string | null; sort_order: number };
+  /** Planned times, before any running-late shift. */
+  planned_start?: string;
+  planned_end?: string;
+  track: { id: string; name: string; room: string | null; sort_order: number; running_late_minutes: number; running_late_updated_at: string | null };
   assignments: Assignment[];
 };
 
@@ -41,6 +45,9 @@ function SessionBlock({ s, kind, now }: { s: Session; kind: "Now" | "Next" | "Th
         {kind} · {formatRange(s.start_time, s.end_time)}
         {kind !== "Now" && startsIn > 0 && ` · in ${Math.round(startsIn)} min`}
       </p>
+      {s.planned_start && s.planned_start !== s.start_time && (
+        <p className="text-xs text-warning">Planned {formatRange(s.planned_start, s.planned_end!)}</p>
+      )}
       <p className="mt-1 font-semibold leading-snug">{s.title}</p>
       {s.session_type === "speaking" && (
         <ul className="mt-2 space-y-1">
@@ -86,11 +93,20 @@ async function Live({ searchParams }: { searchParams: PageProps<"/admin/live">["
   const { data, error } = await (await createClient())
     .from("sessions")
     .select(
-      "id, title, start_time, end_time, session_type, track:tracks!inner(id, name, room, sort_order), assignments(id, role, checked_in_at, person:people!inner(salutation, full_name, is_placeholder))",
+      "id, title, start_time, end_time, session_type, track:tracks!inner(id, name, room, sort_order, running_late_minutes, running_late_updated_at), assignments(id, role, checked_in_at, person:people!inner(salutation, full_name, is_placeholder))",
     )
     .order("start_time");
   if (error) throw new Error(error.message);
-  const today = ((data ?? []) as unknown as Session[]).filter((s) => eventDateKey(s.start_time) === day);
+  // A room running late shifts all of its times, so Now/Next and the 20-minute warnings follow reality.
+  const shift = (iso: string, min: number) => new Date(new Date(iso).getTime() + min * 60000).toISOString();
+  const today = ((data ?? []) as unknown as Session[])
+    .filter((s) => eventDateKey(s.start_time) === day)
+    .map((s) => {
+      const late = s.track.running_late_minutes ?? 0;
+      return late
+        ? { ...s, planned_start: s.start_time, planned_end: s.end_time, start_time: shift(s.start_time, late), end_time: shift(s.end_time, late) }
+        : s;
+    });
 
   const rooms = new Map<string, { track: Session["track"]; sessions: Session[] }>();
   for (const s of today) {
@@ -156,7 +172,12 @@ async function Live({ searchParams }: { searchParams: PageProps<"/admin/live">["
             {columns.map((r) => (
               <section key={r.track.id} className="rounded-2xl bg-surface p-5 shadow-[0_1px_0_var(--line)]">
                 <h2 className="font-display text-2xl font-semibold">{r.track.room ?? "Room TBC"}</h2>
-                <p className="mb-4 text-sm text-ink-muted">{r.track.name}</p>
+                <p className="mb-3 text-sm text-ink-muted">{r.track.name}</p>
+                <RoomDelay
+                  trackId={r.track.id}
+                  minutes={r.track.running_late_minutes ?? 0}
+                  setAt={r.track.running_late_updated_at ? formatTime(r.track.running_late_updated_at) : null}
+                />
                 {r.current && <SessionBlock s={r.current} kind="Now" now={now} />}
                 {r.next && <SessionBlock s={r.next} kind="Next" now={now} />}
                 {r.then && <SessionBlock s={r.then} kind="Then" now={now} />}

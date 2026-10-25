@@ -7,7 +7,11 @@ import { createClient } from "@/lib/supabase/server";
 import { signedUrls } from "@/lib/speaker-data";
 import { displayName, roleLabel } from "@/lib/labels";
 import { needsSlides, prepSteps, type PrepEngagement } from "@/lib/prep";
-import { ProgressTable, type ProgressGroup, type ProgressRow } from "@/components/ProgressTable";
+import {
+  ProgressTable,
+  type ProgressGroup,
+  type ProgressRow,
+} from "@/components/ProgressTable";
 import { formatDay, formatRange } from "@/lib/time";
 import { LiveRefresh } from "@/components/LiveRefresh";
 
@@ -39,7 +43,12 @@ type Row = {
       session_type: string;
       end_time: string;
       label: string | null;
-      track: { room: string | null; sort_order: number; short_name: string | null; name: string };
+      track: {
+        room: string | null;
+        sort_order: number;
+        short_name: string | null;
+        name: string;
+      };
       notes: { kind: string }[];
     } | null;
   }[];
@@ -53,7 +62,11 @@ const VIEWS = [
   { key: "moderators", label: "Moderators" },
 ];
 
-async function Tracker({ searchParams }: { searchParams: PageProps<"/admin">["searchParams"] }) {
+async function Tracker({
+  searchParams,
+}: {
+  searchParams: PageProps<"/admin">["searchParams"];
+}) {
   await requireProducer();
   const { view = "" } = (await searchParams) as { view?: string };
   const supabase = await createClient();
@@ -90,7 +103,9 @@ async function Tracker({ searchParams }: { searchParams: PageProps<"/admin">["se
           checkedInAt: a.checked_in_at,
         }));
       const slideables = prep.filter(needsSlides);
-      const onlyNoSlides = slideables.length > 0 && slideables.every((p) => !p.hasSlides && p.noSlides);
+      const onlyNoSlides =
+        slideables.length > 0 &&
+        slideables.every((p) => !p.hasSlides && p.noSlides);
       return {
         row: {
           id: r.id,
@@ -100,7 +115,11 @@ async function Tracker({ searchParams }: { searchParams: PageProps<"/admin">["se
           email: priv?.email ?? null,
           lastLogin: priv?.last_login_at ?? null,
           roles: [...new Set(prep.map((p) => roleLabel(p.role)))].join(", "),
-          steps: prepSteps({ detailsConfirmed: r.details_status === "confirmed", guidelinesAck: !!r.guidelines_ack_at, engagements: prep }),
+          steps: prepSteps({
+            detailsConfirmed: r.details_status === "confirmed",
+            guidelinesAck: !!r.guidelines_ack_at,
+            engagements: prep,
+          }),
           slidesNote: onlyNoSlides ? "None" : null,
         } satisfies ProgressRow,
         photo: r.photo_path,
@@ -116,77 +135,133 @@ async function Tracker({ searchParams }: { searchParams: PageProps<"/admin">["se
       if (view === "moderators") return moderator;
       return true;
     })
-    .sort((a, b) => a.row.steps.filter((s) => s.done).length / a.row.steps.length - b.row.steps.filter((s) => s.done).length / b.row.steps.length || a.row.name.localeCompare(b.row.name));
+    .sort(
+      (a, b) =>
+        a.row.steps.filter((s) => s.done).length / a.row.steps.length -
+          b.row.steps.filter((s) => s.done).length / b.row.steps.length ||
+        a.row.name.localeCompare(b.row.name),
+    );
 
-  const photos = await signedUrls("photos", shown.map((s) => s.photo));
-  for (const s of shown) s.row.photoUrl = s.photo ? (photos.get(s.photo) ?? null) : null;
+  const photos = await signedUrls(
+    "photos",
+    shown.map((s) => s.photo),
+  );
+  for (const s of shown)
+    s.row.photoUrl = s.photo ? (photos.get(s.photo) ?? null) : null;
 
   // Default: programme order, one group per session, moderator first within each.
-  const ROLE_ORDER = ["moderator", "chair", "co_chair", "host", "mc", "keynote", "speaker", "panelist", "jury"];
+  const ROLE_ORDER = [
+    "moderator",
+    "chair",
+    "co_chair",
+    "host",
+    "mc",
+    "keynote",
+    "speaker",
+    "panelist",
+    "jury",
+  ];
   let groups: ProgressGroup[];
   if (view === "least") {
-    groups = [{ key: "all", title: "", sub: "", rows: shown.map((s) => s.row) }];
+    groups = [
+      { key: "all", title: "", sub: "", rows: shown.map((s) => s.row) },
+    ];
   } else {
-    const bySession = new Map<string, { start: string; order: number; group: ProgressGroup; sortable: { k: number; o: number; row: ProgressGroup["rows"][number] }[] }>();
+    const bySession = new Map<
+      string,
+      {
+        start: string;
+        order: number;
+        group: ProgressGroup;
+        sortable: {
+          k: number;
+          o: number;
+          row: ProgressGroup["rows"][number];
+        }[];
+      }
+    >();
     for (const p of shown)
       for (const a of p.assignments) {
         const s = a.session!;
-        const g =
-          bySession.get(s.id) ??
-          {
-            start: s.start_time,
-            order: s.track.sort_order,
-            group: {
-              key: s.id,
-              title: s.title,
-              sub: `${formatDay(s.start_time)} · ${formatRange(s.start_time, s.end_time)} · ${s.track.room ?? "Room TBC"} · ${s.label ?? s.track.short_name ?? s.track.name}`,
-              rows: [],
-            },
-            sortable: [],
-          };
-        g.sortable.push({ k: ROLE_ORDER.indexOf(a.role), o: a.sort_order, row: { ...p.row, roleHere: roleLabel(a.role) } });
+        const g = bySession.get(s.id) ?? {
+          start: s.start_time,
+          order: s.track.sort_order,
+          group: {
+            key: s.id,
+            title: s.title,
+            sub: `${formatDay(s.start_time)} · ${formatRange(s.start_time, s.end_time)} · ${s.track.room ?? "Room TBC"} · ${s.label ?? s.track.short_name ?? s.track.name}`,
+            rows: [],
+          },
+          sortable: [],
+        };
+        g.sortable.push({
+          k: ROLE_ORDER.indexOf(a.role),
+          o: a.sort_order,
+          row: { ...p.row, roleHere: roleLabel(a.role) },
+        });
         bySession.set(s.id, g);
       }
     groups = [...bySession.values()]
       .sort((x, y) => x.start.localeCompare(y.start) || x.order - y.order)
-      .map((g) => ({ ...g.group, rows: g.sortable.sort((x, y) => x.k - y.k || x.o - y.o).map((x) => x.row) }));
+      .map((g) => ({
+        ...g.group,
+        rows: g.sortable
+          .sort((x, y) => x.k - y.k || x.o - y.o)
+          .map((x) => x.row),
+      }));
   }
 
   const rows = all.map((a) => a.row);
-  const count = (key: string) => rows.filter((r) => r.steps.find((s) => s.key === key)?.done).length;
-  const has = (key: string) => rows.filter((r) => r.steps.some((s) => s.key === key)).length;
+  const count = (key: string) =>
+    rows.filter((r) => r.steps.find((s) => s.key === key)?.done).length;
+  const has = (key: string) =>
+    rows.filter((r) => r.steps.some((s) => s.key === key)).length;
   const stats = [
     { label: "Speakers", value: `${rows.length}` },
-    { label: "Opened their link", value: `${rows.filter((r) => r.lastLogin).length} / ${rows.filter((r) => r.email).length}` },
-    { label: "Details confirmed", value: `${count("details")} / ${rows.length}` },
-    { label: "Guidelines read", value: `${count("guidelines")} / ${has("guidelines")}` },
-    { label: "Session checked", value: `${count("session")} / ${has("session")}` },
+    {
+      label: "Opened their link",
+      value: `${rows.filter((r) => r.lastLogin).length} / ${rows.filter((r) => r.email).length}`,
+    },
+    {
+      label: "Details confirmed",
+      value: `${count("details")} / ${rows.length}`,
+    },
+    {
+      label: "Guidelines read",
+      value: `${count("guidelines")} / ${has("guidelines")}`,
+    },
+    {
+      label: "Session checked",
+      value: `${count("session")} / ${has("session")}`,
+    },
     { label: "Slides sorted", value: `${count("slides")} / ${has("slides")}` },
     { label: "Briefs published", value: `${count("brief")} / ${has("brief")}` },
-    { label: "Missing email", value: `${rows.filter((r) => !r.email).length}`, warn: rows.some((r) => !r.email) },
-    { label: "All steps done", value: `${rows.filter((r) => r.steps.every((s) => s.done)).length}` },
+    {
+      label: "Missing email",
+      value: `${rows.filter((r) => !r.email).length}`,
+      warn: rows.some((r) => !r.email),
+    },
+    {
+      label: "All steps done",
+      value: `${rows.filter((r) => r.steps.every((s) => s.done)).length}`,
+    },
   ];
 
   return (
     <>
-      <dl className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
-        {stats.map((s) => (
-          <div key={s.label} className="rounded-2xl bg-surface p-5 shadow-[0_1px_0_var(--line)]">
-            <dt className="text-sm text-ink-muted">{s.label}</dt>
-            <dd className={`mt-1 font-display text-3xl font-semibold tabular-nums ${s.warn ? "text-warning" : ""}`}>{s.value}</dd>
-          </div>
-        ))}
-      </dl>
-
-      <div className="mt-10 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-display text-2xl font-semibold">Speaker progress</h2>
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
+        <h2 className="font-display text-2xl font-semibold">
+          Speaker progress
+        </h2>
         <div className="flex flex-wrap gap-2">
           {VIEWS.map((v) => (
             <Link
               key={v.key}
               href={`/admin${v.key ? `?view=${v.key}` : ""}`}
               className={`flex h-9 items-center rounded-full px-4 text-sm font-semibold ${
-                view === v.key ? "bg-ink text-white" : "border border-line bg-surface"
+                view === v.key
+                  ? "bg-ink text-white"
+                  : "border border-line bg-surface"
               }`}
             >
               {v.label}
@@ -195,16 +270,36 @@ async function Tracker({ searchParams }: { searchParams: PageProps<"/admin">["se
         </div>
       </div>
       <p className="mt-1 text-sm text-ink-muted">
-        Steps: check details · read guidelines · check session · slides (or &ldquo;no slides&rdquo;) · brief (moderators) · in
-        the room 20 min before. Send reminders from People.
+        Steps: check details · read guidelines · check session · slides (or
+        &ldquo;no slides&rdquo;) · brief (moderators) · in the room 20 min
+        before. Send reminders from People.
       </p>
       <div className="mt-4">
         {shown.length ? (
           <ProgressTable groups={groups} />
         ) : (
-          <p className="rounded-2xl bg-surface p-6 text-ink-muted">Nobody here.</p>
+          <p className="rounded-2xl bg-surface p-6 text-ink-muted">
+            Nobody here.
+          </p>
         )}
       </div>
+
+      <h2 className="mt-12 font-display text-2xl font-semibold">Totals</h2>
+      <dl className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
+        {stats.map((s) => (
+          <div
+            key={s.label}
+            className="rounded-2xl bg-surface p-5 shadow-[0_1px_0_var(--line)]"
+          >
+            <dt className="text-sm text-ink-muted">{s.label}</dt>
+            <dd
+              className={`mt-1 font-display text-3xl font-semibold tabular-nums ${s.warn ? "text-warning" : ""}`}
+            >
+              {s.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
     </>
   );
 }
@@ -219,9 +314,15 @@ export default function AdminHome({ searchParams }: PageProps<"/admin">) {
       <LiveRefresh />
       <Suspense
         fallback={
-          <div aria-busy="true" className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
+          <div
+            aria-busy="true"
+            className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4"
+          >
             {Array.from({ length: 8 }, (_, i) => (
-              <div key={i} className="h-24 animate-pulse rounded-2xl bg-surface shadow-[0_1px_0_var(--line)]" />
+              <div
+                key={i}
+                className="h-24 animate-pulse rounded-2xl bg-surface shadow-[0_1px_0_var(--line)]"
+              />
             ))}
           </div>
         }

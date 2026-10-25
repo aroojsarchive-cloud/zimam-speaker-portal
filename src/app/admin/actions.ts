@@ -87,3 +87,17 @@ export async function setPresents(assignmentId: string, presents: boolean): Prom
   revalidatePath("/admin");
   return { ok: true };
 }
+
+/** Producer sets how late a room is running (0 = on time). Speakers in that room see it straight away. */
+export async function setRoomDelay(trackId: string, minutes: number): Promise<Result> {
+  await requireProducer();
+  const m = Math.max(0, Math.min(180, Math.round(minutes)));
+  const { error } = await (await createClient())
+    .from("tracks")
+    .update({ running_late_minutes: m, running_late_updated_at: new Date().toISOString() })
+    .eq("id", trackId);
+  if (error) return { ok: false, message: "Couldn't update." };
+  revalidatePath("/admin/live");
+  revalidatePath("/");
+  return { ok: true };
+}

@@ -13,7 +13,7 @@ import { MarkSeen } from "@/components/MarkSeen";
 import { Checklist } from "@/components/Checklist";
 import { needsSlides, prepSteps, type PrepEngagement } from "@/lib/prep";
 import { CheckIn } from "@/components/CheckIn";
-import { eventDateKey, eventToday } from "@/lib/time";
+import { eventDateKey, eventToday, formatTime, notFinished, shifted } from "@/lib/time";
 import { signOut } from "@/app/auth/confirm/actions";
 
 async function MyEventContent() {
@@ -27,6 +27,14 @@ async function MyEventContent() {
   ]);
   const photos = await signedUrls("photos", [profile.photo_path]);
   const today = eventToday();
+  // Today's sessions in rooms the producer has marked as running late (and not yet finished).
+  const late = engagements.filter(
+    (e, i, all) =>
+      (e.session.track.running_late_minutes ?? 0) > 0 &&
+      eventDateKey(e.session.start_time) === today &&
+      notFinished(e.session.end_time, e.session.track.running_late_minutes) &&
+      all.findIndex((x) => x.session.id === e.session.id) === i,
+  );
   const photoUrl = profile.photo_path ? (photos.get(profile.photo_path) ?? null) : null;
 
   const prep: PrepEngagement[] = engagements.map((e) => ({
@@ -35,7 +43,9 @@ async function MyEventContent() {
     sessionId: e.session.id,
     sessionTitle: e.session.title,
     speaking: e.session.session_type === "speaking",
-    start: e.session.start_time,
+    // On the day, a late room moves the "be in the room by" time too.
+    start:
+      eventDateKey(e.session.start_time) === today ? shifted(e.session.start_time, e.session.track.running_late_minutes ?? 0) : e.session.start_time,
     room: e.session.track.room,
     reviewedAt: e.reviewed_at,
     noSlides: e.no_slides,
@@ -70,7 +80,14 @@ async function MyEventContent() {
   return (
     <>
       <div className="space-y-3">
-        <RunningLateBanner minutes={event.running_late_minutes} />
+        {late.map((e) => (
+          <RunningLateBanner
+            key={e.id}
+            room={e.session.track.room ?? "Your room"}
+            minutes={e.session.track.running_late_minutes}
+            startsAround={formatTime(shifted(e.session.start_time, e.session.track.running_late_minutes))}
+          />
+        ))}
         {changed && <ChangedBanner at={changed} />}
       </div>
 
@@ -113,6 +130,7 @@ async function MyEventContent() {
               <BoardingCard
                 e={e}
                 roles={roles}
+                lateBy={eventDateKey(e.session.start_time) === today ? (e.session.track.running_late_minutes ?? 0) : 0}
                 slides={(() => {
                   const mine = prep.filter((p) => p.sessionId === e.session.id && needsSlides(p));
                   if (!mine.length) return null;

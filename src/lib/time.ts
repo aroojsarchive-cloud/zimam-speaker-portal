@@ -19,6 +19,12 @@ export const formatStamp = (iso: string) => stampFmt.format(new Date(iso));
 export const eventDateKey = (iso: string | Date) => dateKeyFmt.format(new Date(iso));
 export const minutesBetween = (a: string, b: string) => Math.round((new Date(b).getTime() - new Date(a).getTime()) / 60000);
 
+/** Where a session will actually start/end given its room's delay (minutes). */
+export const shifted = (iso: string, lateMin: number) => new Date(new Date(iso).getTime() + lateMin * 60000).toISOString();
+
+/** True while a session (shifted by its room's delay) hasn't finished yet. */
+export const notFinished = (endIso: string, lateMin = 0) => new Date(shifted(endIso, lateMin)).getTime() > Date.now();
+
 /**
  * Today's date at the event. DEMO_TODAY (e.g. 2026-11-04) lets the "on the day"
  * features be previewed in development; it is ignored in production.

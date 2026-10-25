@@ -7,7 +7,7 @@ import { getMe } from "@/lib/me";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionDetail, signedUrls } from "@/lib/speaker-data";
 import { displayName, formatLabel, roleLabel } from "@/lib/labels";
-import { eventDateKey, eventToday, formatLongDay, formatRange, formatTime, minutesBetween } from "@/lib/time";
+import { eventDateKey, eventToday, formatLongDay, formatRange, formatTime, minutesBetween, shifted } from "@/lib/time";
 import { RunningOrder } from "@/components/RunningOrder";
 import { StageList } from "@/components/StageList";
 import { Brief } from "@/components/Brief";
@@ -56,6 +56,9 @@ async function SessionContent({ params }: { params: PageProps<"/sessions/[id]">[
     signedUrls("briefs", [note?.file_path ?? null]),
   ]);
   const isToday = eventDateKey(s.start_time) === eventToday();
+  // On the day, if the producer has marked this room as running late, times move with it.
+  const lateBy = isToday ? (s.track.running_late_minutes ?? 0) : 0;
+  const expectedStart = shifted(s.start_time, lateBy);
 
   return (
     <>
@@ -86,6 +89,12 @@ async function SessionContent({ params }: { params: PageProps<"/sessions/[id]">[
               <dd className="text-[1.9rem] font-semibold leading-none">{s.track.room ?? "TBC"}</dd>
             </div>
           </dl>
+          {lateBy > 0 && (
+            <p role="status" className="mt-3 rounded-lg bg-warning px-3 py-2 text-sm font-semibold text-white">
+              {s.track.room ?? "This room"} is running about {lateBy} minutes late. This session should now start around{" "}
+              {formatTime(expectedStart)}.
+            </p>
+          )}
           {myRoles.length > 0 && (
             <Link href="/guidelines" className="mt-3 block text-sm font-semibold text-white underline underline-offset-4">
               Speaker guidelines: timing bells and slides ›
@@ -93,7 +102,7 @@ async function SessionContent({ params }: { params: PageProps<"/sessions/[id]">[
           )}
           {myRoles.length > 0 && (
             <p className="mt-3 rounded-lg bg-white/10 px-3 py-2 text-sm">
-              Please be in {s.track.room ?? "the room"} by <span className="font-semibold">{formatTime(arriveBy(s.start_time))}</span>, 20 minutes before you start.
+              Please be in {s.track.room ?? "the room"} by <span className="font-semibold">{formatTime(arriveBy(expectedStart))}</span>, 20 minutes before you start.
             </p>
           )}
           <p className="mt-3 text-sm text-white/70">

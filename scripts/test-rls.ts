@@ -264,6 +264,14 @@ async function main() {
   const sent = await rows(`select slides_sent_at is not null as s from assignments where id = $1`, [spkAssign]);
   check("slides-sent is saved", sent[0].s === true, sent);
 
+  console.log("Running late");
+  check("producer can set a room running late",
+    ((await as(ids.producerU, "p@x.org", () => rows(`update tracks set running_late_minutes = 15 returning id`))) as unknown[]).length === 1);
+  check("speaker cannot change running late",
+    ((await as(ids.spkU, "spk@x.org", () => rows(`update tracks set running_late_minutes = 0 returning id`))) as unknown[]).length === 0);
+  const late = await as(ids.spkU, "spk@x.org", () => rows(`select running_late_minutes from tracks`));
+  check("speakers can see the delay", Array.isArray(late) && late[0]?.running_late_minutes === 15, late);
+
   console.log("Guidelines");
   check("speaker can acknowledge the guidelines",
     !((await as(ids.spkU, "spk@x.org", () => rows(`select acknowledge_guidelines('${spk}')`))) instanceof Error));

@@ -1,11 +1,22 @@
 import Link from "next/link";
 import { eventConfig as ev } from "@/config/event";
 import { roleLabel } from "@/lib/labels";
-import { formatDay, formatRange } from "@/lib/time";
+import { formatDay, formatRange, formatTime, shifted } from "@/lib/time";
 import type { Engagement } from "@/lib/speaker-data";
 
 /** One engagement, boarding-pass style: when and where first, then what. */
-export function BoardingCard({ e, roles, slides }: { e: Engagement; roles: string[]; slides: "received" | "needed" | null }) {
+export function BoardingCard({
+  e,
+  roles,
+  slides,
+  lateBy = 0,
+}: {
+  e: Engagement;
+  roles: string[];
+  slides: "received" | "needed" | null;
+  /** Minutes this room is running late today (0 if on time or not today). */
+  lateBy?: number;
+}) {
   const s = e.session;
   const briefReady = s.notes.some((n) => n.kind === "published");
   return (
@@ -31,6 +42,12 @@ export function BoardingCard({ e, roles, slides }: { e: Engagement; roles: strin
           <p className="whitespace-nowrap text-[1.85rem] font-semibold leading-none">{s.track.room ?? "TBC"}</p>
         </div>
       </div>
+
+      {lateBy > 0 && (
+        <p className="-mt-2 px-5 pb-3 text-sm font-semibold text-warning">
+          Running {lateBy} min late · now around {formatTime(shifted(s.start_time, lateBy))}
+        </p>
+      )}
 
       {/* perforation */}
       <div aria-hidden className="relative h-0 border-t-2 border-dashed border-line">

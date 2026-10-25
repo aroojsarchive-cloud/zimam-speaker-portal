@@ -4,7 +4,15 @@ import { createClient } from "@/lib/supabase/server";
 // Everything here runs as the signed-in user, so row-level security decides
 // what comes back: drafts, other people's contact details and producer notes never do.
 
-export type TrackInfo = { id: string; name: string; room: string | null; colour: string | null; strapline: string | null };
+export type TrackInfo = {
+  id: string;
+  name: string;
+  room: string | null;
+  colour: string | null;
+  strapline: string | null;
+  /** Set by the producer on the day when this room is behind schedule. */
+  running_late_minutes: number;
+};
 export type SessionInfo = {
   id: string;
   title: string;
@@ -85,7 +93,7 @@ export async function getMyEngagements(personId: string): Promise<Engagement[]> 
   const { data, error } = await supabase
     .from("assignments")
     .select(
-      "id, role, status, checked_in_at, reviewed_at, no_slides, presents, slides_sent_at, session:sessions!inner(id, title, label, block_label, format, session_type, start_time, end_time, sequence, description, updated_at, track:tracks!inner(id, name, room, colour, strapline), notes:concept_notes(kind, updated_at))",
+      "id, role, status, checked_in_at, reviewed_at, no_slides, presents, slides_sent_at, session:sessions!inner(id, title, label, block_label, format, session_type, start_time, end_time, sequence, description, updated_at, track:tracks!inner(id, name, room, colour, strapline, running_late_minutes), notes:concept_notes(kind, updated_at))",
     )
     .eq("person_id", personId);
   if (error) throw new Error(error.message);
@@ -99,7 +107,7 @@ export async function getSessionDetail(sessionId: string) {
   const { data: session, error } = await supabase
     .from("sessions")
     .select(
-      "id, title, label, block_label, format, session_type, start_time, end_time, sequence, description, updated_at, track:tracks!inner(id, name, room, colour, strapline)",
+      "id, title, label, block_label, format, session_type, start_time, end_time, sequence, description, updated_at, track:tracks!inner(id, name, room, colour, strapline, running_late_minutes)",
     )
     .eq("id", sessionId)
     .maybeSingle();
