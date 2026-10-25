@@ -134,8 +134,8 @@ export function BriefEditor({
       </label>
 
       <div>
-        <p className="font-semibold">Or attach your concept note</p>
-        <p className="text-sm text-ink-muted">PDF or Word. Your panel gets a download button.</p>
+        <p className="font-semibold">Or just upload your concept note</p>
+        <p className="text-sm text-ink-muted">PDF or Word. That is enough on its own: press Publish and your panel gets a download button.</p>
         {d.file_name && (
           <p className="mt-2 flex items-center justify-between gap-3 rounded-xl bg-paper px-4 py-3">
             <span className="truncate">📄 {d.file_name}</span>

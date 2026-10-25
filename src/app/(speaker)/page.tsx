@@ -151,7 +151,9 @@ async function MyEventContent() {
           ))}
         </ol>
       )}
-      <p className="mt-3 text-center text-sm text-ink-muted">All times are {ev.timezoneLabel}.</p>
+      <p className="mt-3 text-center text-sm text-ink-muted">
+        All times are {ev.timezoneLabel}. Timings may change, so please check back closer to the day.
+      </p>
 
       <div className="mt-8 space-y-4">
         <ContactCard

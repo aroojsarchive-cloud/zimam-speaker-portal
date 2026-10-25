@@ -81,7 +81,7 @@ export function prepSteps(opts: { detailsConfirmed: boolean; guidelinesAck: bool
     steps.push({
       key: "brief",
       label: moderated.length > 1 ? "Submit your session briefs" : "Submit your session brief",
-      detail: todo.length ? "Summary, objectives and questions for your panel." : "Published to your panel.",
+      detail: todo.length ? "Write it here, or simply upload your concept note (PDF or Word)." : "Published to your panel.",
       done: todo.length === 0,
       href: todo[0] ? `/sessions/${todo[0].sessionId}/brief` : null,
     });

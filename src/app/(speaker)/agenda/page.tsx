@@ -11,6 +11,7 @@ import {
 } from "@/lib/speaker-data";
 import { displayName, formatLabel, roleLabel } from "@/lib/labels";
 import { Avatar } from "@/components/Avatar";
+import { ScheduleNotice } from "@/components/ScheduleNotice";
 import { formatLongDay, formatRange } from "@/lib/time";
 
 export const metadata: Metadata = { title: "Agenda" };
@@ -420,6 +421,9 @@ async function AgendaContent({ searchParams }: { searchParams: Search }) {
   return (
     <>
       <TabBar tabs={tabs} active={tab?.key ?? "glance"} />
+      <div className="mt-4">
+        <ScheduleNotice />
+      </div>
 
       {!tab ? (
         <>

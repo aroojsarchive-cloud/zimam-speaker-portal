@@ -9,6 +9,7 @@ import { getSessionDetail, signedUrls } from "@/lib/speaker-data";
 import { displayName, formatLabel, roleLabel } from "@/lib/labels";
 import { eventDateKey, eventToday, formatLongDay, formatRange, formatTime, minutesBetween, shifted } from "@/lib/time";
 import { RunningOrder } from "@/components/RunningOrder";
+import { ScheduleNotice } from "@/components/ScheduleNotice";
 import { StageList } from "@/components/StageList";
 import { Brief } from "@/components/Brief";
 import { CheckIn } from "@/components/CheckIn";
@@ -126,6 +127,9 @@ async function SessionContent({ params }: { params: PageProps<"/sessions/[id]">[
       <div className="mt-4 space-y-4">
         <Section id="order-h" title={`Where this sits${s.track.room ? ` in ${s.track.room}` : ""}`}>
           <RunningOrder sessions={trackSessions} currentId={s.id} />
+          <div className="mt-3">
+            <ScheduleNotice compact />
+          </div>
           {myIds.length > 0 && s.session_type === "speaking" && (
             <div id="review">
               <ReviewedButton ids={myIds} sessionId={s.id} reviewed={reviewed} />

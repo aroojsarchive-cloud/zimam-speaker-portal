@@ -11,6 +11,8 @@ export const eventConfig = {
   timezone: "Asia/Dubai",
   timezoneLabel: "Dubai time (GST)",
   emailSenderName: "ZIMAM Digital Health Forum",
+  /** Shown on the agenda and session pages. */
+  scheduleNotice: "Please note the programme, including session timings, is subject to change. Please check back closer to the day for the latest times.",
   /** Presenters email their slides here (no uploads in the portal). */
   slidesEmail: "arooj@mwanevents.com",
 

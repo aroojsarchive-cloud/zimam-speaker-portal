@@ -144,10 +144,12 @@ async function main() {
     const c = j.cookie();
     await page("/", c, { contains: ["Hi Smokey", "Get ready", "Read the speaker guidelines", "Send your presentation", "Questions?"] });
     await page("/guidelines", c, { contains: ["Keeping to time", "5 minutes left", "USB", "arooj@mwanevents.com"] });
-    const agenda = await page("/agenda", c, { contains: ["Programme at a glance", "At a glance"] });
+    const agenda = await page("/agenda", c, { contains: ["Programme at a glance", "At a glance", "subject to change"] });
     const tabs = [...new Set([...agenda.matchAll(/href="\/agenda\?tab=([^"&]+)"/g)].map((m) => m[1]))];
     check("agenda has At a glance + 5 programme tabs", tabs.length === 6, tabs);
-    for (const t of tabs) await page(`/agenda?tab=${t}`, c);
+    let photoCount = 0;
+    for (const t of tabs) photoCount += ((await page(`/agenda?tab=${t}`, c)).match(/\/storage\/v1\/object\/sign\/photos\//g) ?? []).length;
+    check("speaker photos appear on the agenda", photoCount > 10, photoCount);
     const sessions = await sql`select id, session_type from sessions where event_id = ${ev.id} and status = 'published'`;
     for (const s of sessions) await page(`/sessions/${s.id}`, c, { contains: ["Where this sits"] });
     const draft = await sql`select id from sessions where event_id = ${ev.id} and status = 'draft' limit 1`;
