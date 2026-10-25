@@ -30,7 +30,7 @@ type Session = {
   assignments: Assignment[];
 };
 
-function SessionBlock({ s, kind, now }: { s: Session; kind: "Now" | "Next"; now: number }) {
+function SessionBlock({ s, kind, now }: { s: Session; kind: "Now" | "Next" | "Then"; now: number }) {
   const people = s.assignments.filter((a) => !a.person.is_placeholder);
   const tbc = s.assignments.length - people.length;
   const startsIn = (new Date(s.start_time).getTime() - now) / 60000;
@@ -39,7 +39,7 @@ function SessionBlock({ s, kind, now }: { s: Session; kind: "Now" | "Next"; now:
     <div className={kind === "Now" ? "" : "mt-4 border-t border-line pt-4"}>
       <p className="text-xs font-bold uppercase tracking-[0.12em] text-ink-muted">
         {kind} · {formatRange(s.start_time, s.end_time)}
-        {kind === "Next" && startsIn > 0 && ` · in ${Math.round(startsIn)} min`}
+        {kind !== "Now" && startsIn > 0 && ` · in ${Math.round(startsIn)} min`}
       </p>
       <p className="mt-1 font-semibold leading-snug">{s.title}</p>
       {s.session_type === "speaking" && (
@@ -103,7 +103,12 @@ async function Live({ searchParams }: { searchParams: PageProps<"/admin/live">["
     .map((r) => {
       const current = r.sessions.find((s) => new Date(s.start_time).getTime() <= now && now < new Date(s.end_time).getTime());
       const next = r.sessions.find((s) => new Date(s.start_time).getTime() > now);
-      return { ...r, current, next };
+      // If a break comes next, also show who's on stage after it.
+      const then =
+        next && next.session_type !== "speaking"
+          ? r.sessions.find((s) => s.start_time >= next.end_time && s.session_type === "speaking")
+          : undefined;
+      return { ...r, current, next, then };
     })
     .filter((r) => r.current || r.next);
 
@@ -154,6 +159,7 @@ async function Live({ searchParams }: { searchParams: PageProps<"/admin/live">["
                 <p className="mb-4 text-sm text-ink-muted">{r.track.name}</p>
                 {r.current && <SessionBlock s={r.current} kind="Now" now={now} />}
                 {r.next && <SessionBlock s={r.next} kind="Next" now={now} />}
+                {r.then && <SessionBlock s={r.then} kind="Then" now={now} />}
               </section>
             ))}
           </div>
