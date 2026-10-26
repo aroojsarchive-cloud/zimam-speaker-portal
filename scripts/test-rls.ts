@@ -6,6 +6,7 @@ import { citext } from "@electric-sql/pglite/contrib/citext";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { importProgramme } from "../src/lib/import-programme";
+import { syncProgramme } from "../src/lib/sync-programme";
 
 const SUPABASE_STUB = `
 create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;
@@ -309,6 +310,43 @@ async function main() {
   check("TBC track imported as draft", draft[0]?.status === "draft", draft);
   check("TBC placeholders cannot be claimed", (await count(`select * from people where is_placeholder and auth_user_id is not null`)) === 0);
   console.log(`  ${res.flags.length} flags for the producer`);
+
+  console.log("Programme update in place");
+  const q = { query: (sqlText: string, params?: unknown[]) => rows(sqlText, params) as never };
+  const [jul] = await rows(`select p.id from people p join events e on e.id = p.event_id where e.slug = 'zimam-2026' and p.full_name = 'Juliet Ibrahim'`);
+  await rows(`update people set details_status = 'confirmed', guidelines_ack_at = now() where id = $1`, [jul.id]);
+  await rows(`update people_private set email = 'juliet@moph.example' where person_id = $1`, [jul.id]);
+  await rows(`update assignments set reviewed_at = now(), slides_sent_at = now() where person_id = $1`, [jul.id]);
+  const revised = JSON.parse(JSON.stringify(seed));
+  const hie = revised.days[0].tracks.find((t: { name: string }) => t.name === "Health Information Exchange Summit");
+  const qatar = hie.sessions.find((x: { title: string }) => x.title.startsWith("Health Information Exchange in Qatar"));
+  qatar.start = "12:25"; qatar.end = "12:45";                                   // time moves
+  const oecd = hie.sessions.find((x: { title: string }) => x.title.startsWith("The Business Case"));
+  oecd.title = "The Business Case for Interoperability Standards (OECD)";      // retitled
+  const p1 = hie.sessions.find((x: { title: string }) => x.title.startsWith("HIE Maturity Models"));
+  p1.people = p1.people.filter((x: { key?: string }) => x.key !== "alexander-berler");   // someone removed
+  revised.people.push({ key: "new-guy", salutation: "Dr", full_name: "New Panelist", organisation: "Test Org" });
+  p1.people.push({ key: "new-guy", role: "panelist", status: "invited" });     // someone added
+  hie.sessions.push({ start: "17:15", end: "17:30", title: "Brand new closing networking", format: "break", type: "non_speaking" });
+  const vendor = hie.sessions.findIndex((x: { title: string }) => x.title === "Vendor session");
+  hie.sessions.splice(vendor, 1);                                               // session dropped
+  const dry = await syncProgramme(q, revised);
+  check("dry run changes nothing", (await rows(`select to_char(start_time at time zone 'Asia/Dubai','HH24:MI') t from sessions where title like 'Health Information Exchange in Qatar%'`))[0].t === "12:20");
+  check("dry run reports the changes", dry.counts.sessionsChanged >= 2 && dry.counts.assignmentsAdded === 1 && dry.counts.assignmentsRemoved === 1 && dry.counts.sessionsAdded === 1 && dry.counts.sessionsHidden === 1 && dry.counts.peopleAdded === 1, dry.counts);
+  const done = await syncProgramme(q, revised, { apply: true });
+  check("apply makes the same changes", JSON.stringify(done.counts) === JSON.stringify(dry.counts), { dry: dry.counts, done: done.counts });
+  const moved = await rows(`select to_char(start_time at time zone 'Asia/Dubai','HH24:MI') t from sessions where title like 'Health Information Exchange in Qatar%'`);
+  check("session time updated", moved[0].t === "12:25", moved);
+  check("session retitled in place", (await count(`select * from sessions where title = 'The Business Case for Interoperability Standards (OECD)'`)) === 1);
+  const jp = await rows(`select p.details_status, p.guidelines_ack_at is not null as g, pp.email, a.reviewed_at is not null as r, a.slides_sent_at is not null as s
+    from people p join people_private pp on pp.person_id = p.id join assignments a on a.person_id = p.id where p.id = $1`, [jul.id]);
+  check("speaker's email, confirmation and progress survive", !!(jp.length === 1 && jp[0].details_status === "confirmed" && jp[0].g && jp[0].email === "juliet@moph.example" && jp[0].r && jp[0].s), jp);
+  check("removed person is off the panel", (await count(`select * from assignments a join people p on p.id = a.person_id join sessions s on s.id = a.session_id where p.full_name = 'Alexander Berler' and s.title like 'HIE Maturity%'`)) === 0);
+  check("added person is on the panel", (await count(`select * from assignments a join people p on p.id = a.person_id join sessions s on s.id = a.session_id where p.full_name = 'New Panelist' and s.title like 'HIE Maturity%'`)) === 1);
+  check("dropped session is hidden, not deleted", (await rows(`select status from sessions where title = 'Vendor session' and track_id = (select id from tracks where name = 'Health Information Exchange Summit')`))[0]?.status === "draft");
+  check("new session added", (await count(`select * from sessions where title = 'Brand new closing networking'`)) === 1);
+  const again = await syncProgramme(q, revised);
+  check("running it again finds nothing to change", again.changes.length === 0, again.changes);
 
   console.log(`\n${passes} passed, ${failures} failed`);
   process.exit(failures ? 1 : 0);

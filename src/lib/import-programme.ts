@@ -13,7 +13,7 @@ const SessionPerson = z.union([
   z.object({ tbc: z.string(), role: Role, presents: z.boolean().optional() }),
 ]);
 
-const Programme = z.object({
+export const Programme = z.object({
   source: z.string().optional(),
   event: z.object({
     name: z.string(),
