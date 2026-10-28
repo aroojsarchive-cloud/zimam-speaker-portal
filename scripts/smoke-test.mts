@@ -179,14 +179,12 @@ async function main() {
   const p = await signIn(pEmail, pPass);
   const pc = p.cookie();
   await page("/", pc, { redirectTo: "/admin" });
-  await page("/admin", pc, { contains: ["Speaker progress", "Opened their link"] });
-  await page("/admin?view=least", pc);
-  await page("/admin?view=stuck", pc);
-  await page("/admin?view=moderators", pc);
-  await page("/admin/people", pc, { contains: ["Copy invite", "Presenting slides"] });
-  await page("/admin/people?filter=no-email", pc);
-  await page("/admin/people?q=ibrahim", pc);
-  await page("/admin/slides", pc, { contains: ["arooj@mwanevents.com", "say they"] });
+  await page("/admin", pc, { contains: ["Speakers", "can sign in", "Copy invite", "Signed in"] });
+  await page("/admin?show=no-email", pc);
+  await page("/admin?show=not-signed-in", pc);
+  await page("/admin?q=ibrahim", pc);
+  await page("/admin/people", pc, { redirectTo: "/admin" });
+  await page("/admin/slides", pc, { redirectTo: "/admin" });
   await page("/admin/programme", pc, { contains: ["Programme", "Edit programme details", "+ Add session at the end"] });
   for (const d of ["2026-11-04", "2026-11-05", "2026-11-06"]) await page(`/admin/programme?day=${d}`, pc);
   await page("/admin/print", pc, { contains: ["Print / Save as PDF", "Day 1", "Printed from live data"] });
@@ -198,7 +196,7 @@ async function main() {
     writeFileSync(`${process.env.SAVE_PRINT_HTML}/agenda.html`, agenda.replace("<head>", `<head>${base}`));
     writeFileSync(`${process.env.SAVE_PRINT_HTML}/rooms.html`, rooms.replace("<head>", `<head>${base}`));
   }
-  await page("/admin/live", pc);
+  await page("/admin/live", pc, { contains: ["Print backup"] });
   await page("/admin/live?at=2026-11-04T14:40", pc, { contains: ["Rehearsal time", "Now"] });
   await page("/agenda", pc);
   const { data: allPriv } = await p.client.from("people_private").select("email");

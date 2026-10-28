@@ -3,13 +3,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const TABS = [
-  { href: "/admin", label: "Overview" },
+  { href: "/admin", label: "Speakers" },
   { href: "/admin/programme", label: "Programme" },
-  { href: "/admin/people", label: "People" },
-  { href: "/admin/slides", label: "Slides" },
   { href: "/admin/live", label: "Live" },
-  { href: "/admin/print", label: "Print" },
-  { href: "/agenda", label: "Agenda ↗" },
 ];
 
 export function AdminNav() {

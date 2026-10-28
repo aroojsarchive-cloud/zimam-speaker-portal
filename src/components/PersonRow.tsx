@@ -22,7 +22,7 @@ export type PersonView = {
 
 const field = "h-10 w-full rounded-lg border border-line bg-paper px-3 outline-none focus:border-brand-strong focus:ring-2 focus:ring-brand/15";
 
-function PersonForm({ initial, onSave, onCancel, saveLabel }: {
+export function PersonForm({ initial, onSave, onCancel, saveLabel }: {
   initial: PersonInput;
   onSave: (v: PersonInput) => Promise<{ ok: boolean; message?: string }>;
   onCancel: () => void;

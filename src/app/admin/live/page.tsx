@@ -194,7 +194,12 @@ async function Live({ searchParams }: { searchParams: PageProps<"/admin/live">["
 export default function LivePage({ searchParams }: PageProps<"/admin/live">) {
   return (
     <>
-      <h1 className="font-display text-4xl font-semibold">Live</h1>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <h1 className="font-display text-4xl font-semibold">Live</h1>
+        <Link href="/admin/print?view=rooms" className="flex h-10 items-center rounded-xl border border-line bg-surface px-4 text-sm font-semibold">
+          Print backup
+        </Link>
+      </div>
       <LiveRefresh />
       <AutoRefresh seconds={60} />
       <Suspense fallback={<div aria-busy="true" className="mt-8 h-96 animate-pulse rounded-2xl bg-surface" />}>
