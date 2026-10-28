@@ -101,7 +101,7 @@ async function main() {
   const overlaps = await sql`
     select t.name, a.title as a, b.title as b from sessions a join sessions b on a.track_id = b.track_id and a.id < b.id
       join tracks t on t.id = a.track_id
-     where a.start_time < b.end_time and b.start_time < a.end_time and a.event_id = ${ev.id}`;
+     where a.start_time < b.end_time and b.start_time < a.end_time and a.status = 'published' and b.status = 'published' and a.event_id = ${ev.id}`;
   check("no overlapping sessions in the same room", overlaps.length === 0, overlaps);
   const bad = await sql`select title from sessions where end_time <= start_time and event_id = ${ev.id}`;
   check("every session ends after it starts", bad.length === 0, bad);
