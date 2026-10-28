@@ -95,6 +95,7 @@ async function Live({ searchParams }: { searchParams: PageProps<"/admin/live">["
     .select(
       "id, title, start_time, end_time, session_type, track:tracks!inner(id, name, room, sort_order, running_late_minutes, running_late_updated_at), assignments(id, role, checked_in_at, person:people!inner(salutation, full_name, is_placeholder))",
     )
+    .eq("status", "published")
     .order("start_time");
   if (error) throw new Error(error.message);
   // A room running late shifts all of its times, so Now/Next and the 20-minute warnings follow reality.

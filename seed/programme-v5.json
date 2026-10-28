@@ -1,0 +1,1797 @@
+{
+  "source": "ZIMAM Programme v5 (received 28 Oct)",
+  "event": {
+    "name": "9th ZIMAM Digital Health Forum",
+    "slug": "zimam-2026",
+    "start_date": "2026-11-04",
+    "end_date": "2026-11-06",
+    "venue": "Jumeirah Emirates Towers, Dubai",
+    "timezone": "Asia/Dubai"
+  },
+  "people": [
+    {
+      "key": "tamara",
+      "salutation": "Dr",
+      "full_name": "Tamara Sunbul",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "yasir",
+      "salutation": "Mr",
+      "full_name": "Yasir Khan",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "baha",
+      "salutation": "Mr",
+      "full_name": "Baha Sayiner",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "sandip",
+      "salutation": "Mr",
+      "full_name": "Sandip Kumar",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "raed",
+      "salutation": null,
+      "full_name": "Raed Rafeh",
+      "title": "Director of Solutions and Applications Delivery",
+      "organisation": "Dubai Health",
+      "country": "UAE"
+    },
+    {
+      "key": "mazin",
+      "salutation": "Dr",
+      "full_name": "Mazin Gadir",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "hamed",
+      "salutation": "Mr",
+      "full_name": "Hamed AlMahdali",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "entissar",
+      "salutation": "Ms",
+      "full_name": "Entissar Al-Mutairi",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "juliet",
+      "salutation": "Dr",
+      "full_name": "Juliet Ibrahim",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "rachel",
+      "salutation": "Dr",
+      "full_name": "Rachel Fellner",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "mostafa",
+      "salutation": "Mr",
+      "full_name": "Mostafa Almukhtar",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "dixon",
+      "salutation": "Dr",
+      "full_name": "Brian Dixon",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "balkhair",
+      "salutation": "Dr",
+      "full_name": "Ahmed Balkhair",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "brandstatter",
+      "salutation": null,
+      "full_name": "Jurgen Brandstatter",
+      "title": "Member of the Board",
+      "organisation": "IHE",
+      "country": "Austria"
+    },
+    {
+      "key": "amlung",
+      "salutation": "Mr",
+      "full_name": "Joe Amlung",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "tony",
+      "salutation": null,
+      "full_name": "Tianze Zhang (Tony)",
+      "title": "Founder & CEO",
+      "organisation": "LinkDoc Technology",
+      "country": null
+    },
+    {
+      "key": "ghose",
+      "salutation": "Prof",
+      "full_name": "Anita Ghose",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "dari",
+      "salutation": "Dr",
+      "full_name": "Dari Alhuwail",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "osama",
+      "salutation": "Dr",
+      "full_name": "Osama El Hassan",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "shivers",
+      "salutation": null,
+      "full_name": "Jennifer Shivers",
+      "title": "Digital Health Specialist",
+      "organisation": "Regenstrief Institute",
+      "country": "USA"
+    },
+    {
+      "key": "kadoura",
+      "salutation": null,
+      "full_name": "Tarek Kadoura",
+      "title": "Director, Business Operations",
+      "organisation": "Canada Health Infoway",
+      "country": "Canada"
+    },
+    {
+      "key": "redha",
+      "salutation": "Dr",
+      "full_name": "Mohammad Al Redha",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "mubaraka",
+      "salutation": "HE",
+      "full_name": "Mubaraka Ibrahim",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "awada",
+      "salutation": "Mr",
+      "full_name": "Ahmed Awada",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "justin",
+      "salutation": "Dr",
+      "full_name": "Justin Thomas",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "valle",
+      "salutation": "Dr",
+      "full_name": "Melisa Valle",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "pattison",
+      "salutation": "Mr",
+      "full_name": "Andy Pattison",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "nahida",
+      "salutation": "Dr",
+      "full_name": "Nahida Nayaz Ahmed",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "yacin",
+      "salutation": "Dr",
+      "full_name": "Yacin Hadjiyat",
+      "title": "Head of Innovation",
+      "organisation": "Dubai Health",
+      "country": "UAE"
+    },
+    {
+      "key": "romel",
+      "salutation": "Mr",
+      "full_name": "Romel Khalife",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "nour",
+      "salutation": "Ms",
+      "full_name": "Nour El Arnaout",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "shadi",
+      "salutation": "Dr",
+      "full_name": "Shadi Saleh",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "iyad",
+      "salutation": "Dr",
+      "full_name": "Iyad Sultan",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "novera",
+      "salutation": "Dr",
+      "full_name": "Novera Ansari",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "abusalah",
+      "salutation": "Dr",
+      "full_name": "Ahmed Abu Salah",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "koray",
+      "salutation": "Dr",
+      "full_name": "Koray Atalag",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "derrick",
+      "salutation": "Mr",
+      "full_name": "Derrick Muneene",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "amr",
+      "salutation": "Prof",
+      "full_name": "Amr Jamal",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "mowafa",
+      "salutation": "Prof",
+      "full_name": "Mowafa Househ",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "houqani",
+      "salutation": "Dr",
+      "full_name": "Mohammed Al-Houqani",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "brian-f",
+      "salutation": "Mr",
+      "full_name": "Brian Francesca",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "umit",
+      "salutation": "Prof",
+      "full_name": "Umit Cali",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "jamal-m",
+      "salutation": null,
+      "full_name": "Jamal Masalmeh",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "reenita",
+      "salutation": null,
+      "full_name": "Reenita Das",
+      "title": "Co-Founder & CTO",
+      "organisation": "NXT Horizon",
+      "country": "UAE"
+    },
+    {
+      "key": "ilya",
+      "salutation": "Mr",
+      "full_name": "Ilya Beda",
+      "title": "Interoperability Expert",
+      "organisation": null,
+      "country": "Australia"
+    },
+    {
+      "key": "hana",
+      "salutation": "Ms",
+      "full_name": "Hana Abusharib",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "rawad",
+      "salutation": "Dr",
+      "full_name": "Rawad Hodeify",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "hadidi",
+      "salutation": "Dr",
+      "full_name": "Mohammed El-Hadidi",
+      "title": null,
+      "organisation": "University of Birmingham Dubai",
+      "country": "UAE"
+    },
+    {
+      "key": "raniya",
+      "salutation": "Dr",
+      "full_name": "Raniya AlDhakeel",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "kashif",
+      "salutation": "Dr",
+      "full_name": "Kashif Rajboot",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "ikram",
+      "salutation": "Dr",
+      "full_name": "Ikram Rehman",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "melanie",
+      "salutation": "Dr",
+      "full_name": "Melanie Tan",
+      "title": null,
+      "organisation": null,
+      "country": null,
+      "email": null
+    },
+    {
+      "key": "shadab",
+      "salutation": "Dr",
+      "full_name": "Shadab Khan",
+      "title": "Senior Scientist",
+      "organisation": "ADIA Lab",
+      "country": "UAE",
+      "email": null
+    },
+    {
+      "key": "kholoud",
+      "salutation": "Ms",
+      "full_name": "Kholoud Al-Ali",
+      "title": "Specialist, Data & Health Informatics Department",
+      "organisation": "Dubai Health Authority (DHA)",
+      "country": "UAE",
+      "email": "kaialali@dha.gov.ae"
+    },
+    {
+      "key": "dibble",
+      "salutation": "Mr",
+      "full_name": "Anthony Dibble",
+      "title": "Principal Solutions Engineer",
+      "organisation": "Imprivata",
+      "country": null,
+      "email": "adibble@imprivata.com"
+    },
+    {
+      "key": "aunger",
+      "salutation": "Mr",
+      "full_name": "Charles Aunger",
+      "title": "CIO",
+      "organisation": "American Hospital Dubai",
+      "country": "UAE",
+      "email": null
+    },
+    {
+      "key": "saleh-fares",
+      "salutation": "Dr",
+      "full_name": "Saleh Fares Al-Ali",
+      "title": "Consultant of Emergency Medicine, EMS and Disaster Medicine; CEO",
+      "organisation": "HEM360",
+      "country": "UAE",
+      "email": "ceo@hem360.com"
+    },
+    {
+      "key": "ramy",
+      "salutation": "Dr",
+      "full_name": "Ramy Azzam",
+      "title": "Senior Clinical Advisor",
+      "organisation": "Social Prescribing Alliance Network",
+      "country": "UAE",
+      "email": null
+    },
+    {
+      "key": "lazure",
+      "salutation": "Mr",
+      "full_name": "Donald Lazure",
+      "title": "Enterprise Clinical Strategy Lead",
+      "organisation": "Commure",
+      "country": "USA",
+      "email": "donald.lazure@commure.com"
+    },
+    {
+      "key": "fraser",
+      "salutation": "Dr",
+      "full_name": "Scott Fraser",
+      "title": "VP GCC Region",
+      "organisation": "Heidi Health",
+      "country": null,
+      "email": null
+    },
+    {
+      "key": "almarri",
+      "salutation": "Mr",
+      "full_name": "Mohammed Al Marri",
+      "title": "Executive Director",
+      "organisation": "GAFAI",
+      "country": null,
+      "email": "gcm@gafai.org"
+    },
+    {
+      "key": "taghreed",
+      "salutation": "Dr",
+      "full_name": "Taghreed Jastniya",
+      "title": null,
+      "organisation": null,
+      "country": null,
+      "email": null
+    }
+  ],
+  "days": [
+    {
+      "date": "2026-11-04",
+      "label": "Forum Day",
+      "tracks": [
+        {
+          "name": "Official Opening & Plenary",
+          "strapline": "Building the Future of Digital Health: Vision, Partnership and Action",
+          "room": "Main Ballroom",
+          "colour": "#F15922",
+          "sessions": [
+            {
+              "start": "08:45",
+              "end": "08:55",
+              "title": "Welcome & Opening Remarks",
+              "format": "opening",
+              "type": "speaking",
+              "people": [],
+              "label": "Opening",
+              "block": "Plenary Session · Building the Future of Digital Health"
+            },
+            {
+              "start": "08:55",
+              "end": "09:20",
+              "title": "Responsible Governance in the Age of Agentic AI: Safety, Accountability and Trust in Clinical Practice",
+              "format": "keynote",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "melanie",
+                  "role": "keynote",
+                  "status": "invited",
+                  "presents": true
+                }
+              ],
+              "label": "Keynote Address"
+            },
+            {
+              "start": "09:20",
+              "end": "10:00",
+              "title": "Shared Vision, Shared Health: Crafting the Blueprint for the Next Generation of AI-Powered Electronic Medical Records",
+              "format": "panel",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "dari",
+                  "role": "moderator",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "yasir",
+                  "role": "panelist",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "baha",
+                  "role": "panelist",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "sandip",
+                  "role": "panelist",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "raed",
+                  "role": "panelist",
+                  "status": "invited"
+                },
+                {
+                  "key": "shadab",
+                  "role": "panelist",
+                  "status": "invited"
+                }
+              ],
+              "label": "Executive Panel"
+            },
+            {
+              "start": "10:00",
+              "end": "10:40",
+              "title": "From Health Sandbox to Scale: Who Will Own the Trusted Digital Health Economy?",
+              "format": "panel",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "mazin",
+                  "role": "moderator",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "hamed",
+                  "role": "panelist",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "entissar",
+                  "role": "panelist",
+                  "status": "invited"
+                },
+                {
+                  "key": "kholoud",
+                  "role": "panelist",
+                  "status": "invited"
+                }
+              ],
+              "label": "Executive Panel",
+              "description": "Entissar Al-Mutairi joins online."
+            },
+            {
+              "start": "10:40",
+              "end": "10:45",
+              "title": "ZIMAM 2026 Highlights & Forum Preview (Video)",
+              "format": "closing",
+              "type": "non_speaking",
+              "people": [],
+              "label": "Closing"
+            },
+            {
+              "start": "10:45",
+              "end": "11:15",
+              "title": "Coffee & Networking Break",
+              "format": "break",
+              "type": "non_speaking",
+              "people": [],
+              "description": "Delegates move to the HIE Summit (Room 2) and Health AI Summit (Room 1)."
+            }
+          ],
+          "short_name": "Opening & Plenary"
+        },
+        {
+          "name": "Health AI Summit",
+          "strapline": "Intelligence with Accountability: Shaping the Future of Health AI in the MENA Region",
+          "room": "Room 1",
+          "colour": "#1F6F8B",
+          "sessions": [
+            {
+              "start": "11:15",
+              "end": "11:35",
+              "title": "Welcome and Opening Remarks: The Vision for Accountable Health AI: Lessons Learned from Europe & the US",
+              "format": "opening",
+              "type": "speaking",
+              "people": [
+                {
+                  "tbc": "Guest of Honour (TBC)",
+                  "role": "speaker",
+                  "presents": false
+                }
+              ],
+              "label": "Opening Keynote",
+              "block": "Morning · Governing the Machine: Safety, Accountability and the Clinician"
+            },
+            {
+              "start": "11:35",
+              "end": "11:55",
+              "title": "Intelligent Hospital Roadshow: From Copilot to Orchestrator: Agentic AI in Clinical and Operational Health Systems",
+              "format": "keynote",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "mubaraka",
+                  "role": "keynote",
+                  "status": "confirmed",
+                  "presents": true
+                }
+              ],
+              "label": "GCC Insights · Keynote"
+            },
+            {
+              "start": "11:55",
+              "end": "12:35",
+              "title": "The Infodemic Comes Home: AI, Misinformation and the Mental Wellbeing of Women & Adolescents",
+              "format": "panel",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "ramy",
+                  "role": "moderator",
+                  "status": "invited"
+                },
+                {
+                  "key": "valle",
+                  "role": "panelist",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "pattison",
+                  "role": "panelist",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "nahida",
+                  "role": "panelist",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "yacin",
+                  "role": "panelist",
+                  "status": "invited"
+                },
+                {
+                  "tbc": "Further panelist (TBC)",
+                  "role": "panelist",
+                  "presents": false
+                }
+              ],
+              "label": "Knowledge Transfer · Executive Panel"
+            },
+            {
+              "start": "12:35",
+              "end": "12:50",
+              "title": "From Decision Support to Intelligent Orchestration: Agentic AI in Clinical and Operational Health Systems",
+              "format": "lecture",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "romel",
+                  "role": "speaker",
+                  "status": "confirmed",
+                  "presents": true
+                }
+              ],
+              "label": "Vendor Insights · Special Lecture"
+            },
+            {
+              "start": "12:50",
+              "end": "13:15",
+              "title": "The Oversight Imperative: Human-in-the-Loop Design to Realise Responsible AI",
+              "format": "fireside",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "awada",
+                  "role": "moderator",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "lazure",
+                  "role": "speaker",
+                  "status": "invited"
+                },
+                {
+                  "key": "fraser",
+                  "role": "speaker",
+                  "status": "invited"
+                },
+                {
+                  "tbc": "Speaker (TBC), eClinicalWorks",
+                  "role": "speaker",
+                  "presents": false
+                }
+              ],
+              "label": "UAE Insights · Fireside Chat"
+            },
+            {
+              "start": "13:15",
+              "end": "14:00",
+              "title": "Lunch Break",
+              "format": "break",
+              "type": "non_speaking",
+              "people": []
+            },
+            {
+              "start": "14:00",
+              "end": "14:15",
+              "title": "Vendor session (title TBC)",
+              "format": "lecture",
+              "type": "speaking",
+              "people": [
+                {
+                  "tbc": "Vendor (TBC)",
+                  "role": "speaker",
+                  "presents": true
+                }
+              ],
+              "label": "Vendor Insights",
+              "block": "Afternoon · Scaling Responsible AI"
+            },
+            {
+              "start": "14:15",
+              "end": "14:55",
+              "title": "Scaling Responsible AI for Health in Low-Resource Settings",
+              "format": "panel",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "nour",
+                  "role": "moderator",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "shadi",
+                  "role": "panelist",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "iyad",
+                  "role": "panelist",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "novera",
+                  "role": "panelist",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "almarri",
+                  "role": "panelist",
+                  "status": "invited"
+                }
+              ],
+              "label": "Discussion Panel",
+              "description": "The panel explores opportunities and challenges in scaling responsible AI for health in low-resource settings, emphasising equity, governance and sustainability. It also highlights practical strategies to implement private and cost-effective infrastructure to enable open-source LLMs and agentic AI solutions."
+            },
+            {
+              "start": "15:00",
+              "end": "15:20",
+              "title": "Health AI Governance in Hospital Settings",
+              "format": "lecture",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "abusalah",
+                  "role": "speaker",
+                  "status": "confirmed",
+                  "presents": true
+                }
+              ],
+              "label": "Knowledge Transfer · Special Lecture"
+            },
+            {
+              "start": "15:20",
+              "end": "15:30",
+              "title": "When Digital Twin Meets Agentic AI: The Future of AI-Powered Computational Biology",
+              "format": "lecture",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "koray",
+                  "role": "speaker",
+                  "status": "confirmed",
+                  "presents": true
+                }
+              ],
+              "label": "Knowledge Transfer · Special Lecture"
+            },
+            {
+              "start": "15:30",
+              "end": "15:45",
+              "title": "Coffee & Networking Break",
+              "format": "break",
+              "type": "non_speaking",
+              "people": []
+            },
+            {
+              "start": "15:45",
+              "end": "15:55",
+              "title": "Testing Responsible Ambient AI Solutions for Clinical Documentation and Bedside Workflow",
+              "format": "briefing",
+              "type": "non_speaking",
+              "people": [],
+              "label": "Ambient AI Contest · Briefing",
+              "block": "Ambient AI Innovation Contest"
+            },
+            {
+              "start": "15:55",
+              "end": "16:35",
+              "title": "3 Teams × 3 Pitches (2 use cases per pitch)",
+              "format": "pitches",
+              "type": "speaking",
+              "people": [
+                {
+                  "tbc": "Finalist teams",
+                  "role": "speaker",
+                  "presents": false
+                },
+                {
+                  "key": "melanie",
+                  "role": "jury",
+                  "status": "invited"
+                },
+                {
+                  "key": "awada",
+                  "role": "jury",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "iyad",
+                  "role": "jury",
+                  "status": "confirmed"
+                }
+              ],
+              "label": "Ambient AI Contest · Finalist Pitches",
+              "description": "Scribing consultations (multi-language / dialects) testing. Suggested documentation (coding) & summarisation."
+            },
+            {
+              "start": "16:35",
+              "end": "16:50",
+              "title": "Jury Deliberation and Audience Voting",
+              "format": "judging",
+              "type": "non_speaking",
+              "people": [],
+              "label": "Ambient AI Contest · Judging"
+            },
+            {
+              "start": "16:50",
+              "end": "17:00",
+              "title": "Winners Announcement",
+              "format": "award",
+              "type": "non_speaking",
+              "people": [],
+              "label": "Ambient AI Contest · Award"
+            }
+          ],
+          "short_name": "Health AI Summit"
+        },
+        {
+          "name": "Health Information Exchange Summit",
+          "strapline": "From Data Exchange to Data Utility: Semantic Interoperability for Social Care and Preventive Public Health",
+          "room": "Room 2",
+          "colour": "#5B4B9A",
+          "sessions": [
+            {
+              "start": "11:15",
+              "end": "11:20",
+              "title": "Welcome Note & Framing: The Perspective of HIEs in the UAE's Digital Health Strategy",
+              "format": "opening",
+              "type": "speaking",
+              "people": [
+                {
+                  "tbc": "Guest of Honour (TBC)",
+                  "role": "speaker",
+                  "presents": false
+                }
+              ],
+              "label": "Opening",
+              "block": "Morning · From Exchange to Utility: Setting the Scene"
+            },
+            {
+              "start": "11:20",
+              "end": "11:40",
+              "title": "UAE HIEs 2026: From Data Exchange to Health Data Utility: Strategy, Milestones and the Semantic Layer",
+              "format": "fireside",
+              "type": "speaking",
+              "people": [
+                {
+                  "tbc": "Speaker (TBC), DHA, UAE",
+                  "role": "speaker",
+                  "presents": false
+                },
+                {
+                  "tbc": "Representative, Department of Health Abu Dhabi / Malaffi (TBC)",
+                  "role": "speaker",
+                  "presents": false
+                }
+              ],
+              "label": "UAE Insights · Fireside Chat"
+            },
+            {
+              "start": "11:40",
+              "end": "12:00",
+              "title": "HIE and Beyond: HIE Use Cases",
+              "format": "keynote",
+              "type": "speaking",
+              "people": [
+                {
+                  "tbc": "Representative, National Health Information Center (NHIC) / Lean Healthcare, KSA (TBC)",
+                  "role": "keynote",
+                  "presents": true
+                }
+              ],
+              "label": "GCC Insights · Keynote"
+            },
+            {
+              "start": "12:00",
+              "end": "12:20",
+              "title": "Boosting HIE Clinical Engagement: Agentic-AI Record Summarisation Advancements",
+              "format": "fireside",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "tamara",
+                  "role": "speaker",
+                  "status": "confirmed"
+                },
+                {
+                  "tbc": "Vendor X (TBC)",
+                  "role": "speaker",
+                  "presents": false
+                },
+                {
+                  "tbc": "Vendor Y (TBC)",
+                  "role": "speaker",
+                  "presents": false
+                }
+              ],
+              "label": "Vendor Insights · Special Fireside Chat"
+            },
+            {
+              "start": "12:20",
+              "end": "12:40",
+              "title": "Health Information Exchange in Qatar: Expanding the Data Perimeter to Include Population Health & Social Care",
+              "format": "lecture",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "juliet",
+                  "role": "speaker",
+                  "status": "confirmed",
+                  "presents": true
+                }
+              ],
+              "label": "Regional Spotlight · Special Lecture"
+            },
+            {
+              "start": "12:40",
+              "end": "13:00",
+              "title": "The Business Case for Standards in Connected Care: Highlights from the OECD Report",
+              "format": "keynote",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "rachel",
+                  "role": "keynote",
+                  "status": "confirmed",
+                  "presents": true
+                }
+              ],
+              "label": "Learning from the World · Keynote"
+            },
+            {
+              "start": "13:00",
+              "end": "13:15",
+              "title": "Building Connected Healthcare at Scale: Lessons from the Middle East",
+              "format": "lecture",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "mostafa",
+                  "role": "speaker",
+                  "status": "confirmed",
+                  "presents": true
+                }
+              ],
+              "label": "Vendor Insights · Special Lecture"
+            },
+            {
+              "start": "13:15",
+              "end": "14:00",
+              "title": "Lunch Break",
+              "format": "break",
+              "type": "non_speaking",
+              "people": []
+            },
+            {
+              "start": "14:00",
+              "end": "14:15",
+              "title": "Trust at Scale: Securing Patient Privacy and Compliance in HIE Systems and EHRs",
+              "format": "lecture",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "dibble",
+                  "role": "speaker",
+                  "status": "invited",
+                  "presents": true
+                }
+              ],
+              "label": "Vendor Insights",
+              "block": "Afternoon 1 · HIE Maturity & Terminology: The Quality Imperative"
+            },
+            {
+              "start": "14:15",
+              "end": "14:50",
+              "title": "HIE Maturity Models: Where Do We Stand and Where Do We Need to Go?",
+              "format": "panel",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "rachel",
+                  "role": "moderator",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "dixon",
+                  "role": "panelist",
+                  "status": "invited"
+                },
+                {
+                  "key": "balkhair",
+                  "role": "panelist",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "brandstatter",
+                  "role": "panelist",
+                  "status": "invited"
+                }
+              ],
+              "label": "Panel 1 · GCC & MENA Discussion Panel",
+              "description": "Drawing on the O3C Interoperability Maturity Model and the Civitas Health Data Utility Framework, this panel will map HIEs in the region to a common HIE maturity ladder. Panelists will debate what Level 3 vs Level 5 maturity means in practice, what the most common obstacles to progression are, and what investment and governance decisions are required to reach Health Data Utility status."
+            },
+            {
+              "start": "14:50",
+              "end": "15:00",
+              "title": "Real-World Deployment: Terminology Services for National HIE Platforms",
+              "format": "lecture",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "amlung",
+                  "role": "speaker",
+                  "status": "confirmed",
+                  "presents": true
+                }
+              ],
+              "label": "Learning from the World · Lecture"
+            },
+            {
+              "start": "15:00",
+              "end": "15:20",
+              "title": "Unlocking the Value of HIE Data for Public Health and Population Health Analytics",
+              "format": "lecture",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "dixon",
+                  "role": "speaker",
+                  "status": "invited",
+                  "presents": true
+                }
+              ],
+              "label": "Knowledge Transfer · Special Lecture"
+            },
+            {
+              "start": "15:20",
+              "end": "15:30",
+              "title": "Transforming Longitudinal Health Records into Research-Grade Data to Deliver Real-World Evidence (RWE)",
+              "format": "lecture",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "tony",
+                  "role": "speaker",
+                  "status": "confirmed",
+                  "presents": true
+                }
+              ],
+              "label": "Vendor Highlights"
+            },
+            {
+              "start": "15:30",
+              "end": "15:45",
+              "title": "Coffee & Networking Break",
+              "format": "break",
+              "type": "non_speaking",
+              "people": []
+            },
+            {
+              "start": "15:45",
+              "end": "16:05",
+              "title": "From Interoperability to Operability: HIEs as the Nervous System of National Command Centres",
+              "format": "fireside",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "ghose",
+                  "role": "speaker",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "aunger",
+                  "role": "speaker",
+                  "status": "invited"
+                },
+                {
+                  "key": "saleh-fares",
+                  "role": "speaker",
+                  "status": "invited"
+                }
+              ],
+              "label": "Knowledge Transfer · Fireside Chat",
+              "block": "Afternoon 2 · Terminology Services & Social Care Data Utility"
+            },
+            {
+              "start": "16:05",
+              "end": "16:50",
+              "title": "Terminology Services as the Engine of HIE Data Quality: From Validation to Cross-Standard Mapping",
+              "format": "panel",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "osama",
+                  "role": "moderator",
+                  "status": "confirmed"
+                },
+                {
+                  "tbc": "Representative, Malaffi / DoH Abu Dhabi Clinical Informatics, UAE (TBC)",
+                  "role": "panelist",
+                  "presents": false
+                },
+                {
+                  "key": "shivers",
+                  "role": "panelist",
+                  "status": "invited"
+                },
+                {
+                  "key": "kadoura",
+                  "role": "panelist",
+                  "status": "invited"
+                },
+                {
+                  "tbc": "GCC / Egypt / Morocco practitioner sharing a regional deployment story (TBC)",
+                  "role": "panelist",
+                  "presents": false
+                }
+              ],
+              "label": "Panel 2 · Thematic Discussion Panel",
+              "description": "Without a terminology service governing the codes that flow through an HIE, semantic drift is inevitable: local codes accumulate, LOINC adoption stalls, immunisation records lose their 360° view, and public health reports become unreliable. This panel will explain the upstream/downstream model: upstream services intercept and validate or normalise codes at ingestion, while downstream services map between standard systems to repurpose stored codes for immunisation registries, population health phenotyping and other use cases."
+            },
+            {
+              "start": "16:50",
+              "end": "17:05",
+              "title": "The Role of the Standards Release Center",
+              "format": "lecture",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "kadoura",
+                  "role": "speaker",
+                  "status": "invited",
+                  "presents": true
+                }
+              ],
+              "label": "Knowledge Transfer · Lecture"
+            },
+            {
+              "start": "17:05",
+              "end": "17:15",
+              "title": "Summit Summary, Key Takeaways and Call to Action: The ZIMAM Semantic Interoperability Declaration 2026",
+              "format": "closing",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "balkhair",
+                  "role": "speaker",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "redha",
+                  "role": "speaker",
+                  "status": "confirmed"
+                }
+              ],
+              "label": "Closing"
+            }
+          ],
+          "short_name": "HIE Summit"
+        },
+        {
+          "name": "MoU Signing",
+          "short_name": "MoU Signing",
+          "strapline": null,
+          "room": "Main Ballroom",
+          "colour": "#7A5C2E",
+          "sessions": [
+            {
+              "start": "17:15",
+              "end": "17:30",
+              "title": "MoU Signing",
+              "format": "other",
+              "type": "non_speaking",
+              "people": [],
+              "label": "MoU Signing"
+            }
+          ]
+        },
+        {
+          "name": "ZIMAM Digital Health Innovation Awards",
+          "strapline": "Awards evening",
+          "room": null,
+          "colour": "#B8862B",
+          "sessions": [
+            {
+              "start": "18:00",
+              "end": "20:00",
+              "title": "ZIMAM Digital Health Innovation Awards",
+              "format": "award",
+              "type": "non_speaking"
+            }
+          ],
+          "short_name": "Awards"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-05",
+      "label": "Post-Forum Workshops",
+      "tracks": [
+        {
+          "name": "Digital Health Competency-based Framework Workshop",
+          "strapline": "The Future of the Digital Health Workforce in the Age of AI",
+          "room": "Room 1",
+          "colour": "#2E7D5B",
+          "sessions": [
+            {
+              "start": "08:00",
+              "end": "08:45",
+              "title": "Registration, arrival coffee and networking",
+              "format": "break",
+              "type": "non_speaking",
+              "people": [],
+              "description": "Survey participation forms collected at the desk."
+            },
+            {
+              "start": "08:45",
+              "end": "09:00",
+              "title": "Welcome and setting the scene",
+              "format": "opening",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "derrick",
+                  "role": "chair",
+                  "status": "invited"
+                },
+                {
+                  "key": "amr",
+                  "role": "co_chair",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "mowafa",
+                  "role": "co_chair",
+                  "status": "confirmed"
+                }
+              ],
+              "label": "Welcome"
+            },
+            {
+              "start": "09:00",
+              "end": "09:15",
+              "title": "The Landscape of UAE Healthcare Workforce Development: The Need for Clinical Informatics Fellowships",
+              "format": "lecture",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "houqani",
+                  "role": "speaker",
+                  "status": "invited",
+                  "presents": true
+                }
+              ],
+              "label": "Welcome Note"
+            },
+            {
+              "start": "09:15",
+              "end": "09:35",
+              "title": "Celebrating the WHO competency-based framework for digital health",
+              "format": "keynote",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "derrick",
+                  "role": "keynote",
+                  "status": "invited",
+                  "presents": true
+                }
+              ],
+              "label": "Opening Keynote",
+              "description": "Keynote with 10 minutes of questions."
+            },
+            {
+              "start": "09:35",
+              "end": "09:50",
+              "title": "The ZIMAM × WHO EMRO digital health workforce survey",
+              "format": "lecture",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "novera",
+                  "role": "speaker",
+                  "status": "confirmed",
+                  "presents": true
+                },
+                {
+                  "key": "amr",
+                  "role": "speaker",
+                  "status": "confirmed",
+                  "presents": true
+                }
+              ],
+              "label": "Launch",
+              "description": "Joint launch with WHO EMRO leadership: instrument walkthrough and call for participation."
+            },
+            {
+              "start": "09:50",
+              "end": "10:10",
+              "title": "Incorporating AI in Digital Health Competency-based Frameworks",
+              "format": "lecture",
+              "type": "speaking",
+              "people": [
+                {
+                  "tbc": "Australasian Institute of Digital Health (AIDH) speaker, online",
+                  "role": "speaker",
+                  "presents": true
+                }
+              ],
+              "label": "International Session (Online)",
+              "description": "Online, 16:50–17:10 Sydney time."
+            },
+            {
+              "start": "10:10",
+              "end": "10:45",
+              "title": "Leveraging Multilateral Platforms for Preparing an AI-fluent Healthcare Workforce",
+              "format": "panel",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "dari",
+                  "role": "moderator",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "brian-f",
+                  "role": "panelist",
+                  "status": "invited"
+                },
+                {
+                  "key": "shadi",
+                  "role": "panelist",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "umit",
+                  "role": "panelist",
+                  "status": "invited"
+                }
+              ],
+              "label": "Executive Panel"
+            },
+            {
+              "start": "10:45",
+              "end": "11:05",
+              "title": "The Future of Digital Healthcare Workforce in the Intelligent Hospitals of Tomorrow",
+              "format": "fireside",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "sandip",
+                  "role": "speaker",
+                  "status": "invited"
+                },
+                {
+                  "key": "jamal-m",
+                  "role": "speaker",
+                  "status": "invited"
+                },
+                {
+                  "key": "raed",
+                  "role": "speaker",
+                  "status": "invited"
+                }
+              ],
+              "label": "Fireside Chat"
+            },
+            {
+              "start": "11:05",
+              "end": "11:20",
+              "title": "Coffee break and networking",
+              "format": "break",
+              "type": "non_speaking",
+              "people": []
+            },
+            {
+              "start": "11:20",
+              "end": "11:55",
+              "title": "Women Leadership in Digital Health: A Digital Health Fellowship Program",
+              "format": "fireside",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "ghose",
+                  "role": "keynote",
+                  "status": "confirmed",
+                  "presents": true
+                },
+                {
+                  "key": "tamara",
+                  "role": "speaker",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "reenita",
+                  "role": "speaker",
+                  "status": "invited"
+                }
+              ],
+              "label": "10-Minute Keynote + Fireside Chat"
+            },
+            {
+              "start": "11:55",
+              "end": "12:10",
+              "title": "Bridging the Talent Gap in AI Governance",
+              "format": "keynote",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "brian-f",
+                  "role": "keynote",
+                  "status": "invited",
+                  "presents": true
+                }
+              ],
+              "label": "Keynote"
+            },
+            {
+              "start": "12:10",
+              "end": "12:30",
+              "title": "Interoperability Competencies in the Age of AI",
+              "format": "fireside",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "koray",
+                  "role": "speaker",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "ilya",
+                  "role": "speaker",
+                  "status": "invited"
+                }
+              ],
+              "label": "Fireside Chat"
+            },
+            {
+              "start": "12:30",
+              "end": "13:30",
+              "title": "Lunch break and Dhuhr prayers",
+              "format": "break",
+              "type": "non_speaking",
+              "people": []
+            },
+            {
+              "start": "13:30",
+              "end": "14:15",
+              "title": "Evidence on AI and the digital health workforce",
+              "format": "panel",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "mowafa",
+                  "role": "moderator",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "hana",
+                  "role": "panelist",
+                  "status": "confirmed",
+                  "presents": true
+                },
+                {
+                  "key": "rawad",
+                  "role": "panelist",
+                  "status": "confirmed",
+                  "presents": true
+                },
+                {
+                  "key": "hadidi",
+                  "role": "panelist",
+                  "status": "invited",
+                  "presents": true
+                },
+                {
+                  "tbc": "MBZUAI speaker (TBC)",
+                  "role": "panelist",
+                  "presents": true
+                }
+              ],
+              "label": "Researcher Presentation Panel",
+              "description": "10 minutes each presenter."
+            },
+            {
+              "start": "14:15",
+              "end": "14:35",
+              "title": "The Saudi Competency-based Framework; King Saud University",
+              "format": "lecture",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "raniya",
+                  "role": "speaker",
+                  "status": "invited",
+                  "presents": true
+                }
+              ],
+              "label": "Regional Academic Session (Online)",
+              "description": "Online, 13:15–13:35 Riyadh time."
+            },
+            {
+              "start": "14:35",
+              "end": "14:50",
+              "title": "Coffee break",
+              "format": "break",
+              "type": "non_speaking",
+              "people": []
+            },
+            {
+              "start": "14:50",
+              "end": "15:25",
+              "title": "Bridging the Gap between University Outcomes and Market Requirements in Digital Health Transformation",
+              "format": "panel",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "amr",
+                  "role": "moderator",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "ikram",
+                  "role": "panelist",
+                  "status": "invited"
+                },
+                {
+                  "key": "jamal-m",
+                  "role": "panelist",
+                  "status": "invited"
+                },
+                {
+                  "key": "raed",
+                  "role": "panelist",
+                  "status": "invited"
+                }
+              ],
+              "label": "Academic Panel"
+            },
+            {
+              "start": "15:25",
+              "end": "15:45",
+              "title": "The Road to MEDINFO 2027: Reflecting Health/Medical Informatics in MENA to the World",
+              "format": "keynote",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "mowafa",
+                  "role": "keynote",
+                  "status": "confirmed",
+                  "presents": true
+                }
+              ],
+              "label": "Keynote"
+            },
+            {
+              "start": "15:45",
+              "end": "16:00",
+              "title": "Highlights on the WHO Competency-based Framework",
+              "format": "keynote",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "taghreed",
+                  "role": "keynote",
+                  "status": "confirmed",
+                  "presents": true
+                }
+              ],
+              "label": "Keynote (Online)"
+            },
+            {
+              "start": "16:00",
+              "end": "16:10",
+              "title": "Closing Remarks and Recommendations",
+              "format": "closing",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "derrick",
+                  "role": "chair",
+                  "status": "invited"
+                },
+                {
+                  "key": "amr",
+                  "role": "co_chair",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "mowafa",
+                  "role": "co_chair",
+                  "status": "confirmed"
+                }
+              ],
+              "label": "Closing",
+              "description": "Recommendations read back with named owners."
+            }
+          ],
+          "short_name": "Competency Workshop"
+        },
+        {
+          "name": "Regenstrief Terminology Workshop (Day 1 of 2)",
+          "strapline": "Trusted Data, Connected Care: A Regenstrief Institute Terminology Workshop",
+          "room": "Room 2",
+          "colour": "#1F6F8B",
+          "sessions": [
+            {
+              "start": "09:00",
+              "end": "17:00",
+              "title": "Trusted Data, Connected Care: Day 1",
+              "format": "workshop",
+              "description": "Two-day terminology and semantic interoperability workshop co-hosted by ZIMAM and the Regenstrief Institute, developer and steward of LOINC.",
+              "people": [
+                {
+                  "key": "dixon",
+                  "role": "speaker",
+                  "status": "invited",
+                  "presents": true
+                },
+                {
+                  "key": "rachel",
+                  "role": "speaker",
+                  "status": "confirmed",
+                  "presents": true
+                },
+                {
+                  "tbc": "Further facilitators (TBC)",
+                  "role": "speaker",
+                  "presents": false
+                }
+              ]
+            }
+          ],
+          "short_name": "Regenstrief Workshop"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-06",
+      "label": "Post-Forum Workshop",
+      "tracks": [
+        {
+          "name": "Regenstrief Terminology Workshop (Day 2 of 2)",
+          "strapline": "Trusted Data, Connected Care: A Regenstrief Institute Terminology Workshop",
+          "room": "Room 2",
+          "colour": "#1F6F8B",
+          "sessions": [
+            {
+              "start": "09:00",
+              "end": "17:00",
+              "title": "Trusted Data, Connected Care: Day 2",
+              "format": "workshop",
+              "people": [
+                {
+                  "key": "dixon",
+                  "role": "speaker",
+                  "status": "invited",
+                  "presents": true
+                },
+                {
+                  "key": "rachel",
+                  "role": "speaker",
+                  "status": "confirmed",
+                  "presents": true
+                },
+                {
+                  "tbc": "Further facilitators (TBC)",
+                  "role": "speaker",
+                  "presents": false
+                }
+              ]
+            }
+          ],
+          "short_name": "Regenstrief Workshop"
+        }
+      ]
+    }
+  ],
+  "flags": []
+}

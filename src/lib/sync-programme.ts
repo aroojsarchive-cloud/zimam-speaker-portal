@@ -18,13 +18,15 @@ export const normName = (s: string) =>
     .replace(/\s+/g, " ")
     .trim();
 const normTitle = (s: string) => s.toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
-const words = (s: string) => new Set(normTitle(s).split(" ").filter((w) => w.length > 2));
+const STOP = new Set(["the", "and", "for", "with", "from", "into", "our", "how", "what", "where", "who", "age", "its", "are", "can"]);
+const words = (s: string) => new Set(normTitle(s).split(" ").filter((w) => w.length > 2 && !STOP.has(w)));
+/** Share of meaningful words two titles have in common (0–1, intersection over union). */
 function similarity(a: string, b: string) {
   const A = words(a), B = words(b);
   if (!A.size || !B.size) return 0;
   let n = 0;
   for (const w of A) if (B.has(w)) n++;
-  return n / Math.min(A.size, B.size);
+  return n / (A.size + B.size - n);
 }
 
 function editDistance(a: string, b: string) {
@@ -159,13 +161,20 @@ export async function syncProgramme(
         const end = at(day.date, fs.end);
         const free = dbSessions.filter((x) => !used.has(x.id));
         // Same title first; then a close title; then same slot and format (a retitled session).
+        // 1. same title · 2. same slot and format (retitled) · 3. clearly similar title (moved).
+        const sameSlot = (x: DbSession) => new Date(x.start_time).getTime() === new Date(start).getTime();
         const match =
           free.find((x) => normTitle(x.title) === normTitle(fs.title)) ??
+          free.find((x) => sameSlot(x) && x.format === fs.format) ??
+          // A title that was only extended or shortened ("The Landscape of…" → "The Landscape of… Development: …").
+          free.find((x) => {
+            const [o, n] = [normTitle(x.title), normTitle(fs.title)];
+            return Math.min(o.length, n.length) >= 20 && (n.startsWith(o) || o.startsWith(n));
+          }) ??
           free
             .map((x) => ({ x, s: similarity(x.title, fs.title) }))
-            .filter((m) => m.s >= 0.6)
-            .sort((a, b) => b.s - a.s)[0]?.x ??
-          free.find((x) => new Date(x.start_time).getTime() === new Date(start).getTime() && x.format === fs.format && fs.type !== "non_speaking");
+            .filter((m) => m.s >= 0.5)
+            .sort((a, b) => b.s - a.s)[0]?.x;
         const label = `${hhmm(start)} ${fs.title}`;
         let sessionId: string;
         if (!match) {
@@ -286,7 +295,8 @@ export async function syncProgramme(
       for (const x of dbSessions.filter((x) => !used.has(x.id) && x.status === "published")) {
         changes.push(`🙈 ${ft.name} · ${hhmm(x.start_time)} ${x.title}: not in the new programme. Hidden (not deleted)`);
         counts.sessionsHidden++;
-        await run(`update sessions set status = 'draft' where id = $1`, [x.id]);
+        // Out of the running order too (kept at the end, hidden).
+        await run(`update sessions set status = 'draft', sequence = 900 + sequence where id = $1`, [x.id]);
       }
     }
   }
