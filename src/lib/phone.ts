@@ -4,5 +4,6 @@ export function whatsappNumber(phone: string | null | undefined): string | null 
   if (!phone) return null;
   let digits = phone.replace(/\D/g, "");
   if (digits.startsWith("00")) digits = digits.slice(2);
-  return digits.length >= 10 && digits.length <= 15 ? digits : null;
+  // A leading 0 means a local number (no country code starts with 0).
+  return !digits.startsWith("0") && digits.length >= 10 && digits.length <= 15 ? digits : null;
 }
