@@ -185,7 +185,7 @@ async function main() {
   await page("/admin?q=ibrahim", pc);
   await page("/admin/people", pc, { redirectTo: "/admin" });
   await page("/admin/slides", pc, { redirectTo: "/admin" });
-  await page("/admin/programme", pc, { contains: ["Programme", "Edit programme details", "+ Add session at the end"] });
+  await page("/admin/programme", pc, { contains: ["Programme", "Edit programme details", "+ Add session at the end", "Day 1 · Opening &amp; Plenary", "Day 1 · Health AI Summit", "Day 1 · HIE Summit", "MoU Signing"] });
   for (const d of ["2026-11-04", "2026-11-05", "2026-11-06"]) await page(`/admin/programme?day=${d}`, pc);
   await page("/admin/print", pc, { contains: ["Print / Save as PDF", "Day 1", "Printed from live data"] });
   const rooms = await page("/admin/print?view=rooms", pc, { contains: ["Running order", "On stage"] });

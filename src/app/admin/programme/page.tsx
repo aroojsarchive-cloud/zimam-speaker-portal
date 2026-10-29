@@ -47,7 +47,7 @@ const ROLE_ORDER = ["moderator", "chair", "co_chair", "host", "mc", "keynote", "
 
 async function Editor({ searchParams }: { searchParams: PageProps<"/admin/programme">["searchParams"] }) {
   const me = await requireProducer();
-  const { day: dayParam } = (await searchParams) as { day?: string };
+  const { day: dayParam, tab: tabParam } = (await searchParams) as { day?: string; tab?: string };
   const supabase = await createClient();
   const [{ data, error }, { data: ppl }] = await Promise.all([
     supabase
@@ -67,10 +67,24 @@ async function Editor({ searchParams }: { searchParams: PageProps<"/admin/progra
   if (error) throw new Error(error.message);
   const days = (data ?? []) as unknown as Row[];
   if (!days.length) return <p className="mt-6 text-ink-muted">No programme yet.</p>;
-  const day = days.find((d) => d.date === dayParam) ?? days[0];
+  // Busy days (Day 1) get one tab per programme, like the speaker agenda.
+  // One-off tracks (MoU signing, awards) ride along with the first programme.
+  const tabs = days.flatMap((d, k) => {
+    const sorted = [...d.tracks].sort((a, b) => a.sort_order - b.sort_order);
+    const programmes = sorted.filter((t) => t.sessions.length > 1);
+    if (programmes.length < 2) return [{ key: d.date, label: `Day ${k + 1} · ${formatDay(`${d.date}T08:00:00Z`)}`, day: d, tracks: sorted }];
+    const singles = sorted.filter((t) => t.sessions.length <= 1);
+    return programmes.map((t, i) => ({
+      key: t.id,
+      label: `Day ${k + 1} · ${t.short_name ?? t.name}`,
+      day: d,
+      tracks: i === 0 ? [t, ...singles] : [t],
+    }));
+  });
+  const tab = tabs.find((t) => t.key === tabParam) ?? tabs.find((t) => t.day.date === dayParam) ?? tabs[0];
+  const day = tab.day;
 
-  const tracks: EditorTrack[] = [...day.tracks]
-    .sort((a, b) => a.sort_order - b.sort_order)
+  const tracks: EditorTrack[] = tab.tracks
     .map((t) => {
       const sessions = [...t.sessions].sort((a, b) => a.start_time.localeCompare(b.start_time) || a.sequence - b.sequence);
       return {
@@ -119,20 +133,20 @@ async function Editor({ searchParams }: { searchParams: PageProps<"/admin/progra
 
   return (
     <>
-      <nav aria-label="Days" className="mt-6 flex flex-wrap gap-2">
-        {days.map((d, k) => (
+      <nav aria-label="Programme sections" className="mt-6 flex flex-wrap gap-2">
+        {tabs.map((t) => (
           <Link
-            key={d.id}
-            href={`/admin/programme?day=${d.date}`}
-            aria-current={d.id === day.id ? "page" : undefined}
-            className={`rounded-xl px-4 py-2 text-sm font-semibold ${d.id === day.id ? "bg-ink text-white" : "border border-line bg-surface"}`}
+            key={t.key}
+            href={`/admin/programme?tab=${t.key}`}
+            aria-current={t.key === tab.key ? "page" : undefined}
+            className={`rounded-xl px-4 py-2 text-sm font-semibold ${t.key === tab.key ? "bg-ink text-white" : "border border-line bg-surface"}`}
           >
-            Day {k + 1} · {formatDay(`${d.date}T08:00:00Z`)}
+            {t.label}
           </Link>
         ))}
       </nav>
       <div className="mt-6">
-        <ProgrammeEditor key={day.id} tracks={tracks} date={day.date} people={people} />
+        <ProgrammeEditor key={tab.key} tracks={tracks} date={day.date} people={people} />
       </div>
     </>
   );
