@@ -14,6 +14,10 @@ import { RoomDelay } from "@/components/RoomDelay";
 export const metadata: Metadata = { title: "Live" };
 
 const WARN_MIN = 20; // speakers are asked to be in the room 20 minutes before
+const DOORS_MIN = 15; // "start of day" = this long before the first session
+
+// Dubai has no daylight saving, so a fixed +4h gives the local wall-clock time for ?at=.
+const dubaiStamp = (t: number) => new Date(t + 4 * 3600000).toISOString().slice(0, 16);
 
 type Assignment = {
   id: string;
@@ -85,11 +89,6 @@ function SessionBlock({ s, kind, now }: { s: Session; kind: "Now" | "Next" | "Th
 async function Live({ searchParams }: { searchParams: PageProps<"/admin/live">["searchParams"] }) {
   await requireProducer();
   const { at } = (await searchParams) as { at?: string };
-  // ?at=2026-11-04T12:20 rehearses the view at any moment (Dubai time).
-  const nowDate = at ? new Date(`${at}${/[+Z]/.test(at.slice(10)) ? "" : "+04:00"}`) : new Date();
-  const now = nowDate.getTime();
-  const day = eventDateKey(nowDate);
-
   const { data, error } = await (await createClient())
     .from("sessions")
     .select(
@@ -98,9 +97,22 @@ async function Live({ searchParams }: { searchParams: PageProps<"/admin/live">["
     .eq("status", "published")
     .order("start_time");
   if (error) throw new Error(error.message);
+  const all = (data ?? []) as unknown as Session[];
+  const dayStarts = [...new Set(all.map((s) => eventDateKey(s.start_time)))].map(
+    (d) => new Date(all.find((s) => eventDateKey(s.start_time) === d)!.start_time).getTime() - DOORS_MIN * 60000,
+  );
+
+  // ?at=2026-11-04T12:20 rehearses the view at any moment (Dubai time).
+  // Before the forum starts, preview it from the first morning instead of an empty page.
+  const real = new Date();
+  const preview = !at && !!dayStarts.length && real.getTime() < dayStarts[0];
+  const nowDate = at ? new Date(`${at}${/[+Z]/.test(at.slice(10)) ? "" : "+04:00"}`) : preview ? new Date(dayStarts[0]) : real;
+  const now = nowDate.getTime();
+  const day = eventDateKey(nowDate);
+  const nextDayStart = dayStarts.find((t) => t > now);
   // A room running late shifts all of its times, so Now/Next and the 20-minute warnings follow reality.
   const shift = (iso: string, min: number) => new Date(new Date(iso).getTime() + min * 60000).toISOString();
-  const today = ((data ?? []) as unknown as Session[])
+  const today = all
     .filter((s) => eventDateKey(s.start_time) === day)
     .map((s) => {
       const late = s.track.running_late_minutes ?? 0;
@@ -139,6 +151,12 @@ async function Live({ searchParams }: { searchParams: PageProps<"/admin/live">["
     <>
       <p className="mt-1 text-ink-muted">
         {formatLongDay(nowDate.toISOString())} · {formatTime(nowDate.toISOString())} {ev.timezoneLabel}
+        {preview && (
+          <>
+            {" "}
+            · <span className="font-semibold text-warning">Preview: the forum hasn&apos;t started yet</span>
+          </>
+        )}
         {at && (
           <>
             {" "}
@@ -149,19 +167,50 @@ async function Live({ searchParams }: { searchParams: PageProps<"/admin/live">["
           </>
         )}
       </p>
+      {(at || preview) && (
+        <nav aria-label="Rehearsal time" className="mt-3 flex flex-wrap gap-2">
+          {[
+            { label: "Start of day", t: dayStarts.find((t) => eventDateKey(new Date(t)) === day) ?? dayStarts[0] },
+            { label: "− 15 min", t: now - 15 * 60000 },
+            { label: "+ 15 min", t: now + 15 * 60000 },
+            { label: "+ 1 hour", t: now + 60 * 60000 },
+            ...(nextDayStart && eventDateKey(new Date(nextDayStart)) !== day ? [{ label: "Next day", t: nextDayStart }] : []),
+          ].map((b) => (
+            <Link
+              key={b.label}
+              href={`/admin/live?at=${dubaiStamp(b.t)}`}
+              className="flex h-10 items-center rounded-xl border border-line bg-surface px-4 text-sm font-semibold"
+            >
+              {b.label}
+            </Link>
+          ))}
+        </nav>
+      )}
       {!today.length ? (
         <div className="mt-8 rounded-2xl bg-surface p-6 shadow-[0_1px_0_var(--line)]">
           <p className="font-semibold">No sessions today.</p>
-          <p className="mt-1 text-ink-muted">
-            This view comes alive on the event days. To rehearse it, try{" "}
-            <Link href="/admin/live?at=2026-11-04T14:35" className="font-semibold text-brand-strong underline">
-              4 Nov at 14:35
-            </Link>
-            .
-          </p>
+          {nextDayStart && (
+            <p className="mt-1 text-ink-muted">
+              This view comes alive on the event days.{" "}
+              <Link href={`/admin/live?at=${dubaiStamp(nextDayStart)}`} className="font-semibold text-brand-strong underline">
+                Rehearse the next day from the start
+              </Link>
+              .
+            </p>
+          )}
         </div>
       ) : !columns.length ? (
-        <p className="mt-8 rounded-2xl bg-surface p-6 text-ink-muted">That&apos;s a wrap for today.</p>
+        <p className="mt-8 rounded-2xl bg-surface p-6 text-ink-muted">
+          That&apos;s a wrap for today.
+          {nextDayStart && (
+            <>
+              {" "}
+              <Link href={`/admin/live?at=${dubaiStamp(nextDayStart)}`} className="font-semibold text-brand-strong underline">
+                Rehearse the next day
+              </Link>
+            </>
+          )}
+        </p>
       ) : (
         <>
           <p className={`mt-4 rounded-2xl px-5 py-3 font-semibold ${missing.length ? "bg-danger/10 text-danger" : "bg-success/10 text-success"}`}>

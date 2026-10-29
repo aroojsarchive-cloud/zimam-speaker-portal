@@ -196,7 +196,7 @@ async function main() {
     writeFileSync(`${process.env.SAVE_PRINT_HTML}/agenda.html`, agenda.replace("<head>", `<head>${base}`));
     writeFileSync(`${process.env.SAVE_PRINT_HTML}/rooms.html`, rooms.replace("<head>", `<head>${base}`));
   }
-  await page("/admin/live", pc, { contains: ["Print backup"] });
+  await page("/admin/live", pc, { contains: ["Print backup", "Preview: the forum hasn&apos;t started yet", "8:30", "Official Opening &amp; Plenary", "+ 15 min"] });
   await page("/admin/live?at=2026-11-04T14:40", pc, { contains: ["Rehearsal time", "Now"] });
   await page("/agenda", pc);
   const { data: allPriv } = await p.client.from("people_private").select("email");
