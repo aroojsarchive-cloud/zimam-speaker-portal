@@ -25,7 +25,7 @@ function Tabs({ path }: { path: string | null }) {
             key={t.href}
             href={t.href}
             aria-current={active ? "page" : undefined}
-            className={`flex h-10 items-center rounded-lg px-3 text-[0.95rem] font-semibold ${
+            className={`flex h-11 flex-1 items-center justify-center rounded-lg px-3 sm:h-10 sm:flex-none text-[0.95rem] font-semibold ${
               active ? "bg-ink text-white" : "text-ink-muted hover:bg-line/60 hover:text-ink"
             }`}
           >
