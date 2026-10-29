@@ -143,7 +143,7 @@ async function main() {
     const j = await signIn(julietEmail);
     const c = j.cookie();
     await page("/", c, { contains: ["Hi Smokey", "Get ready", "Read the speaker guidelines", "Send your presentation", "Questions?"] });
-    await page("/guidelines", c, { contains: ["Keeping to time", "5 minutes left", "USB", "arooj@mwanevents.com"] });
+    await page("/guidelines", c, { contains: ["Keeping to time", "a ringer will sound", "USB", "arooj@mwanevents.com"] });
     const agenda = await page("/agenda", c, { contains: ["Programme at a glance", "At a glance", "subject to change"] });
     const tabs = [...new Set([...agenda.matchAll(/href="\/agenda\?tab=([^"&]+)"/g)].map((m) => m[1]))];
     check("agenda has At a glance + 5 programme tabs", tabs.length === 6, tabs);

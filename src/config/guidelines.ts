@@ -19,9 +19,8 @@ export const guidelines = {
       heading: "Keeping to time",
       presentersOnly: false,
       body: [
-        "Every speaker deserves their full moment, and so does the audience. To help, a comfort monitor at the front of the stage shows your remaining time.",
-        "A bell will sound when there are 5 minutes left, a gentle cue to start bringing your remarks together.",
-        "A second bell sounds when your time is up. That's the moment to close and hand the stage to the next speaker.",
+        "Every speaker deserves their full moment, and so does the audience. In some sessions, a comfort monitor and timer at the front of the stage will show your remaining time.",
+        "If a session runs over time, a ringer will sound. That's the cue to wrap up as soon as possible, so the next session can start on time.",
       ],
     },
     {

@@ -98,7 +98,7 @@ async function SessionContent({ params }: { params: PageProps<"/sessions/[id]">[
           )}
           {myRoles.length > 0 && (
             <Link href="/guidelines" className="mt-3 block text-sm font-semibold text-white underline underline-offset-4">
-              Speaker guidelines: timing bells and slides ›
+              Speaker guidelines: timing and slides ›
             </Link>
           )}
           {myRoles.length > 0 && (
