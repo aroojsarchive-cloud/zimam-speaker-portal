@@ -92,11 +92,6 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
         <Suspense fallback={<LoginForm contact={null} />}>
           <FormWithContact />
         </Suspense>
-
-        <p className="mt-auto pt-12 text-sm text-ink-muted">
-          No password needed. Use the email address your invitation was sent
-          to, and you&apos;ll stay signed in on this device.
-        </p>
       </div>
     </main>
   );

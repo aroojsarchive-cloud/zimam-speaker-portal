@@ -15,7 +15,7 @@ export function LoginForm({ contact }: { contact: Contact }) {
   return (
     <form action={action} className="mt-10" noValidate>
       <label htmlFor="email" className="block font-medium">
-        Your email
+        Your email verification
       </label>
       <input
         id="email"
