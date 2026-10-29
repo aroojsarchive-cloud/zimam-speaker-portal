@@ -15,9 +15,10 @@ async function Content() {
   const supabase = await createClient();
   const [{ data: person }, { data: mine }] = await Promise.all([
     supabase.from("people").select("guidelines_ack_at").eq("id", me.personId).single(),
-    supabase.from("assignments").select("presents, session:sessions!inner(start_time)").eq("person_id", me.personId),
+    supabase.from("assignments").select("presents, session:sessions!inner(start_time, track:tracks!inner(name))").eq("person_id", me.personId),
   ]);
-  const presenting = ((mine ?? []) as unknown as { presents: boolean; session: { start_time: string } }[])
+  const rows = (mine ?? []) as unknown as { presents: boolean; session: { start_time: string; track: { name: string } } }[];
+  const presenting = rows
     .filter((a) => a.presents)
     .map((a) => a.session.start_time)
     .sort();
@@ -32,6 +33,7 @@ async function Content() {
       <div className="mt-6 space-y-4">
         {guidelines.sections
           .filter((s) => !s.presentersOnly || presenting.length)
+          .filter((s) => !("notForTracks" in s) || !rows.length || rows.some((a) => !s.notForTracks.test(a.session.track.name)))
           .map((s) => (
             <section key={s.heading} className="rounded-3xl bg-surface p-5 shadow-[0_1px_0_var(--line)]">
               <h2 className="font-display text-xl font-semibold">{s.heading}</h2>

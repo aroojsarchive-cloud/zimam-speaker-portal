@@ -18,6 +18,8 @@ export const guidelines = {
     {
       heading: "Keeping to time",
       presentersOnly: false,
+      // No comfort monitor or ringer in these rooms; hidden for speakers who are only there.
+      notForTracks: /competency/i,
       body: [
         "Every speaker deserves their full moment, and so does the audience. In some sessions, a comfort monitor and timer at the front of the stage will show your remaining time.",
         "If a session runs over time, a ringer will sound. That's the cue to wrap up as soon as possible, so the next session can start on time.",
