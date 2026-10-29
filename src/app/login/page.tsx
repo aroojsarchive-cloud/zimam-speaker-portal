@@ -41,10 +41,11 @@ async function Notice({
   return null;
 }
 
-async function FormWithContact() {
-  const contact = await getPublicEventInfo().catch(() => null);
+async function FormWithContact({ searchParams }: { searchParams: PageProps<"/login">["searchParams"] }) {
+  const [contact, { next }] = await Promise.all([getPublicEventInfo().catch(() => null), searchParams]);
   return (
     <LoginForm
+      next={typeof next === "string" ? next : null}
       contact={
         contact
           ? {
@@ -90,7 +91,7 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
         </Suspense>
 
         <Suspense fallback={<LoginForm contact={null} />}>
-          <FormWithContact />
+          <FormWithContact searchParams={searchParams} />
         </Suspense>
       </div>
     </main>

@@ -8,12 +8,13 @@ type Contact = { name: string; whatsapp: string | null; phone: string | null } |
 const input =
   "mt-2 block h-14 w-full rounded-xl border border-line bg-surface px-4 text-lg outline-none transition focus:border-brand-strong focus:ring-4 focus:ring-brand/15";
 
-export function LoginForm({ contact }: { contact: Contact }) {
+export function LoginForm({ contact, next = null }: { contact: Contact; next?: string | null }) {
   const [state, action, pending] = useActionState<LoginState, FormData>(signIn, { status: "idle" });
   const askPassword = state.status === "password";
 
   return (
     <form action={action} className="mt-10" noValidate>
+      {next && <input type="hidden" name="next" value={next} />}
       <label htmlFor="email" className="block font-medium">
         Your email verification
       </label>

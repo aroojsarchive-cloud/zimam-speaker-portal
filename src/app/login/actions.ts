@@ -62,5 +62,7 @@ export async function signIn(_prev: LoginState, form: FormData): Promise<LoginSt
     console.error("sign-in failed", e);
     return { status: "error", message: "We couldn't sign you in just now. Please try again in a minute." };
   }
-  redirect("/");
+  // Only same-site paths, never "//evil.com".
+  const next = String(form.get("next") ?? "");
+  redirect(/^\/(?![\/\\])/.test(next) ? next : "/");
 }

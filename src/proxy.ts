@@ -28,6 +28,9 @@ export async function proxy(request: NextRequest) {
     const to = request.nextUrl.clone();
     to.pathname = "/login";
     to.search = "";
+    // Come back to the page they opened (e.g. a Live view link) after signing in.
+    const back = request.nextUrl.pathname + request.nextUrl.search;
+    if (back !== "/") to.searchParams.set("next", back);
     return NextResponse.redirect(to);
   }
   return response;
