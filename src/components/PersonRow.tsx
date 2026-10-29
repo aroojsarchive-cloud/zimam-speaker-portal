@@ -55,6 +55,10 @@ export function PersonForm({ initial, onSave, onCancel, saveLabel }: {
         Email (their username)
         <input className={field} type="email" value={v.email ?? ""} onChange={set("email")} placeholder="name@organisation.org" />
       </label>
+      <label className="text-sm md:col-span-3">
+        WhatsApp number (with country code)
+        <input className={field} type="tel" inputMode="tel" value={v.phone ?? ""} onChange={set("phone")} placeholder="+971 50 123 4567" />
+      </label>
       <label className="text-sm md:col-span-2">
         Title
         <input className={field} value={v.title ?? ""} onChange={set("title")} />
@@ -197,7 +201,7 @@ export function AddPerson() {
   return (
     <div className="mt-4 w-full rounded-2xl bg-surface p-5 shadow-[0_1px_0_var(--line)]">
       <PersonForm
-        initial={{ salutation: "", full_name: "", title: "", organisation: "", email: "" }}
+        initial={{ salutation: "", full_name: "", title: "", organisation: "", email: "", phone: "" }}
         saveLabel="Add"
         onCancel={() => setOpen(false)}
         onSave={async (v) => {

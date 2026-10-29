@@ -14,7 +14,7 @@ import { LiveRefresh } from "@/components/LiveRefresh";
 
 export const metadata: Metadata = { title: "Speakers" };
 
-type Priv = { email: string | null; invite_token: string | null; last_login_at: string | null; change_request_note: string | null };
+type Priv = { email: string | null; phone: string | null; invite_token: string | null; last_login_at: string | null; change_request_note: string | null };
 type Person = {
   id: string;
   salutation: string | null;
@@ -48,7 +48,7 @@ async function Speakers({ searchParams }: { searchParams: PageProps<"/admin">["s
   const { data, error } = await (await createClient())
     .from("sessions")
     .select(
-      "id, title, start_time, end_time, session_type, track:tracks!inner(name, short_name, room, sort_order), assignments(role, sort_order, presents, no_slides, slides_sent_at, person:people!inner(id, salutation, full_name, title, organisation, photo_path, details_status, is_placeholder, private:people_private(email, invite_token, last_login_at, change_request_note)))",
+      "id, title, start_time, end_time, session_type, track:tracks!inner(name, short_name, room, sort_order), assignments(role, sort_order, presents, no_slides, slides_sent_at, person:people!inner(id, salutation, full_name, title, organisation, photo_path, details_status, is_placeholder, private:people_private(email, phone, invite_token, last_login_at, change_request_note)))",
     )
     .eq("status", "published")
     .eq("session_type", "speaking")
@@ -79,6 +79,7 @@ async function Speakers({ searchParams }: { searchParams: PageProps<"/admin">["s
             photoUrl: null,
             _photo: p.photo_path,
             email: priv?.email ?? null,
+            phone: priv?.phone ?? null,
             role: roleLabel(a.role),
             signedIn: !!priv?.last_login_at,
             detailsOk: p.details_status === "confirmed",

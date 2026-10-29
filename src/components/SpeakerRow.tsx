@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Avatar } from "@/components/Avatar";
 import { PersonForm } from "@/components/PersonRow";
 import { savePerson } from "@/app/admin/actions";
+import { whatsappNumber } from "@/lib/phone";
 
 export type SpeakerView = {
   id: string;
@@ -12,6 +13,7 @@ export type SpeakerView = {
   organisation: string | null;
   photoUrl: string | null;
   email: string | null;
+  phone: string | null;
   role: string;
   signedIn: boolean;
   detailsOk: boolean;
@@ -32,12 +34,13 @@ function Tick({ ok, label, warn }: { ok: boolean; label: string; warn?: boolean 
 /** One speaker on one session: who, their progress, and the buttons you need. */
 export function SpeakerRow({ s }: { s: SpeakerView }) {
   const [editing, setEditing] = useState(false);
+  const wa = whatsappNumber(s.phone);
   const [copied, setCopied] = useState(false);
   if (editing)
     return (
       <li className="border-b border-line px-4 py-4 last:border-0">
         <PersonForm
-          initial={{ salutation: s.salutation ?? "", full_name: s.full_name, title: s.title ?? "", organisation: s.organisation ?? "", email: s.email ?? "" }}
+          initial={{ salutation: s.salutation ?? "", full_name: s.full_name, title: s.title ?? "", organisation: s.organisation ?? "", email: s.email ?? "", phone: s.phone ?? "" }}
           saveLabel="Save"
           onCancel={() => setEditing(false)}
           onSave={async (v) => {
@@ -64,6 +67,7 @@ export function SpeakerRow({ s }: { s: SpeakerView }) {
         {s.email ? <Tick ok={s.signedIn} label="Signed in" /> : <span className="text-sm font-semibold text-warning">No email</span>}
         <Tick ok={s.detailsOk} label="Details OK" warn={!!s.changeNote} />
         {s.slides && <Tick ok={s.slides !== "waiting"} label={s.slides === "none" ? "No slides" : "Slides sent"} />}
+        {s.phone && !wa && <span className="text-sm font-semibold text-warning">Check WhatsApp number</span>}
       </div>
       <div className="flex gap-2">
         {s.inviteText && (
@@ -79,10 +83,12 @@ export function SpeakerRow({ s }: { s: SpeakerView }) {
               {copied ? "Copied ✓" : "Copy invite"}
             </button>
             <a
-              href={`https://wa.me/?text=${encodeURIComponent(s.inviteText)}`}
+              // With their number it opens their chat directly; otherwise WhatsApp asks who to send to.
+              href={`https://wa.me/${wa ?? ""}?text=${encodeURIComponent(s.inviteText)}`}
               target="_blank"
               rel="noreferrer"
-              className="flex h-9 items-center rounded-lg border border-line px-3 text-sm font-semibold"
+              title={wa ? `Opens your chat with +${wa}` : "Add their number to open their chat directly"}
+              className={`flex h-9 items-center rounded-lg px-3 text-sm font-semibold ${wa ? "bg-[#25D366] text-white" : "border border-line"}`}
             >
               WhatsApp
             </a>

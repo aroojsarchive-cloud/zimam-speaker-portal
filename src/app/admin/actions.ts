@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireProducer } from "@/lib/admin";
 import { createClient } from "@/lib/supabase/server";
+import { whatsappNumber } from "@/lib/phone";
 
 type Result = { ok: true } | { ok: false; message: string };
 
@@ -18,6 +19,13 @@ const PersonInput = z.object({
     .optional()
     .transform((v) => v || null)
     .refine((v) => v === null || z.string().email().safeParse(v).success, "That email doesn't look right"),
+  phone: z
+    .string()
+    .trim()
+    .optional()
+    .transform((v) => v || null)
+    .refine((v) => v === null || whatsappNumber(v) !== null, "Add the full number with country code, e.g. +971 50 123 4567")
+    .transform((v) => (v ? `+${whatsappNumber(v)}` : null)),
 });
 export type PersonInput = z.input<typeof PersonInput>;
 
@@ -29,13 +37,17 @@ export async function savePerson(personId: string, input: PersonInput): Promise<
   await requireProducer();
   const parsed = PersonInput.safeParse(input);
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0].message };
-  const { email, ...profile } = parsed.data;
+  const { email, phone, ...profile } = parsed.data;
   const supabase = await createClient();
   const { error } = await supabase.from("people").update(profile).eq("id", personId);
   if (error) return { ok: false, message: friendly(error.message) };
-  const { error: e2 } = await supabase.from("people_private").update({ email }).eq("person_id", personId);
+  // Forms without the number field leave the stored number alone.
+  const { error: e2 } = await supabase
+    .from("people_private")
+    .update(input.phone === undefined ? { email } : { email, phone })
+    .eq("person_id", personId);
   if (e2) return { ok: false, message: friendly(e2.message) };
-  revalidatePath("/admin/people");
+  revalidatePath("/admin");
   return { ok: true };
 }
 
@@ -43,16 +55,16 @@ export async function addPerson(input: PersonInput): Promise<Result> {
   const me = await requireProducer();
   const parsed = PersonInput.safeParse(input);
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0].message };
-  const { email, ...profile } = parsed.data;
+  const { email, phone, ...profile } = parsed.data;
   const supabase = await createClient();
   const { data, error } = await supabase.from("people").insert({ ...profile, event_id: me.eventId }).select("id").single();
   if (error) return { ok: false, message: friendly(error.message) };
-  const { error: e2 } = await supabase.from("people_private").insert({ person_id: data.id, email });
+  const { error: e2 } = await supabase.from("people_private").insert({ person_id: data.id, email, phone });
   if (e2) {
     await supabase.from("people").delete().eq("id", data.id);
     return { ok: false, message: friendly(e2.message) };
   }
-  revalidatePath("/admin/people");
+  revalidatePath("/admin");
   return { ok: true };
 }
 
@@ -62,7 +74,7 @@ export async function resetInviteLink(personId: string): Promise<Result> {
   const token = crypto.randomUUID().replace(/-/g, "");
   const { error } = await (await createClient()).from("people_private").update({ invite_token: token }).eq("person_id", personId);
   if (error) return { ok: false, message: "Couldn't reset the link." };
-  revalidatePath("/admin/people");
+  revalidatePath("/admin");
   return { ok: true };
 }
 
@@ -83,7 +95,7 @@ export async function setPresents(assignmentId: string, presents: boolean): Prom
   await requireProducer();
   const { error } = await (await createClient()).from("assignments").update({ presents }).eq("id", assignmentId);
   if (error) return { ok: false, message: "Couldn't update." };
-  revalidatePath("/admin/people");
+  revalidatePath("/admin");
   revalidatePath("/admin");
   return { ok: true };
 }
