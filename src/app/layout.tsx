@@ -3,10 +3,21 @@ import type { CSSProperties } from "react";
 import { eventConfig as ev } from "@/config/event";
 import "./globals.css";
 
+const SITE_NAME = "Speakers ZIMAM Forum 2026";
+
 export const metadata: Metadata = {
-  title: { default: `${ev.shortName} Speaker Portal`, template: `%s · ${ev.shortName}` },
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3010"),
+  title: { default: SITE_NAME, template: `%s · ${SITE_NAME}` },
   description: `Your sessions at the ${ev.name}, always up to date.`,
-  appleWebApp: { capable: true, title: ev.shortName, statusBarStyle: "default" },
+  applicationName: SITE_NAME,
+  openGraph: {
+    title: SITE_NAME,
+    siteName: SITE_NAME,
+    description: `Your sessions at the ${ev.name}, always up to date.`,
+    images: [{ url: ev.logo.full }],
+    type: "website",
+  },
+  appleWebApp: { capable: true, title: "ZIMAM Speakers", statusBarStyle: "default" },
   robots: { index: false, follow: false },
 };
 
