@@ -1,10 +1,12 @@
 "use client";
 import { useState, useTransition } from "react";
 import {
+  addHost,
   addSession,
   addToSession,
   deleteSession,
   removeFromSession,
+  removeHost,
   saveSession,
   saveTrack,
   updateAssignment,
@@ -31,7 +33,16 @@ export type EditorSession = {
   assignments: EditorAssignment[];
   warning: string | null;
 };
-export type EditorTrack = { id: string; name: string; short_name: string; room: string; strapline: string; sessions: EditorSession[] };
+export type EditorHost = { id: string; role: string; name: string };
+export type EditorTrack = {
+  id: string;
+  name: string;
+  short_name: string;
+  room: string;
+  strapline: string;
+  hosts: EditorHost[];
+  sessions: EditorSession[];
+};
 export type PersonOption = { id: string; label: string };
 
 const FORMATS = ["keynote", "panel", "fireside", "lecture", "opening", "closing", "break", "contest", "award", "workshop", "briefing", "pitches", "judging", "other"];
@@ -56,6 +67,66 @@ function useAction() {
       }
     });
   return { pending, error, saved, run };
+}
+
+const HOST_ROLES = ["mc", "co_chair", "chair"];
+
+function Hosts({ t, people }: { t: EditorTrack; people: PersonOption[] }) {
+  const [who, setWho] = useState("");
+  const [role, setRole] = useState("mc");
+  const act = useAction();
+  const match = people.find((p) => p.label === who);
+  return (
+    <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+      <span className="font-semibold">Hosted by:</span>
+      {t.hosts.length === 0 && <span className="text-ink-muted">nobody yet</span>}
+      {t.hosts.map((h) => (
+        <span key={h.id} className="flex items-center gap-1 rounded-full bg-brand-soft py-1 pl-3 pr-1">
+          {h.name} <span className="text-ink-muted">({h.role === "mc" ? "MC" : cap(h.role)})</span>
+          <button
+            type="button"
+            aria-label={`Remove ${h.name} as host`}
+            onClick={() => act.run(() => removeHost(h.id))}
+            className="grid h-6 w-6 place-items-center rounded-full text-ink-muted hover:bg-white"
+          >
+            ×
+          </button>
+        </span>
+      ))}
+      <form
+        className="flex flex-wrap items-center gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (match) act.run(() => addHost(t.id, { personId: match.id, role: role as "mc" }), () => setWho(""));
+        }}
+      >
+        <input
+          list={`hosts-${t.id}`}
+          value={who}
+          onChange={(e) => setWho(e.target.value)}
+          placeholder="Add MC or co-chair"
+          aria-label={`Add a host to ${t.name}`}
+          className={`${field} min-w-56`}
+        />
+        <datalist id={`hosts-${t.id}`}>
+          {people.map((p) => (
+            <option key={p.id} value={p.label} />
+          ))}
+        </datalist>
+        <select aria-label="Host role" className={field} value={role} onChange={(e) => setRole(e.target.value)}>
+          {HOST_ROLES.map((r) => (
+            <option key={r} value={r}>
+              {r === "mc" ? "MC" : cap(r)}
+            </option>
+          ))}
+        </select>
+        <button disabled={!match || act.pending} className="h-9 rounded-lg bg-ink px-3 text-sm font-semibold text-white disabled:opacity-50">
+          {act.pending ? "…" : "Add host"}
+        </button>
+      </form>
+      {act.error && <span className="text-danger">{act.error}</span>}
+    </div>
+  );
 }
 
 function TrackHeader({ t }: { t: EditorTrack }) {
@@ -330,6 +401,7 @@ export function ProgrammeEditor({ tracks, date, people }: { tracks: EditorTrack[
       {tracks.map((t) => (
         <section key={t.id}>
           <TrackHeader t={t} />
+          <Hosts t={t} people={people} />
           <ol className="mt-3 overflow-hidden rounded-2xl bg-surface shadow-[0_1px_0_var(--line)]">
             {t.sessions.map((s) => (
               <SessionRow key={s.id} s={s} date={date} people={people} />

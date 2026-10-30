@@ -20,6 +20,7 @@ type Row = {
     room: string | null;
     strapline: string | null;
     sort_order: number;
+    hosts: { id: string; role: string; sort_order: number; person: { salutation: string | null; full_name: string } }[];
     sessions: {
       id: string;
       start_time: string;
@@ -53,7 +54,7 @@ async function Editor({ searchParams }: { searchParams: PageProps<"/admin/progra
     supabase
       .from("days")
       .select(
-        "id, date, label, tracks(id, name, short_name, room, strapline, sort_order, sessions(id, start_time, end_time, sequence, label, title, format, session_type, status, description, assignments(id, role, status, presents, sort_order, person:people!inner(salutation, full_name, is_placeholder))))",
+        "id, date, label, tracks(id, name, short_name, room, strapline, sort_order, hosts:track_hosts(id, role, sort_order, person:people!inner(salutation, full_name)), sessions(id, start_time, end_time, sequence, label, title, format, session_type, status, description, assignments(id, role, status, presents, sort_order, person:people!inner(salutation, full_name, is_placeholder))))",
       )
       .eq("event_id", me.eventId)
       .order("date"),
@@ -93,6 +94,7 @@ async function Editor({ searchParams }: { searchParams: PageProps<"/admin/progra
         short_name: t.short_name ?? "",
         room: t.room ?? "",
         strapline: t.strapline ?? "",
+        hosts: [...t.hosts].sort((a, b) => a.sort_order - b.sort_order).map((h) => ({ id: h.id, role: h.role, name: displayName(h.person) })),
         sessions: sessions.map((s, i) => {
           const prev = sessions[i - 1];
           const warning = prev

@@ -23,6 +23,8 @@ export const minutesBetween = (a: string, b: string) => Math.round((new Date(b).
 export const shifted = (iso: string, lateMin: number) => new Date(new Date(iso).getTime() + lateMin * 60000).toISOString();
 
 /** True while a session (shifted by its room's delay) hasn't finished yet. */
+/** The current moment, for Now/Next markers (kept out of components for render purity). */
+export const nowMs = () => Date.now();
 export const notFinished = (endIso: string, lateMin = 0) => new Date(shifted(endIso, lateMin)).getTime() > Date.now();
 
 /**

@@ -273,6 +273,27 @@ async function main() {
   const late = await as(ids.spkU, "spk@x.org", () => rows(`select running_late_minutes from tracks`));
   check("speakers can see the delay", Array.isArray(late) && late[0]?.running_late_minutes === 15, late);
 
+  console.log("Hosts (MCs and chairs)");
+  const T = "00000000-0000-0000-0000-0000000000f1";
+  check("speaker cannot make themselves host",
+    (await as(ids.spkU, "spk@x.org", () => rows(`insert into track_hosts (track_id, person_id) values ($1, '00000000-0000-0000-0000-0000000000b3')`, [T]))) instanceof Error);
+  check("producer can add a host",
+    !((await as(ids.producerU, "p@x.org", () => rows(`insert into track_hosts (track_id, person_id, role) values ($1, '00000000-0000-0000-0000-0000000000b2', 'mc')`, [T]))) instanceof Error));
+  const hostRow = await rows(`select event_id from track_hosts`);
+  check("host row gets the event filled in", hostRow[0]?.event_id === ids.ev, hostRow);
+  const seen = await as(ids.spkU, "spk@x.org", () => rows(`select role from track_hosts`));
+  check("everyone at the event can see who's hosting", Array.isArray(seen) && seen.length === 1, seen);
+  const outsider = await as(null, null, () => rows(`select * from track_hosts`));
+  check("signed-out visitors can't see hosts", Array.isArray(outsider) ? outsider.length === 0 : true, outsider);
+
+  console.log("Changes pop-up");
+  check("speaker can save what they've seen",
+    !((await as(ids.spkU, "spk@x.org", () => rows(`select save_seen_snapshot('00000000-0000-0000-0000-0000000000b3', '{"x":1}'::jsonb)`))) instanceof Error));
+  check("speaker cannot overwrite someone else's",
+    (await as(ids.spkU, "spk@x.org", () => rows(`select save_seen_snapshot('00000000-0000-0000-0000-0000000000b2', '{}'::jsonb)`))) instanceof Error);
+  const snap = await rows(`select seen_snapshot from people_private where person_id = '00000000-0000-0000-0000-0000000000b3'`);
+  check("snapshot is stored", (snap[0]?.seen_snapshot as { x?: number })?.x === 1, snap);
+
   console.log("Guidelines");
   check("speaker can acknowledge the guidelines",
     !((await as(ids.spkU, "spk@x.org", () => rows(`select acknowledge_guidelines('${spk}')`))) instanceof Error));

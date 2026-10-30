@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { eventConfig as ev } from "@/config/event";
 import { NavTabs, NavTabsFallback } from "@/components/NavTabs";
 import { LiveRefresh } from "@/components/LiveRefresh";
+import { Changes } from "@/components/Changes";
 
 export default function SpeakerLayout({ children }: LayoutProps<"/">) {
   return (
@@ -19,6 +20,9 @@ export default function SpeakerLayout({ children }: LayoutProps<"/">) {
         </div>
       </header>
       <LiveRefresh />
+      <Suspense fallback={null}>
+        <Changes />
+      </Suspense>
       {children}
     </div>
   );

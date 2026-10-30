@@ -34,7 +34,15 @@ type Session = {
   /** Planned times, before any running-late shift. */
   planned_start?: string;
   planned_end?: string;
-  track: { id: string; name: string; room: string | null; sort_order: number; running_late_minutes: number; running_late_updated_at: string | null };
+  track: {
+    id: string;
+    name: string;
+    room: string | null;
+    sort_order: number;
+    running_late_minutes: number;
+    running_late_updated_at: string | null;
+    hosts: { role: string; sort_order: number; person: { salutation: string | null; full_name: string } }[];
+  };
   assignments: Assignment[];
 };
 
@@ -92,7 +100,7 @@ async function Live({ searchParams }: { searchParams: PageProps<"/admin/live">["
   const { data, error } = await (await createClient())
     .from("sessions")
     .select(
-      "id, title, start_time, end_time, session_type, track:tracks!inner(id, name, room, sort_order, running_late_minutes, running_late_updated_at), assignments(id, role, checked_in_at, person:people!inner(salutation, full_name, is_placeholder))",
+      "id, title, start_time, end_time, session_type, track:tracks!inner(id, name, room, sort_order, running_late_minutes, running_late_updated_at, hosts:track_hosts(role, sort_order, person:people!inner(salutation, full_name))), assignments(id, role, checked_in_at, person:people!inner(salutation, full_name, is_placeholder))",
     )
     .eq("status", "published")
     .order("start_time");
@@ -222,7 +230,16 @@ async function Live({ searchParams }: { searchParams: PageProps<"/admin/live">["
             {columns.map((r) => (
               <section key={r.track.id} className="rounded-2xl bg-surface p-5 shadow-[0_1px_0_var(--line)]">
                 <h2 className="font-display text-2xl font-semibold">{r.track.room ?? "Room TBC"}</h2>
-                <p className="mb-3 text-sm text-ink-muted">{r.track.name}</p>
+                <p className="text-sm text-ink-muted">{r.track.name}</p>
+                {r.track.hosts.length > 0 && (
+                  <p className="text-sm">
+                    {[...r.track.hosts]
+                      .sort((a, b) => a.sort_order - b.sort_order)
+                      .map((h) => `${roleLabel(h.role)}: ${displayName(h.person)}`)
+                      .join(" · ")}
+                  </p>
+                )}
+                <div className="mb-3" />
                 <RoomDelay
                   trackId={r.track.id}
                   minutes={r.track.running_late_minutes ?? 0}

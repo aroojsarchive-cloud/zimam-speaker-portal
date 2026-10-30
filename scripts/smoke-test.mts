@@ -51,7 +51,7 @@ async function signIn(email: string, password?: string) {
 }
 
 /** GETs a page and checks it rendered without a server error (including errors inside streamed sections). */
-async function page(path: string, cookie: string | null, expect: { status?: number; redirectTo?: string; contains?: string[] } = {}) {
+async function page(path: string, cookie: string | null, expect: { status?: number; redirectTo?: string; contains?: string[]; notContains?: string[] } = {}) {
   const res = await fetch(BASE + path, { headers: cookie ? { cookie } : {}, redirect: "manual" });
   const label = `${path}${cookie ? "" : " (signed out)"}`;
   if (expect.redirectTo) {
@@ -74,6 +74,7 @@ async function page(path: string, cookie: string | null, expect: { status?: numb
   check(`${label} has no server errors`, digests.length === 0, digests);
   const text = html.replace(/<!-- -->/g, "").replace(/&#x27;|&apos;/g, "'");
   for (const c of expect.contains ?? []) check(`${label} shows "${c}"`, text.includes(c), null);
+  for (const c of expect.notContains ?? []) check(`${label} does not show "${c}"`, !text.includes(c), null);
   return html;
 }
 
@@ -144,6 +145,24 @@ async function main() {
     const c = j.cookie();
     await page("/", c, { contains: ["Hi Smokey", "Get ready", "Read the speaker guidelines", "Send your presentation", "Questions?"] });
     await page("/guidelines", c, { contains: ["Keeping to time", "a ringer will sound", "USB", "arooj@mwanevents.com"] });
+
+    // Changes pop-up: pretend they last saw an older time and room for their session.
+    await page("/", c, { notContains: ["Programme update"] });
+    await sql`update people_private set seen_snapshot = ${sql.json({
+      [slot.id]: { t: "Old title", s: "2026-11-04T05:00:00.000Z", e: "2026-11-04T05:15:00.000Z", r: "Old Room", roles: ["speaker"], p: [] },
+      "00000000-0000-0000-0000-000000000000": { t: "A session they were taken off", s: "2026-11-04T05:00:00.000Z", e: "2026-11-04T05:15:00.000Z", r: null, roles: ["panelist"], p: [] },
+    })} where person_id = ${tmp.id}`;
+    await page("/", c, { contains: ["Programme update", "Some of your sessions have changed", "New time", "New room", "New title", "no longer on this session", "Got it"] });
+    await page("/agenda", c, { contains: ["Programme update"] });
+
+    // Hosts: MC run sheet for the whole programme, only for the host.
+    const [tr] = await sql`select track_id from sessions where id = ${slot.id}`;
+    const [other] = await sql`select id from tracks where event_id = ${ev.id} and id <> ${tr.track_id} and exists (select 1 from sessions s where s.track_id = tracks.id and s.status = 'published') limit 1`;
+    await page(`/host/${tr.track_id}`, c, { status: 404 });
+    await sql`insert into track_hosts (track_id, person_id, role) values (${tr.track_id}, ${tmp.id}, 'mc')`;
+    await page("/", c, { contains: ["You're hosting", "Open your run sheet"] });
+    await page(`/host/${tr.track_id}`, c, { contains: ["Your run sheet", "MC", "Running order"] });
+    await page(`/host/${other.id}`, c, { status: 404 });
     const agenda = await page("/agenda", c, { contains: ["Programme at a glance", "At a glance", "subject to change"] });
     const tabs = [...new Set([...agenda.matchAll(/href="\/agenda\?tab=([^"&]+)"/g)].map((m) => m[1]))];
     check("agenda has At a glance + 5 programme tabs", tabs.length === 6, tabs);

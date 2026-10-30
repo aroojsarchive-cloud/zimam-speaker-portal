@@ -186,6 +186,74 @@ export async function getAgenda(eventId: string): Promise<AgendaDay[]> {
   return days;
 }
 
+export type Hosting = {
+  role: string;
+  track: TrackInfo & { short_name: string | null; day: { date: string }; sessions: { start_time: string; end_time: string }[] };
+};
+
+/** Programmes this person hosts as MC or (co-)chair. */
+export async function getMyHosting(personId: string): Promise<Hosting[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("track_hosts")
+    .select(
+      "role, track:tracks!inner(id, name, short_name, room, colour, strapline, running_late_minutes, day:days!inner(date), sessions(start_time, end_time))",
+    )
+    .eq("person_id", personId);
+  if (error) throw new Error(error.message);
+  return ((data ?? []) as unknown as Hosting[])
+    .filter((h) => h.track.sessions.length)
+    .sort((a, b) => a.track.day.date.localeCompare(b.track.day.date) || span(a).start.localeCompare(span(b).start));
+}
+
+/** First start and last end of a hosted programme. */
+export const span = (h: Hosting) => ({
+  start: h.track.sessions.map((s) => s.start_time).sort()[0],
+  end: h.track.sessions.map((s) => s.end_time).sort().at(-1)!,
+});
+
+export type RunSheetSession = SessionInfo & {
+  assignments: {
+    role: string;
+    sort_order: number;
+    presents: boolean;
+    checked_in_at: string | null;
+    person: Pick<PersonCard, "id" | "salutation" | "full_name" | "title" | "organisation" | "is_placeholder">;
+  }[];
+};
+
+/** Everything an MC needs for one programme: every session, who's on, and who's arrived. */
+export async function getRunSheet(trackId: string) {
+  const supabase = await createClient();
+  const [track, sessions, hosts] = await Promise.all([
+    supabase
+      .from("tracks")
+      .select("id, name, short_name, room, colour, strapline, running_late_minutes, day:days!inner(date)")
+      .eq("id", trackId)
+      .maybeSingle(),
+    supabase
+      .from("sessions")
+      .select(
+        "id, title, label, block_label, format, session_type, start_time, end_time, sequence, description, updated_at, assignments(role, sort_order, presents, checked_in_at, person:people!inner(id, salutation, full_name, title, organisation, is_placeholder))",
+      )
+      .eq("track_id", trackId)
+      .order("start_time")
+      .order("sequence"),
+    supabase
+      .from("track_hosts")
+      .select("role, sort_order, person:people!inner(id, salutation, full_name, title, organisation)")
+      .eq("track_id", trackId)
+      .order("sort_order"),
+  ]);
+  if (track.error || sessions.error || hosts.error) throw new Error((track.error ?? sessions.error ?? hosts.error)!.message);
+  if (!track.data) return null;
+  return {
+    track: track.data as unknown as TrackInfo & { short_name: string | null; day: { date: string } },
+    sessions: (sessions.data ?? []) as unknown as RunSheetSession[],
+    hosts: (hosts.data ?? []) as unknown as { role: string; person: Pick<PersonCard, "id" | "salutation" | "full_name" | "title" | "organisation"> }[],
+  };
+}
+
 /** Short-lived signed URLs for private photos (and brief files). */
 export async function signedUrls(bucket: "photos" | "briefs" | "slides", paths: (string | null)[], expiresIn = 3600) {
   const unique = [...new Set(paths.filter((p): p is string => !!p))];

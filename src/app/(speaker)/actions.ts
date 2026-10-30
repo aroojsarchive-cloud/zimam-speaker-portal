@@ -2,6 +2,7 @@
 import { revalidatePath } from "next/cache";
 import { getMe } from "@/lib/me";
 import { createClient } from "@/lib/supabase/server";
+import { buildSnapshot } from "@/lib/changes";
 
 type Result = { ok: true } | { ok: false; message: string };
 
@@ -30,9 +31,15 @@ export async function saveMyPhoto(path: string): Promise<Result> {
   return { ok: true };
 }
 
-export async function markChangesSeen(): Promise<void> {
+/** "Got it" on the changes pop-up: what they see now becomes what they've acknowledged. */
+export async function acknowledgeChanges(): Promise<Result> {
   const me = await getMe();
-  await (await createClient()).rpc("mark_changes_seen", { p_person: me.personId });
+  if (me.appRole === "producer") return { ok: true };
+  const snapshot = await buildSnapshot(me.personId);
+  const { error } = await (await createClient()).rpc("save_seen_snapshot", { p_person: me.personId, p_snapshot: snapshot });
+  if (error) return { ok: false, message: "We couldn't save that. Please try again." };
+  revalidatePath("/", "layout");
+  return { ok: true };
 }
 
 export async function checkIn(assignmentId: string, sessionId: string): Promise<Result> {

@@ -185,3 +185,25 @@ export async function removeFromSession(id: string): Promise<Result> {
   if (person?.is_placeholder) await supabase.from("people").delete().eq("id", person.id);
   return done();
 }
+
+const HostInput = z.object({ personId: z.string().uuid(), role: z.enum(["mc", "chair", "co_chair"]) });
+/** MCs and chairs host a whole programme; they get a run sheet for it. */
+export async function addHost(trackId: string, input: z.infer<typeof HostInput>): Promise<Result> {
+  await requireProducer();
+  const parsed = HostInput.safeParse(input);
+  if (!parsed.success) return { ok: false, message: "Pick someone from the list." };
+  const supabase = await createClient();
+  const { count } = await supabase.from("track_hosts").select("id", { count: "exact", head: true }).eq("track_id", trackId);
+  const { error } = await supabase
+    .from("track_hosts")
+    .insert({ track_id: trackId, person_id: parsed.data.personId, role: parsed.data.role, sort_order: count ?? 0 });
+  if (error) return { ok: false, message: /duplicate|unique/i.test(error.message) ? "They're already hosting this." : "Couldn't add." };
+  return done();
+}
+
+export async function removeHost(id: string): Promise<Result> {
+  await requireProducer();
+  const { error } = await (await createClient()).from("track_hosts").delete().eq("id", id);
+  if (error) return { ok: false, message: "Couldn't remove." };
+  return done();
+}

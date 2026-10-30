@@ -14,7 +14,7 @@ export function LiveRefresh() {
       timer = setTimeout(() => router.refresh(), 400);
     };
     const channel = supabase.channel("programme");
-    for (const table of ["events", "tracks", "sessions", "assignments", "concept_notes", "people", "slide_submissions"])
+    for (const table of ["events", "tracks", "sessions", "assignments", "concept_notes", "people", "slide_submissions", "track_hosts"])
       channel.on("postgres_changes", { event: "*", schema: "public", table }, refresh);
     channel.subscribe();
     return () => {

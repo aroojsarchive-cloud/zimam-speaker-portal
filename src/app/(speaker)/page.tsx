@@ -3,27 +3,27 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { eventConfig as ev } from "@/config/event";
 import { firstName, getMe } from "@/lib/me";
-import { getEventInfo, getMyEngagements, getMyProfile, signedUrls, type Engagement } from "@/lib/speaker-data";
-import { displayName } from "@/lib/labels";
+import { getEventInfo, getMyEngagements, getMyHosting, getMyProfile, signedUrls, span, type Engagement } from "@/lib/speaker-data";
+import { displayName, roleLabel } from "@/lib/labels";
 import { BoardingCard } from "@/components/BoardingCard";
 import { ConfirmDetails } from "@/components/ConfirmDetails";
 import { ContactCard } from "@/components/ContactCard";
-import { ChangedBanner, RunningLateBanner } from "@/components/Banners";
-import { MarkSeen } from "@/components/MarkSeen";
+import { RunningLateBanner } from "@/components/Banners";
 import { Checklist } from "@/components/Checklist";
 import { needsSlides, prepSteps, type PrepEngagement } from "@/lib/prep";
 import { CheckIn } from "@/components/CheckIn";
-import { eventDateKey, eventToday, formatTime, notFinished, shifted } from "@/lib/time";
+import { eventDateKey, eventToday, formatDay, formatRange, formatTime, notFinished, shifted } from "@/lib/time";
 import { signOut } from "@/app/auth/confirm/actions";
 
 async function MyEventContent() {
   const me = await getMe();
   if (me.appRole === "producer") redirect("/admin");
 
-  const [event, profile, engagements] = await Promise.all([
+  const [event, profile, engagements, hosting] = await Promise.all([
     getEventInfo(me.eventId),
     getMyProfile(me.personId),
     getMyEngagements(me.personId),
+    getMyHosting(me.personId),
   ]);
   const photos = await signedUrls("photos", [profile.photo_path]);
   const today = eventToday();
@@ -70,13 +70,6 @@ async function MyEventContent() {
   const cards = [...bySession.values()];
   const n = cards.length;
 
-  // "What changed": the newest edit to any of my sessions or their published briefs.
-  const latest = engagements
-    .flatMap((e) => [e.session.updated_at, ...e.session.notes.filter((x) => x.kind === "published").map((x) => x.updated_at)])
-    .sort()
-    .at(-1);
-  const changed = latest && profile.last_seen_changes_at && latest > profile.last_seen_changes_at ? latest : null;
-
   return (
     <>
       <div className="space-y-3">
@@ -88,7 +81,6 @@ async function MyEventContent() {
             startsAround={formatTime(shifted(e.session.start_time, e.session.track.running_late_minutes))}
           />
         ))}
-        {changed && <ChangedBanner at={changed} />}
       </div>
 
       <div className="mt-4">
@@ -112,6 +104,36 @@ async function MyEventContent() {
         </div>
       )}
 
+      {hosting.length > 0 && (
+        <section aria-labelledby="hosting-h" className="mt-6">
+          <h2 id="hosting-h" className="font-display text-[1.6rem] font-semibold leading-tight">
+            You&apos;re hosting
+          </h2>
+          <ul className="mt-3 space-y-3">
+            {hosting.map((h) => {
+              const { start, end } = span(h);
+              return (
+                <li key={h.track.id}>
+                  <Link
+                    href={`/host/${h.track.id}`}
+                    className="flex items-center justify-between gap-4 rounded-3xl bg-ink p-5 text-white shadow-[0_1px_0_var(--line)]"
+                  >
+                    <span>
+                      <span className="text-sm font-semibold uppercase tracking-[0.08em] text-white/70">{roleLabel(h.role)}</span>
+                      <span className="block font-display text-xl font-semibold leading-snug">{h.track.name}</span>
+                      <span className="block text-white/80">
+                        {formatDay(start)} · {formatRange(start, end)} · {h.track.room ?? "Room TBC"}
+                      </span>
+                      <span className="mt-2 block font-semibold">Open your run sheet ›</span>
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
+
       {n > 0 && (
         <p className="mt-6 font-display text-[1.6rem] font-semibold leading-tight">
           You have {n === 1 ? "one session" : `${n} sessions`} at {ev.shortName}.
@@ -119,10 +141,12 @@ async function MyEventContent() {
       )}
 
       {n === 0 ? (
+        hosting.length > 0 ? null : (
         <div className="mt-8 rounded-3xl bg-surface p-6 shadow-[0_1px_0_var(--line)]">
           <p className="font-semibold">Your sessions are being finalised</p>
           <p className="mt-1 text-ink-muted">We&apos;ll email you as soon as your session details are ready.</p>
         </div>
+        )
       ) : (
         <ol className="mt-6 space-y-4" aria-label="My sessions">
           {cards.map(({ e, roles }) => (
@@ -169,7 +193,6 @@ async function MyEventContent() {
       >
         See the full agenda <span aria-hidden>›</span>
       </Link>
-      <MarkSeen />
     </>
   );
 }
