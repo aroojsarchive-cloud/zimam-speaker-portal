@@ -86,7 +86,7 @@ async function Speakers({ searchParams }: { searchParams: PageProps<"/admin">["s
             changeNote: p.details_status === "change_requested" ? (priv?.change_request_note ?? null) : null,
             slides: a.presents ? (a.slides_sent_at ? "sent" : a.no_slides ? "none" : "waiting") : null,
             inviteUrl: url,
-            inviteText: url ? inviteMessage({ salutation: p.salutation, fullName: p.full_name, url }) : null,
+            inviteText: url ? inviteMessage({ salutation: p.salutation, fullName: p.full_name, url, moderator: a.role === "moderator" }) : null,
           };
           everyone.set(p.id, view);
           return view;

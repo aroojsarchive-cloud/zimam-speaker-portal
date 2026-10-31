@@ -65,6 +65,10 @@ async function MyEventContent() {
     }),
   });
 
+  const briefsTodo = prep.filter(
+    (p, i, all) => p.role === "moderator" && !p.briefPublished && all.findIndex((x) => x.sessionId === p.sessionId && x.role === "moderator") === i,
+  );
+
   // One card per session, even if the person holds two roles in it.
   const bySession = new Map<string, { e: Engagement; roles: string[] }>();
   for (const e of engagements) {
@@ -102,6 +106,24 @@ async function MyEventContent() {
           }}
         />
       </div>
+
+      {/* Moderators: the brief is the one thing only they can do, so ask up front. */}
+      {briefsTodo.map((b) => (
+        <div key={b.sessionId} className="mt-4 rounded-3xl bg-brand-soft p-5">
+          <p className="text-sm font-semibold uppercase tracking-[0.1em] text-brand-strong">You&apos;re moderating</p>
+          <p className="mt-1 font-display text-xl font-semibold leading-snug">{b.sessionTitle}</p>
+          <p className="mt-2 leading-relaxed">
+            Please write a short brief for your panel: what the session should achieve and the questions you plan to ask. Paste it in, or
+            simply upload your concept note.
+          </p>
+          <Link
+            href={`/sessions/${b.sessionId}/brief`}
+            className="mt-3 flex h-12 items-center justify-center rounded-xl bg-brand-strong font-semibold text-white"
+          >
+            Write your brief
+          </Link>
+        </div>
+      ))}
 
       {steps.length > 0 && (
         <div className="mt-4">

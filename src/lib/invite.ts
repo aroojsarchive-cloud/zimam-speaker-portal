@@ -3,7 +3,7 @@ import { eventConfig as ev } from "@/config/event";
 export const inviteUrl = (site: string, token: string) => `${site.replace(/\/$/, "")}/i/${token}`;
 
 /** The WhatsApp / email invite text the producer sends with a personal link. */
-export function inviteMessage(opts: { salutation: string | null; fullName: string; url: string }) {
+export function inviteMessage(opts: { salutation: string | null; fullName: string; url: string; moderator?: boolean }) {
   const first = opts.fullName.split(" ")[0];
   const greet = opts.salutation ? `${opts.salutation} ${opts.fullName.split(" ").slice(-1)[0]}` : first;
   return [
@@ -15,5 +15,8 @@ export function inviteMessage(opts: { salutation: string | null; fullName: strin
     `It shows your session time, room and role, your brief, who you're on stage with, and the full agenda, always up to date. No password needed: the link signs you straight in.`,
     ``,
     `Please check your name, title and photo, as this is how you'll appear on screen and in print, and email us your slides if you're presenting.`,
+    ...(opts.moderator
+      ? [``, `As you're moderating, please also write a short brief for your panel in the portal (or upload your concept note), so your panellists can prepare.`]
+      : []),
   ].join("\n");
 }
