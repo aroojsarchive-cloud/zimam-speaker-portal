@@ -145,17 +145,17 @@ export function ConfirmDetails({ profile }: { profile: Profile }) {
             <button
               type="button"
               onClick={() => setMode("flag")}
-              className="h-12 rounded-xl border border-line font-semibold"
+              className="h-12 rounded-xl bg-danger font-semibold text-white"
             >
-              Something&apos;s wrong
+              Needs correcting
             </button>
             <button
               type="button"
               disabled={pending}
               onClick={() => run(confirmMyDetails)}
-              className="h-12 rounded-xl bg-brand-strong font-semibold text-white disabled:opacity-70"
+              className="h-12 rounded-xl bg-success font-semibold text-white disabled:opacity-70"
             >
-              {pending ? "Saving…" : "Looks right"}
+              {pending ? "Saving…" : "Correct"}
             </button>
           </div>
         )

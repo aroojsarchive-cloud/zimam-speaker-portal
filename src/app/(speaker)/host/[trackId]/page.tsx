@@ -9,15 +9,10 @@ import { eventDateKey, eventToday, formatLongDay, formatRange, formatTime, nowMs
 import { ScheduleNotice } from "@/components/ScheduleNotice";
 import { RunningLateBanner } from "@/components/Banners";
 import { PrintButton } from "@/components/PrintButton";
+import { arriveBy, ARRIVE_BEFORE_MIN } from "@/lib/prep";
+import { CheckIn } from "@/components/CheckIn";
 
 export const metadata: Metadata = { title: "Run sheet" };
-
-// What hosts are there to do. Kept short: they're seasoned, this is a reminder.
-const DUTIES: Record<string, string> = {
-  mc: "You open the programme, introduce each session and its speakers, keep things on time and announce the breaks.",
-  chair: "You open and close the programme, introduce each session and its speakers, and keep things on time.",
-  co_chair: "Together with your co-chair you open and close the programme, introduce each session and its speakers, and keep things on time.",
-};
 
 const ROLE_ORDER = ["chair", "co_chair", "moderator", "keynote", "speaker", "panelist", "jury", "mc", "host"];
 
@@ -45,6 +40,7 @@ async function RunSheet({ params }: { params: PageProps<"/host/[trackId]">["para
     : undefined;
   const nextId = isToday ? sessions.find((s) => new Date(at(s.start_time)).getTime() > now)?.id : undefined;
   const first = sessions[0].start_time;
+  const onStage = sessions.find((s) => s.session_type === "speaking")?.start_time ?? first;
   const last = sessions.map((s) => s.end_time).sort().at(-1)!;
 
   return (
@@ -66,7 +62,19 @@ async function RunSheet({ params }: { params: PageProps<"/host/[trackId]">["para
           With {others.map((h) => `${displayName(h.person)} (${roleLabel(h.role)})`).join(", ")}
         </p>
       )}
-      <p className="mt-4 leading-relaxed">{DUTIES[mine?.role ?? "mc"] ?? DUTIES.mc}</p>
+      <p className="mt-4 rounded-2xl bg-ink px-5 py-4 text-white">
+        <span className="block font-display text-xl font-semibold">
+          Please be in {track.room ?? "the room"} by {formatTime(arriveBy(at(onStage)))}
+        </span>
+        <span className="text-[0.95rem] text-white/85">
+          {formatLongDay(onStage)}, {ARRIVE_BEFORE_MIN} minutes before the programme starts at {formatTime(at(onStage))}.
+        </span>
+      </p>
+      {isToday && mine && (
+        <div className="mt-3 print:hidden">
+          <CheckIn hostTrackId={track.id} checkedInAt={mine.checked_in_at} />
+        </div>
+      )}
 
       <div className="mt-4 space-y-3 print:hidden">
         {late > 0 && <RunningLateBanner room={track.room ?? "Your room"} minutes={late} startsAround={formatTime(at(first))} />}

@@ -286,6 +286,11 @@ async function main() {
   const outsider = await as(null, null, () => rows(`select * from track_hosts`));
   check("signed-out visitors can't see hosts", Array.isArray(outsider) ? outsider.length === 0 : true, outsider);
 
+  check("host check-in refused outside the event day",
+    (await as(ids.modU, "mod@x.org", () => rows(`select host_check_in($1)`, [T]))) instanceof Error);
+  check("non-host cannot check in as host",
+    (await as(ids.spkU, "spk@x.org", () => rows(`select host_check_in($1)`, [T]))) instanceof Error);
+
   console.log("Changes pop-up");
   check("speaker can save what they've seen",
     !((await as(ids.spkU, "spk@x.org", () => rows(`select save_seen_snapshot('00000000-0000-0000-0000-0000000000b3', '{"x":1}'::jsonb)`))) instanceof Error));

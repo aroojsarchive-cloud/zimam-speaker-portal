@@ -240,7 +240,16 @@ export async function syncProgramme(
           if ("key" in sp) {
             const pid = personId.get(sp.key)!;
             const fp = p.people.find((x) => x.key === sp.key)!;
-            const ex = current.find((a) => a.person_id === pid && !keep.has(a.id));
+            // Same person + same role first, so someone with two roles in one session
+            // (e.g. keynote and moderator) never has their roles swapped.
+            const ex =
+              current.find((a) => a.person_id === pid && a.role === sp.role && !keep.has(a.id)) ??
+              current.find(
+                (a) =>
+                  a.person_id === pid &&
+                  !keep.has(a.id) &&
+                  !fs.people.some((o) => "key" in o && o.key === sp.key && o.role === a.role),
+              );
             if (ex) {
               keep.add(ex.id);
               if (ex.role !== sp.role) {

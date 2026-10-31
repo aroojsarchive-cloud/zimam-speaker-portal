@@ -10,7 +10,7 @@ import { ConfirmDetails } from "@/components/ConfirmDetails";
 import { ContactCard } from "@/components/ContactCard";
 import { RunningLateBanner } from "@/components/Banners";
 import { Checklist } from "@/components/Checklist";
-import { needsSlides, prepSteps, type PrepEngagement } from "@/lib/prep";
+import { arriveBy, needsSlides, prepSteps, type PrepEngagement } from "@/lib/prep";
 import { CheckIn } from "@/components/CheckIn";
 import { eventDateKey, eventToday, formatDay, formatRange, formatTime, notFinished, shifted } from "@/lib/time";
 import { signOut } from "@/app/auth/confirm/actions";
@@ -58,6 +58,11 @@ async function MyEventContent() {
     detailsConfirmed: profile.details_status === "confirmed",
     guidelinesAck: !!profile.guidelines_ack_at,
     engagements: prep,
+    hosting: hosting.map((h) => {
+      const { onStage } = span(h);
+      const late = eventDateKey(onStage) === today ? (h.track.running_late_minutes ?? 0) : 0;
+      return { trackId: h.track.id, room: h.track.room, start: late ? shifted(onStage, late) : onStage, checkedInAt: h.checked_in_at };
+    }),
   });
 
   // One card per session, even if the person holds two roles in it.
@@ -98,7 +103,7 @@ async function MyEventContent() {
         />
       </div>
 
-      {n > 0 && (
+      {steps.length > 0 && (
         <div className="mt-4">
           <Checklist steps={steps} />
         </div>
@@ -111,7 +116,7 @@ async function MyEventContent() {
           </h2>
           <ul className="mt-3 space-y-3">
             {hosting.map((h) => {
-              const { start, end } = span(h);
+              const { start, end, onStage } = span(h);
               return (
                 <li key={h.track.id}>
                   <Link
@@ -124,9 +129,17 @@ async function MyEventContent() {
                       <span className="block text-white/80">
                         {formatDay(start)} · {formatRange(start, end)} · {h.track.room ?? "Room TBC"}
                       </span>
-                      <span className="mt-2 block font-semibold">Open your run sheet ›</span>
+                      <span className="mt-2 block font-semibold text-brand-soft">
+                        Be in {h.track.room ?? "the room"} by {formatTime(arriveBy(onStage))}
+                      </span>
+                      <span className="mt-1 block font-semibold">Open your run sheet ›</span>
                     </span>
                   </Link>
+                  {eventDateKey(onStage) === today && (
+                    <div className="mt-3">
+                      <CheckIn hostTrackId={h.track.id} checkedInAt={h.checked_in_at} />
+                    </div>
+                  )}
                 </li>
               );
             })}

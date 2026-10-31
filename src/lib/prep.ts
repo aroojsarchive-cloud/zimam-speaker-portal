@@ -1,4 +1,4 @@
-import { formatDay, formatTime } from "@/lib/time";
+import { eventDateKey, formatDay, formatTime } from "@/lib/time";
 
 // Preparation steps, shared by the speaker's checklist and the producer's tracker
 // so both always agree on what "done" means.
@@ -23,23 +23,24 @@ export type PrepEngagement = {
   checkedInAt: string | null;
 };
 
+/** A programme the person hosts (MC / co-chair): they must be there before its first session. */
+export type PrepHosting = { trackId: string; room: string | null; start: string; checkedInAt: string | null };
+
 export type StepKey = "details" | "guidelines" | "session" | "slides" | "brief" | "checkin";
 export type Step = { key: StepKey; label: string; detail: string; done: boolean; href: string | null };
 
 export const needsSlides = (e: PrepEngagement) => e.speaking && e.presents;
 export const arriveBy = (start: string) => new Date(new Date(start).getTime() - ARRIVE_BEFORE_MIN * 60000).toISOString();
 
-export function prepSteps(opts: { detailsConfirmed: boolean; guidelinesAck: boolean; engagements: PrepEngagement[] }): Step[] {
+export function prepSteps(opts: {
+  detailsConfirmed: boolean;
+  guidelinesAck: boolean;
+  engagements: PrepEngagement[];
+  hosting?: PrepHosting[];
+}): Step[] {
   const speaking = opts.engagements.filter((e) => e.speaking);
-  const steps: Step[] = [
-    {
-      key: "details",
-      label: "Check your name and details",
-      detail: "This is how you'll appear on screen and in print.",
-      done: opts.detailsConfirmed,
-      href: "#details-h",
-    },
-  ];
+  // Name and details are confirmed on the profile card right above the checklist, so not repeated here.
+  const steps: Step[] = [];
 
   if (speaking.length)
     steps.push({
@@ -87,16 +88,27 @@ export function prepSteps(opts: { detailsConfirmed: boolean; guidelinesAck: bool
     });
   }
 
-  if (speaking.length) {
-    const first = [...speaking].sort((a, b) => a.start.localeCompare(b.start)).find((e) => !e.checkedInAt) ?? null;
+  // Arrival: 20 minutes before whichever comes first, their own session or a programme they host.
+  // Hosting counts as done once they've checked in to any session that day.
+  const checkedDays = new Set(opts.engagements.filter((e) => e.checkedInAt).map((e) => eventDateKey(e.start)));
+  const arrivals = [
+    ...speaking
+      .filter((e) => !e.checkedInAt)
+      .map((e) => ({ start: e.start, room: e.room, href: `/sessions/${e.sessionId}`, hosting: false })),
+    ...(opts.hosting ?? [])
+      .filter((h) => !h.checkedInAt && !checkedDays.has(eventDateKey(h.start)))
+      .map((h) => ({ start: h.start, room: h.room, href: `/host/${h.trackId}`, hosting: true })),
+  ].sort((a, b) => a.start.localeCompare(b.start));
+  if (speaking.length || opts.hosting?.length) {
+    const first = arrivals[0] ?? null;
     steps.push({
       key: "checkin",
       label: first ? `On the day: be in ${first.room ?? "your room"} by ${formatTime(arriveBy(first.start))}` : "Checked in",
       detail: first
-        ? `${formatDay(first.start)}, ${ARRIVE_BEFORE_MIN} minutes before you start. Tap "I'm in the room" when you arrive.`
+        ? `${formatDay(first.start)}, ${ARRIVE_BEFORE_MIN} minutes before ${first.hosting ? "the programme you're hosting starts" : "you start"}. Tap "I'm in the room" when you arrive.`
         : "The team knows you're here.",
       done: !first,
-      href: first ? `/sessions/${first.sessionId}` : null,
+      href: first?.href ?? null,
     });
   }
   return steps;

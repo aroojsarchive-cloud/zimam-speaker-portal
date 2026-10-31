@@ -1,5 +1,5 @@
 {
-  "source": "ZIMAM DHF Programme 2026 - 4th November.docx (1).pdf (Days 1-2); Day 3 from v5",
+  "source": "ZIMAM DHF Programme 2026 (3).docx (31 Oct); Day 3 from v5",
   "event": {
     "name": "9th ZIMAM Digital Health Forum",
     "slug": "zimam-2026",
@@ -197,14 +197,6 @@
       "key": "justin",
       "salutation": "Dr",
       "full_name": "Justin Thomas",
-      "title": null,
-      "organisation": null,
-      "country": null
-    },
-    {
-      "key": "valle",
-      "salutation": "Dr",
-      "full_name": "Melisa Valle",
       "title": null,
       "organisation": null,
       "country": null
@@ -515,6 +507,38 @@
       "title": null,
       "organisation": null,
       "country": "Portugal"
+    },
+    {
+      "key": "steff",
+      "salutation": null,
+      "full_name": "Steff Riet T Taelman",
+      "title": "Senior Researcher - Data Driven Health",
+      "organisation": "VITO (Flemish Institute of Technological Research)",
+      "country": null
+    },
+    {
+      "key": "monali",
+      "salutation": null,
+      "full_name": "Monali Thakker",
+      "title": null,
+      "organisation": null,
+      "country": null
+    },
+    {
+      "key": "jen-bf",
+      "salutation": "Dr",
+      "full_name": "Jen Bichel-Findlay",
+      "title": "Adjunct Fellow, University of Technology Sydney; Chair, CHIA Examination Committee",
+      "organisation": "Australasian Institute of Digital Health",
+      "country": "Australia"
+    },
+    {
+      "key": "mostafa-salem",
+      "salutation": "Dr",
+      "full_name": "Mostafa Salem",
+      "title": "Research Scientist",
+      "organisation": "Mohamed bin Zayed University of Artificial Intelligence",
+      "country": "UAE"
     }
   ],
   "days": [
@@ -541,7 +565,7 @@
             {
               "start": "08:55",
               "end": "09:20",
-              "title": "Responsible Governance in the Age of Agentic AI: Safety, Accountability and Trust in Clinical Practice",
+              "title": "Responsible Governance in the Implementation of Generative AI: Safety, Accountability and Trust in Clinical Practice",
               "format": "keynote",
               "type": "speaking",
               "people": [
@@ -620,6 +644,11 @@
                   "key": "kholoud",
                   "role": "panelist",
                   "status": "invited"
+                },
+                {
+                  "key": "steff",
+                  "role": "panelist",
+                  "status": "tbc"
                 }
               ],
               "label": "Executive Panel",
@@ -697,11 +726,6 @@
                   "status": "invited"
                 },
                 {
-                  "key": "valle",
-                  "role": "panelist",
-                  "status": "confirmed"
-                },
-                {
                   "key": "pattison",
                   "role": "panelist",
                   "status": "confirmed"
@@ -763,9 +787,9 @@
                   "status": "invited"
                 },
                 {
-                  "tbc": "Speaker (TBC), eClinicalWorks",
+                  "key": "monali",
                   "role": "speaker",
-                  "presents": false
+                  "status": "invited"
                 }
               ],
               "label": "UAE Insights · Fireside Chat"
@@ -1218,7 +1242,7 @@
                   "presents": false
                 },
                 {
-                  "key": "shivers",
+                  "key": "amlung",
                   "role": "panelist",
                   "status": "invited"
                 },
@@ -1296,7 +1320,7 @@
         {
           "name": "ZIMAM Digital Health Innovation Awards",
           "strapline": "Awards evening",
-          "room": null,
+          "room": "Main Ballroom",
           "colour": "#B8862B",
           "sessions": [
             {
@@ -1414,13 +1438,14 @@
             {
               "start": "09:50",
               "end": "10:10",
-              "title": "Incorporating AI in Digital Health Competency-based Frameworks",
+              "title": "The Refinement of the Australian Health Informatics Competency Framework for the Health Informatics Profession",
               "format": "lecture",
               "type": "speaking",
               "people": [
                 {
-                  "tbc": "Australasian Institute of Digital Health (AIDH) speaker, online",
+                  "key": "jen-bf",
                   "role": "speaker",
+                  "status": "invited",
                   "presents": true
                 }
               ],
@@ -1443,11 +1468,6 @@
                   "key": "brian-f",
                   "role": "panelist",
                   "status": "invited"
-                },
-                {
-                  "key": "shadi",
-                  "role": "panelist",
-                  "status": "confirmed"
                 },
                 {
                   "key": "umit",
@@ -1494,6 +1514,11 @@
               "people": [
                 {
                   "key": "ghose",
+                  "role": "moderator",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "ghose",
                   "role": "keynote",
                   "status": "confirmed",
                   "presents": true
@@ -1514,7 +1539,7 @@
             {
               "start": "11:55",
               "end": "12:10",
-              "title": "Bridging the Talent Gap in AI Governance",
+              "title": "From Workforce Planning to Work Engineering: Redesigning Healthcare Organisations for the AI Era",
               "format": "keynote",
               "type": "speaking",
               "people": [
@@ -1586,8 +1611,9 @@
                   "presents": true
                 },
                 {
-                  "tbc": "MBZUAI speaker (TBC)",
+                  "key": "mostafa-salem",
                   "role": "panelist",
+                  "status": "invited",
                   "presents": true
                 }
               ],

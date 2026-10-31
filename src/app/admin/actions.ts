@@ -90,6 +90,17 @@ export async function setCheckedIn(assignmentId: string, here: boolean): Promise
   return { ok: true };
 }
 
+export async function setHostCheckedIn(hostId: string, here: boolean): Promise<Result> {
+  await requireProducer();
+  const { error } = await (await createClient())
+    .from("track_hosts")
+    .update({ checked_in_at: here ? new Date().toISOString() : null })
+    .eq("id", hostId);
+  if (error) return { ok: false, message: "Couldn't update check-in." };
+  revalidatePath("/admin/live");
+  return { ok: true };
+}
+
 /** Whether this person presents slides in this session (drives their "Upload your presentation" step). */
 export async function setPresents(assignmentId: string, presents: boolean): Promise<Result> {
   await requireProducer();

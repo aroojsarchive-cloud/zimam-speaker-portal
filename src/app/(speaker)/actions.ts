@@ -42,6 +42,14 @@ export async function acknowledgeChanges(): Promise<Result> {
   return { ok: true };
 }
 
+export async function hostCheckIn(trackId: string): Promise<Result> {
+  const { error } = await (await createClient()).rpc("host_check_in", { p_track: trackId });
+  if (error) return { ok: false, message: "Check-in opens on the day." };
+  revalidatePath(`/host/${trackId}`);
+  revalidatePath("/");
+  return { ok: true };
+}
+
 export async function checkIn(assignmentId: string, sessionId: string): Promise<Result> {
   const { error } = await (await createClient()).rpc("check_in", { p_assignment: assignmentId });
   if (error) return { ok: false, message: "Check-in opens on the day of your session." };

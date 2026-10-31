@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 
 // Everything here runs as the signed-in user, so row-level security decides
@@ -88,7 +89,8 @@ export type Engagement = {
   session: SessionInfo & { track: TrackInfo; notes: { kind: string; updated_at: string }[] };
 };
 
-export async function getMyEngagements(personId: string): Promise<Engagement[]> {
+// Cached per request: the home page and the changes pop-up both need it.
+export const getMyEngagements = cache(async (personId: string): Promise<Engagement[]> => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("assignments")
@@ -98,7 +100,7 @@ export async function getMyEngagements(personId: string): Promise<Engagement[]> 
     .eq("person_id", personId);
   if (error) throw new Error(error.message);
   return ((data ?? []) as unknown as Engagement[]).sort((a, b) => a.session.start_time.localeCompare(b.session.start_time));
-}
+});
 
 export type StageMember = { role: string; status: string; person: PersonCard };
 
@@ -188,7 +190,12 @@ export async function getAgenda(eventId: string): Promise<AgendaDay[]> {
 
 export type Hosting = {
   role: string;
-  track: TrackInfo & { short_name: string | null; day: { date: string }; sessions: { start_time: string; end_time: string }[] };
+  checked_in_at: string | null;
+  track: TrackInfo & {
+    short_name: string | null;
+    day: { date: string };
+    sessions: { start_time: string; end_time: string; session_type: "speaking" | "non_speaking" }[];
+  };
 };
 
 /** Programmes this person hosts as MC or (co-)chair. */
@@ -197,7 +204,7 @@ export async function getMyHosting(personId: string): Promise<Hosting[]> {
   const { data, error } = await supabase
     .from("track_hosts")
     .select(
-      "role, track:tracks!inner(id, name, short_name, room, colour, strapline, running_late_minutes, day:days!inner(date), sessions(start_time, end_time))",
+      "role, checked_in_at, track:tracks!inner(id, name, short_name, room, colour, strapline, running_late_minutes, day:days!inner(date), sessions(start_time, end_time, session_type))",
     )
     .eq("person_id", personId);
   if (error) throw new Error(error.message);
@@ -206,10 +213,12 @@ export async function getMyHosting(personId: string): Promise<Hosting[]> {
     .sort((a, b) => a.track.day.date.localeCompare(b.track.day.date) || span(a).start.localeCompare(span(b).start));
 }
 
-/** First start and last end of a hosted programme. */
+/** First start and last end of a hosted programme, and when the host is on (first non-break session). */
 export const span = (h: Hosting) => ({
   start: h.track.sessions.map((s) => s.start_time).sort()[0],
   end: h.track.sessions.map((s) => s.end_time).sort().at(-1)!,
+  onStage: (h.track.sessions.filter((s) => s.session_type === "speaking").map((s) => s.start_time).sort()[0] ??
+    h.track.sessions.map((s) => s.start_time).sort()[0]),
 });
 
 export type RunSheetSession = SessionInfo & {
@@ -241,7 +250,7 @@ export async function getRunSheet(trackId: string) {
       .order("sequence"),
     supabase
       .from("track_hosts")
-      .select("role, sort_order, person:people!inner(id, salutation, full_name, title, organisation)")
+      .select("id, role, sort_order, checked_in_at, person:people!inner(id, salutation, full_name, title, organisation)")
       .eq("track_id", trackId)
       .order("sort_order"),
   ]);
@@ -250,7 +259,12 @@ export async function getRunSheet(trackId: string) {
   return {
     track: track.data as unknown as TrackInfo & { short_name: string | null; day: { date: string } },
     sessions: (sessions.data ?? []) as unknown as RunSheetSession[],
-    hosts: (hosts.data ?? []) as unknown as { role: string; person: Pick<PersonCard, "id" | "salutation" | "full_name" | "title" | "organisation"> }[],
+    hosts: (hosts.data ?? []) as unknown as {
+      id: string;
+      role: string;
+      checked_in_at: string | null;
+      person: Pick<PersonCard, "id" | "salutation" | "full_name" | "title" | "organisation">;
+    }[],
   };
 }
 

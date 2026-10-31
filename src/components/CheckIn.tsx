@@ -1,9 +1,20 @@
 "use client";
 import { useState, useTransition } from "react";
-import { checkIn } from "@/app/(speaker)/actions";
+import { checkIn, hostCheckIn } from "@/app/(speaker)/actions";
 import { formatTime } from "@/lib/time";
 
-export function CheckIn({ assignmentId, sessionId, checkedInAt }: { assignmentId: string; sessionId: string; checkedInAt: string | null }) {
+/** Pass assignmentId + sessionId for a speaker, or hostTrackId for an MC / co-chair. */
+export function CheckIn({
+  assignmentId,
+  sessionId,
+  hostTrackId,
+  checkedInAt,
+}: {
+  assignmentId?: string;
+  sessionId?: string;
+  hostTrackId?: string;
+  checkedInAt: string | null;
+}) {
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
   if (checkedInAt)
@@ -20,7 +31,7 @@ export function CheckIn({ assignmentId, sessionId, checkedInAt }: { assignmentId
         disabled={pending}
         onClick={() =>
           start(async () => {
-            const r = await checkIn(assignmentId, sessionId);
+            const r = hostTrackId ? await hostCheckIn(hostTrackId) : await checkIn(assignmentId!, sessionId!);
             setError(r.ok ? null : r.message);
           })
         }

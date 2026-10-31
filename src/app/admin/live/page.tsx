@@ -41,7 +41,7 @@ type Session = {
     sort_order: number;
     running_late_minutes: number;
     running_late_updated_at: string | null;
-    hosts: { role: string; sort_order: number; person: { salutation: string | null; full_name: string } }[];
+    hosts: { id: string; role: string; sort_order: number; checked_in_at: string | null; person: { salutation: string | null; full_name: string } }[];
   };
   assignments: Assignment[];
 };
@@ -100,7 +100,7 @@ async function Live({ searchParams }: { searchParams: PageProps<"/admin/live">["
   const { data, error } = await (await createClient())
     .from("sessions")
     .select(
-      "id, title, start_time, end_time, session_type, track:tracks!inner(id, name, room, sort_order, running_late_minutes, running_late_updated_at, hosts:track_hosts(role, sort_order, person:people!inner(salutation, full_name))), assignments(id, role, checked_in_at, person:people!inner(salutation, full_name, is_placeholder))",
+      "id, title, start_time, end_time, session_type, track:tracks!inner(id, name, room, sort_order, running_late_minutes, running_late_updated_at, hosts:track_hosts(id, role, sort_order, checked_in_at, person:people!inner(salutation, full_name))), assignments(id, role, checked_in_at, person:people!inner(salutation, full_name, is_placeholder))",
     )
     .eq("status", "published")
     .order("start_time");
@@ -149,6 +149,11 @@ async function Live({ searchParams }: { searchParams: PageProps<"/admin/live">["
     })
     .filter((r) => r.current || r.next);
 
+  const missingHosts = columns.flatMap((r) => {
+    const due = r.sessions.find((s) => s.session_type === "speaking")?.start_time;
+    if (!due || (new Date(due).getTime() - now) / 60000 > WARN_MIN) return [];
+    return r.track.hosts.filter((h) => !h.checked_in_at);
+  });
   const missing = columns.flatMap((r) =>
     [r.current, r.next]
       .filter((s): s is Session => !!s && s.session_type === "speaking" && (new Date(s.start_time).getTime() - now) / 60000 <= WARN_MIN)
@@ -221,9 +226,9 @@ async function Live({ searchParams }: { searchParams: PageProps<"/admin/live">["
         </p>
       ) : (
         <>
-          <p className={`mt-4 rounded-2xl px-5 py-3 font-semibold ${missing.length ? "bg-danger/10 text-danger" : "bg-success/10 text-success"}`}>
-            {missing.length
-              ? `${missing.length} ${missing.length === 1 ? "person" : "people"} due on stage within ${WARN_MIN} minutes not checked in`
+          <p className={`mt-4 rounded-2xl px-5 py-3 font-semibold ${missing.length + missingHosts.length ? "bg-danger/10 text-danger" : "bg-success/10 text-success"}`}>
+            {missing.length + missingHosts.length
+              ? `${missing.length + missingHosts.length} ${missing.length + missingHosts.length === 1 ? "person" : "people"} due on stage within ${WARN_MIN} minutes not checked in`
               : "Everyone due on stage in the next 20 minutes is here"}
           </p>
           <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -231,14 +236,34 @@ async function Live({ searchParams }: { searchParams: PageProps<"/admin/live">["
               <section key={r.track.id} className="rounded-2xl bg-surface p-5 shadow-[0_1px_0_var(--line)]">
                 <h2 className="font-display text-2xl font-semibold">{r.track.room ?? "Room TBC"}</h2>
                 <p className="text-sm text-ink-muted">{r.track.name}</p>
-                {r.track.hosts.length > 0 && (
-                  <p className="text-sm">
-                    {[...r.track.hosts]
-                      .sort((a, b) => a.sort_order - b.sort_order)
-                      .map((h) => `${roleLabel(h.role)}: ${displayName(h.person)}`)
-                      .join(" · ")}
-                  </p>
-                )}
+                {[...r.track.hosts]
+                  .sort((a, b) => a.sort_order - b.sort_order)
+                  .map((h) => {
+                    // Hosts are due before the room's first speaking session of the day.
+                    const due = r.sessions.find((s) => s.session_type === "speaking")?.start_time;
+                    const urgent = !!due && (new Date(due).getTime() - now) / 60000 <= WARN_MIN;
+                    return (
+                      <div
+                        key={h.id}
+                        className={`mt-2 flex items-center justify-between gap-2 rounded-xl px-3 py-2 text-sm ${
+                          h.checked_in_at ? "bg-success/10" : urgent ? "bg-danger/10" : "bg-paper"
+                        }`}
+                      >
+                        <span>
+                          <span className="text-ink-muted">{roleLabel(h.role)}: </span>
+                          <span className="font-semibold">{displayName(h.person)}</span>
+                        </span>
+                        <span className="flex items-center gap-2">
+                          {h.checked_in_at ? (
+                            <span className="font-semibold text-success">✓ {formatTime(h.checked_in_at)}</span>
+                          ) : (
+                            urgent && <span className="font-semibold text-danger">Not here</span>
+                          )}
+                          <LiveTick hostId={h.id} here={!!h.checked_in_at} />
+                        </span>
+                      </div>
+                    );
+                  })}
                 <div className="mb-3" />
                 <RoomDelay
                   trackId={r.track.id}
