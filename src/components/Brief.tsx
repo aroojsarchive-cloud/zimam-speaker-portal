@@ -8,7 +8,7 @@ export function Brief({ note, me, meName = null, fileUrl }: { note: ConceptNote 
     return (
       <div className="rounded-2xl bg-paper px-5 py-4">
         <p className="font-semibold">Your brief is being finalised</p>
-        <p className="mt-0.5 text-[0.95rem] text-ink-muted">We&apos;ll email you when it&apos;s ready.</p>
+        <p className="mt-0.5 text-[0.95rem] text-ink-muted">It will appear here as soon as it&apos;s ready.</p>
       </div>
     );
 

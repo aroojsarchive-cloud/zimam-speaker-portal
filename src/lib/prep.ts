@@ -58,7 +58,7 @@ export function prepSteps(opts: {
       label: speaking.length > 1 ? "Check your sessions" : "Check your session",
       detail: todo.length
         ? "Read the running order and who you're on stage with."
-        : `All ${speaking.length > 1 ? `${speaking.length} sessions` : "done"} checked.`,
+        : speaking.length > 1 ? `All ${speaking.length} sessions checked.` : "Done, thank you.",
       done: todo.length === 0,
       href: todo[0] ? `/sessions/${todo[0].sessionId}#review` : null,
     });

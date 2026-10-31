@@ -179,7 +179,7 @@ async function MyEventContent() {
         hosting.length > 0 ? null : (
         <div className="mt-8 rounded-3xl bg-surface p-6 shadow-[0_1px_0_var(--line)]">
           <p className="font-semibold">Your sessions are being finalised</p>
-          <p className="mt-1 text-ink-muted">We&apos;ll email you as soon as your session details are ready.</p>
+          <p className="mt-1 text-ink-muted">Your session details will appear here as soon as they&apos;re ready.</p>
         </div>
         )
       ) : (
