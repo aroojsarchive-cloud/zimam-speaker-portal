@@ -5,7 +5,8 @@ import { displayName, roleLabel } from "@/lib/labels";
 import { formatDay, formatRange } from "@/lib/time";
 
 // What a speaker last acknowledged, per session. Short keys: this lives in a jsonb column.
-type SessionSnap = { t: string; s: string; e: string; r: string | null; roles: string[]; p: string[] };
+// p: co-speaker names; i: their person ids in the same order (older snapshots have no i).
+type SessionSnap = { t: string; s: string; e: string; r: string | null; roles: string[]; p: string[]; i?: string[] };
 export type Snapshot = Record<string, SessionSnap>;
 export type Notice = { sessionId: string | null; title: string; lines: string[] };
 
@@ -13,7 +14,7 @@ export type Notice = { sessionId: string | null; title: string; lines: string[] 
 export async function buildSnapshot(personId: string): Promise<Snapshot> {
   const engagements = await getMyEngagements(personId);
   const ids = [...new Set(engagements.map((e) => e.session.id))];
-  const others = new Map<string, string[]>();
+  const others = new Map<string, { id: string; name: string }[]>();
   if (ids.length) {
     const { data, error } = await (await createClient())
       .from("assignments")
@@ -22,7 +23,8 @@ export async function buildSnapshot(personId: string): Promise<Snapshot> {
     if (error) throw new Error(error.message);
     for (const a of (data ?? []) as unknown as { session_id: string; person: { id: string; salutation: string | null; full_name: string; is_placeholder: boolean } }[]) {
       if (a.person.id === personId || a.person.is_placeholder) continue;
-      others.set(a.session_id, [...(others.get(a.session_id) ?? []), displayName(a.person)]);
+      const list = others.get(a.session_id) ?? [];
+      if (!list.some((o) => o.id === a.person.id)) others.set(a.session_id, [...list, { id: a.person.id, name: displayName(a.person) }]);
     }
   }
   const snap: Snapshot = {};
@@ -30,7 +32,8 @@ export async function buildSnapshot(personId: string): Promise<Snapshot> {
     const s = e.session;
     const hit = snap[s.id];
     if (hit) hit.roles = [...hit.roles, e.role].sort();
-    else
+    else {
+      const co = [...(others.get(s.id) ?? [])].sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id));
       snap[s.id] = {
         t: s.title,
         // Normalised so timestamp formatting differences never count as a change.
@@ -38,8 +41,10 @@ export async function buildSnapshot(personId: string): Promise<Snapshot> {
         e: new Date(s.end_time).toISOString(),
         r: s.track.room,
         roles: [e.role],
-        p: [...new Set(others.get(s.id) ?? [])].sort(),
+        p: co.map((o) => o.name),
+        i: co.map((o) => o.id),
       };
+    }
   }
   return snap;
 }
@@ -61,8 +66,10 @@ export function diffSnapshots(before: Snapshot, now: Snapshot): Notice[] {
     if (old.r !== cur.r) lines.push(`New room: ${cur.r ?? "to be confirmed"} (was ${old.r ?? "to be confirmed"}).`);
     if (old.t !== cur.t) lines.push(`New title (was “${old.t}”).`);
     if (old.roles.join() !== cur.roles.join()) lines.push(`Your role is now ${roles(cur.roles)} (was ${roles(old.roles)}).`);
-    const joined = cur.p.filter((n) => !old.p.includes(n));
-    const left = old.p.filter((n) => !cur.p.includes(n));
+    // Compare people by id when we can, so a corrected spelling isn't announced as a swap.
+    const byId = old.i && cur.i;
+    const joined = byId ? cur.p.filter((_, k) => !old.i!.includes(cur.i![k])) : cur.p.filter((n) => !old.p.includes(n));
+    const left = byId ? old.p.filter((_, k) => !cur.i!.includes(old.i![k])) : old.p.filter((n) => !cur.p.includes(n));
     if (joined.length) lines.push(`Joining you: ${joined.join(", ")}.`);
     if (left.length) lines.push(`No longer on this session: ${left.join(", ")}.`);
     if (lines.length) notices.push({ sessionId: id, title: cur.t, lines });
