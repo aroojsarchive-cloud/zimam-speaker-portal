@@ -236,7 +236,7 @@
     {
       "key": "nour",
       "salutation": "Ms",
-      "full_name": "Nour El Arnaout",
+      "full_name": "Nour El Arnout",
       "title": null,
       "organisation": null,
       "country": null
@@ -494,7 +494,7 @@
     {
       "key": "taghreed",
       "salutation": "Dr",
-      "full_name": "Taghreed Jastniya",
+      "full_name": "Taghreed Justinia",
       "title": null,
       "organisation": null,
       "country": null,
@@ -1733,81 +1733,6 @@
             }
           ],
           "short_name": "Competency Workshop"
-        },
-        {
-          "name": "Regenstrief Terminology Workshop (Day 1 of 2)",
-          "strapline": "Trusted Data, Connected Care: A Regenstrief Institute Terminology Workshop",
-          "room": "Room 2",
-          "colour": "#1F6F8B",
-          "sessions": [
-            {
-              "start": "09:00",
-              "end": "17:00",
-              "title": "Trusted Data, Connected Care: Day 1",
-              "format": "workshop",
-              "description": "Two-day terminology and semantic interoperability workshop co-hosted by ZIMAM and the Regenstrief Institute, developer and steward of LOINC.",
-              "people": [
-                {
-                  "key": "dixon",
-                  "role": "speaker",
-                  "status": "invited",
-                  "presents": true
-                },
-                {
-                  "key": "rachel",
-                  "role": "speaker",
-                  "status": "confirmed",
-                  "presents": true
-                },
-                {
-                  "tbc": "Further facilitators (TBC)",
-                  "role": "speaker",
-                  "presents": false
-                }
-              ]
-            }
-          ],
-          "short_name": "Regenstrief Workshop"
-        }
-      ]
-    },
-    {
-      "date": "2026-11-06",
-      "label": "Post-Forum Workshop",
-      "tracks": [
-        {
-          "name": "Regenstrief Terminology Workshop (Day 2 of 2)",
-          "strapline": "Trusted Data, Connected Care: A Regenstrief Institute Terminology Workshop",
-          "room": "Room 2",
-          "colour": "#1F6F8B",
-          "sessions": [
-            {
-              "start": "09:00",
-              "end": "17:00",
-              "title": "Trusted Data, Connected Care: Day 2",
-              "format": "workshop",
-              "people": [
-                {
-                  "key": "dixon",
-                  "role": "speaker",
-                  "status": "invited",
-                  "presents": true
-                },
-                {
-                  "key": "rachel",
-                  "role": "speaker",
-                  "status": "confirmed",
-                  "presents": true
-                },
-                {
-                  "tbc": "Further facilitators (TBC)",
-                  "role": "speaker",
-                  "presents": false
-                }
-              ]
-            }
-          ],
-          "short_name": "Regenstrief Workshop"
         }
       ]
     }

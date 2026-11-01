@@ -6,7 +6,7 @@ export const eventConfig = {
   slug: "zimam-2026",
   name: "9th ZIMAM Digital Health Forum",
   shortName: "ZIMAM",
-  dates: "4–6 November 2026",
+  dates: "4–5 November 2026",
   venue: "Jumeirah Emirates Towers, Dubai",
   timezone: "Asia/Dubai",
   timezoneLabel: "Dubai time (GST)",

@@ -185,7 +185,8 @@ export async function getAgenda(eventId: string): Promise<AgendaDay[]> {
     for (const t of d.tracks) t.sessions.sort((a, b) => a.sequence - b.sequence);
     d.tracks = d.tracks.filter((t) => t.sessions.length > 0);
   }
-  return days;
+  // A day whose sessions are all hidden isn't shown at all.
+  return days.filter((d) => d.tracks.length > 0);
 }
 
 export type Hosting = {
