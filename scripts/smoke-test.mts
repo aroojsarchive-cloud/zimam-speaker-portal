@@ -165,7 +165,12 @@ async function main() {
     await page(`/host/${other.id}`, c, { status: 404 });
     const agenda = await page("/agenda", c, { contains: ["Programme at a glance", "At a glance", "subject to change"] });
     const tabs = [...new Set([...agenda.matchAll(/href="\/agenda\?tab=([^"&]+)"/g)].map((m) => m[1]))];
-    check("agenda has At a glance + 5 programme tabs", tabs.length === 6, tabs);
+    // Same rule as the agenda: a day with 2+ programmes gets a tab each, otherwise one tab for the day.
+    const perDay = await sql`select d.id, count(*) filter (where n > 1) multi, count(*) any from days d join (
+      select t.day_id, t.id, count(s.id) n from tracks t join sessions s on s.track_id = t.id and s.status = 'published' group by 1, 2
+    ) x on x.day_id = d.id where d.event_id = ${ev.id} group by d.id`;
+    const expected = 1 + perDay.reduce((n, d) => n + (Number(d.multi) >= 2 ? Number(d.multi) : 1), 0);
+    check(`agenda has At a glance + ${expected - 1} programme tabs`, tabs.length === expected, tabs);
     let photoCount = 0;
     for (const t of tabs) photoCount += ((await page(`/agenda?tab=${t}`, c)).match(/\/storage\/v1\/object\/sign\/photos\//g) ?? []).length;
     check("speaker photos appear on the agenda", photoCount > 10, photoCount);
