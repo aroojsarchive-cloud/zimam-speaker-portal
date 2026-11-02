@@ -1,3 +1,5 @@
+import { eventConfig } from "@/config/event";
+
 const ROLE: Record<string, string> = {
   moderator: "Moderator",
   panelist: "Panelist",
@@ -32,7 +34,13 @@ const FORMAT: Record<string, string> = {
 };
 export const formatLabel = (f: string) => FORMAT[f] ?? f;
 
-export const displayName = (p: { salutation: string | null; full_name: string }) =>
+/** "Meeting Room A, Level 8" → big "Meeting Room A", small "Level 8 · Jumeirah Emirates Towers, Dubai". */
+export const roomParts = (room: string | null) => {
+  const [name, ...rest] = (room ?? "").split(", ");
+  return { name: name || "TBC", where: [...rest, eventConfig.venue].join(" · ") };
+};
+
+export const displayName =(p: { salutation: string | null; full_name: string }) =>
   [p.salutation, p.full_name].filter(Boolean).join(" ");
 
 const TITLES = new Set(["dr", "prof", "mr", "mrs", "ms", "miss", "he", "eng", "sir", "dame"]);

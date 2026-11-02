@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { eventConfig as ev } from "@/config/event";
-import { roleLabel } from "@/lib/labels";
+import { roleLabel, roomParts } from "@/lib/labels";
 import { formatDay, formatRange, formatTime, shifted } from "@/lib/time";
 import type { Engagement } from "@/lib/speaker-data";
 
@@ -39,9 +39,10 @@ export function BoardingCard({
         </div>
         <div className="text-right">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">Room</p>
-          <p className="whitespace-nowrap text-[1.85rem] font-semibold leading-none">{s.track.room ?? "TBC"}</p>
+          <p className="text-[1.85rem] font-semibold leading-none">{roomParts(s.track.room).name}</p>
         </div>
       </div>
+      <p className="-mt-2 px-5 pb-3 text-right text-sm text-ink-muted">{roomParts(s.track.room).where}</p>
 
       {lateBy > 0 && (
         <p className="-mt-2 px-5 pb-3 text-sm font-semibold text-warning">

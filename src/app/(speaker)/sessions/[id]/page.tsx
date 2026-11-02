@@ -6,7 +6,7 @@ import { eventConfig as ev } from "@/config/event";
 import { getMe } from "@/lib/me";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionDetail, signedUrls } from "@/lib/speaker-data";
-import { displayName, formatLabel, roleLabel } from "@/lib/labels";
+import { displayName, formatLabel, roleLabel, roomParts } from "@/lib/labels";
 import { eventDateKey, eventToday, formatLongDay, formatRange, formatTime, minutesBetween, shifted } from "@/lib/time";
 import { RunningOrder } from "@/components/RunningOrder";
 import { ScheduleNotice } from "@/components/ScheduleNotice";
@@ -87,9 +87,10 @@ async function SessionContent({ params }: { params: PageProps<"/sessions/[id]">[
             </div>
             <div className="text-right">
               <dt className="text-xs font-semibold uppercase tracking-[0.12em] text-white/60">Room</dt>
-              <dd className="text-[1.9rem] font-semibold leading-none">{s.track.room ?? "TBC"}</dd>
+              <dd className="text-[1.9rem] font-semibold leading-none">{roomParts(s.track.room).name}</dd>
             </div>
           </dl>
+          <p className="mt-2 text-right text-sm text-white/70">{roomParts(s.track.room).where}</p>
           {lateBy > 0 && (
             <p role="status" className="mt-3 rounded-lg bg-warning px-3 py-2 text-sm font-semibold text-white">
               {s.track.room ?? "This room"} is running about {lateBy} minutes late. This session should now start around{" "}
