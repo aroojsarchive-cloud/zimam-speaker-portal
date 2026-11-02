@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { eventConfig as ev } from "@/config/event";
 import { firstName, getMe } from "@/lib/me";
 import { getEventInfo, getMyEngagements, getMyHosting, getMyProfile, signedUrls, span, type Engagement } from "@/lib/speaker-data";
-import { displayName, roleLabel } from "@/lib/labels";
+import { displayName, joinsOnline, roleLabel } from "@/lib/labels";
 import { BoardingCard } from "@/components/BoardingCard";
 import { ConfirmDetails } from "@/components/ConfirmDetails";
 import { ContactCard } from "@/components/ContactCard";
@@ -53,6 +53,7 @@ async function MyEventContent() {
     presents: e.presents,
     briefPublished: e.session.notes.some((x) => x.kind === "published"),
     checkedInAt: e.checked_in_at,
+    online: joinsOnline(e.session, profile.full_name),
   }));
   const steps = prepSteps({
     detailsConfirmed: profile.details_status === "confirmed",
@@ -189,6 +190,7 @@ async function MyEventContent() {
               <BoardingCard
                 e={e}
                 roles={roles}
+                online={joinsOnline(e.session, profile.full_name)}
                 lateBy={eventDateKey(e.session.start_time) === today ? (e.session.track.running_late_minutes ?? 0) : 0}
                 slides={(() => {
                   const mine = prep.filter((p) => p.sessionId === e.session.id && needsSlides(p));

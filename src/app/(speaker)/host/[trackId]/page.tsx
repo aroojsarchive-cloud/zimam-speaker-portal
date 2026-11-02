@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getMe } from "@/lib/me";
 import { getRunSheet, type RunSheetSession } from "@/lib/speaker-data";
-import { displayName, formatLabel, roleLabel } from "@/lib/labels";
+import { displayName, formatLabel, joinsOnline, roleLabel } from "@/lib/labels";
 import { eventDateKey, eventToday, formatLongDay, formatRange, formatTime, nowMs, shifted } from "@/lib/time";
 import { ScheduleNotice } from "@/components/ScheduleNotice";
 import { RunningLateBanner } from "@/components/Banners";
@@ -121,6 +121,9 @@ async function RunSheet({ params }: { params: PageProps<"/host/[trackId]">["para
                     <li key={`${a.person.id}-${a.role}-${i}`} className="leading-snug">
                       <span className="text-sm text-ink-muted">{roleLabel(a.role)}: </span>
                       <span className="font-semibold">{a.person.is_placeholder ? a.person.full_name : displayName(a.person)}</span>
+                      {!a.person.is_placeholder && joinsOnline(s, a.person.full_name) && (
+                        <span className="ml-1.5 rounded-full bg-brand-soft px-2 py-0.5 text-xs font-bold uppercase text-brand-strong">Online</span>
+                      )}
                       {isToday && a.checked_in_at && <span className="ml-1.5 font-semibold text-success">✓</span>}
                       {!a.person.is_placeholder && introLine(a.person) && (
                         <span className="block text-[0.95rem] text-ink-muted">{introLine(a.person)}</span>

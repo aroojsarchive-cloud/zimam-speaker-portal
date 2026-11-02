@@ -1,5 +1,5 @@
 {
-  "source": "ZIMAM DHF Programme 2026 (3).docx (31 Oct); Day 3 from v5",
+  "source": "ZIMAM DHF Programme 2026 - final.docx (3).pdf (2 Nov, from Dr Osama)",
   "event": {
     "name": "9th ZIMAM Digital Health Forum",
     "slug": "zimam-2026",
@@ -372,7 +372,7 @@
     {
       "key": "hadidi",
       "salutation": "Dr",
-      "full_name": "Mohammed El-Hadidi",
+      "full_name": "Mohamed El-Hadidi",
       "title": null,
       "organisation": "University of Birmingham Dubai",
       "country": "UAE"
@@ -549,7 +549,7 @@
         {
           "name": "Official Opening & Plenary",
           "strapline": "Building the Future of Digital Health: Vision, Partnership and Action",
-          "room": "Main Ballroom",
+          "room": "Ballroom",
           "colour": "#F15922",
           "sessions": [
             {
@@ -670,7 +670,7 @@
               "format": "break",
               "type": "non_speaking",
               "people": [],
-              "description": "Delegates move to the HIE Summit (Room 2) and Health AI Summit (Room 1)."
+              "description": "Delegates move to the HIE Summit (Ballroom Room 1) and the Health AI Summit (Ballroom Room 2)."
             }
           ],
           "short_name": "Opening & Plenary"
@@ -678,7 +678,7 @@
         {
           "name": "Health AI Summit",
           "strapline": "Intelligence with Accountability: Shaping the Future of Health AI in the MENA Region",
-          "room": "Room 1",
+          "room": "Ballroom Room 2",
           "colour": "#1F6F8B",
           "sessions": [
             {
@@ -804,23 +804,7 @@
             },
             {
               "start": "14:00",
-              "end": "14:15",
-              "title": "Vendor session (title TBC)",
-              "format": "lecture",
-              "type": "speaking",
-              "people": [
-                {
-                  "tbc": "Vendor (TBC)",
-                  "role": "speaker",
-                  "presents": true
-                }
-              ],
-              "label": "Vendor Insights",
-              "block": "Afternoon · Scaling Responsible AI"
-            },
-            {
-              "start": "14:15",
-              "end": "14:55",
+              "end": "14:40",
               "title": "Scaling Responsible AI for Health in Low-Resource Settings",
               "format": "panel",
               "type": "speaking",
@@ -852,11 +836,12 @@
                 }
               ],
               "label": "Discussion Panel",
-              "description": "The panel explores opportunities and challenges in scaling responsible AI for health in low-resource settings, emphasising equity, governance and sustainability. It also highlights practical strategies to implement private and cost-effective infrastructure to enable open-source LLMs and agentic AI solutions."
+              "description": "The panel explores opportunities and challenges in scaling responsible AI for health in low-resource settings, emphasising equity, governance and sustainability. It also highlights practical strategies to implement private and cost-effective infrastructure to enable open-source LLMs and agentic AI solutions.",
+              "block": "Afternoon · Scaling Responsible AI"
             },
             {
-              "start": "15:00",
-              "end": "15:20",
+              "start": "14:40",
+              "end": "15:00",
               "title": "Health AI Governance in Hospital Settings",
               "format": "lecture",
               "type": "speaking",
@@ -871,8 +856,8 @@
               "label": "Knowledge Transfer · Special Lecture"
             },
             {
-              "start": "15:20",
-              "end": "15:30",
+              "start": "15:00",
+              "end": "15:10",
               "title": "When Digital Twin Meets Agentic AI: The Future of AI-Powered Computational Biology",
               "format": "lecture",
               "type": "speaking",
@@ -887,16 +872,16 @@
               "label": "Knowledge Transfer · Special Lecture"
             },
             {
-              "start": "15:30",
-              "end": "15:45",
+              "start": "15:10",
+              "end": "15:25",
               "title": "Coffee & Networking Break",
               "format": "break",
               "type": "non_speaking",
               "people": []
             },
             {
-              "start": "15:45",
-              "end": "15:55",
+              "start": "15:25",
+              "end": "15:35",
               "title": "Testing Responsible Ambient AI Solutions for Clinical Documentation and Bedside Workflow",
               "format": "briefing",
               "type": "non_speaking",
@@ -905,7 +890,7 @@
               "block": "Ambient AI Innovation Contest"
             },
             {
-              "start": "15:55",
+              "start": "15:35",
               "end": "16:35",
               "title": "3 Teams × 3 Pitches (2 use cases per pitch)",
               "format": "pitches",
@@ -959,104 +944,29 @@
         {
           "name": "Health Information Exchange Summit",
           "strapline": "From Data Exchange to Data Utility: Semantic Interoperability for Social Care and Preventive Public Health",
-          "room": "Room 2",
+          "room": "Ballroom Room 1",
           "colour": "#5B4B9A",
           "sessions": [
             {
               "start": "11:15",
-              "end": "11:20",
+              "end": "11:40",
               "title": "Welcome Note & Framing: The Perspective of HIEs in the UAE's Digital Health Strategy",
               "format": "opening",
               "type": "speaking",
               "people": [
                 {
-                  "tbc": "Guest of Honour (TBC)",
+                  "key": "balkhair",
                   "role": "speaker",
-                  "presents": false
+                  "status": "confirmed",
+                  "presents": true
                 }
               ],
               "label": "Opening",
               "block": "Morning · From Exchange to Utility: Setting the Scene"
             },
             {
-              "start": "11:20",
-              "end": "11:40",
-              "title": "UAE HIEs 2026: From Data Exchange to Health Data Utility: Strategy, Milestones and the Semantic Layer",
-              "format": "fireside",
-              "type": "speaking",
-              "people": [
-                {
-                  "tbc": "Speaker (TBC), DHA, UAE",
-                  "role": "speaker",
-                  "presents": false
-                },
-                {
-                  "tbc": "Representative, Department of Health Abu Dhabi / Malaffi (TBC)",
-                  "role": "speaker",
-                  "presents": false
-                }
-              ],
-              "label": "UAE Insights · Fireside Chat"
-            },
-            {
               "start": "11:40",
-              "end": "12:00",
-              "title": "HIE and Beyond: HIE Use Cases",
-              "format": "keynote",
-              "type": "speaking",
-              "people": [
-                {
-                  "tbc": "Representative, National Health Information Center (NHIC) / Lean Healthcare, KSA (TBC)",
-                  "role": "keynote",
-                  "presents": true
-                }
-              ],
-              "label": "GCC Insights · Keynote"
-            },
-            {
-              "start": "12:00",
-              "end": "12:20",
-              "title": "Boosting HIE Clinical Engagement: Agentic-AI Record Summarisation Advancements",
-              "format": "fireside",
-              "type": "speaking",
-              "people": [
-                {
-                  "key": "tamara",
-                  "role": "speaker",
-                  "status": "confirmed"
-                },
-                {
-                  "tbc": "Vendor X (TBC)",
-                  "role": "speaker",
-                  "presents": false
-                },
-                {
-                  "tbc": "Vendor Y (TBC)",
-                  "role": "speaker",
-                  "presents": false
-                }
-              ],
-              "label": "Vendor Insights · Special Fireside Chat"
-            },
-            {
-              "start": "12:20",
-              "end": "12:40",
-              "title": "Health Information Exchange in Qatar: Expanding the Data Perimeter to Include Population Health & Social Care",
-              "format": "lecture",
-              "type": "speaking",
-              "people": [
-                {
-                  "key": "juliet",
-                  "role": "speaker",
-                  "status": "confirmed",
-                  "presents": true
-                }
-              ],
-              "label": "Regional Spotlight · Special Lecture"
-            },
-            {
-              "start": "12:40",
-              "end": "13:00",
+              "end": "11:55",
               "title": "The Business Case for Standards in Connected Care: Highlights from the OECD Report",
               "format": "keynote",
               "type": "speaking",
@@ -1071,8 +981,54 @@
               "label": "Learning from the World · Keynote"
             },
             {
-              "start": "13:00",
-              "end": "13:15",
+              "start": "11:55",
+              "end": "12:15",
+              "title": "Health Information Exchange in Qatar: Expanding the Data Perimeter to Include Population Health & Social Care",
+              "format": "keynote",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "juliet",
+                  "role": "keynote",
+                  "status": "confirmed",
+                  "presents": true
+                }
+              ],
+              "label": "GCC Insights · Keynote"
+            },
+            {
+              "start": "12:15",
+              "end": "12:45",
+              "title": "Boosting HIE Clinical Engagement: Agentic-AI Record Summarisation Advancements",
+              "format": "fireside",
+              "type": "speaking",
+              "people": [
+                {
+                  "key": "amr",
+                  "role": "moderator",
+                  "status": "confirmed"
+                },
+                {
+                  "key": "fraser",
+                  "role": "speaker",
+                  "status": "invited"
+                },
+                {
+                  "key": "lazure",
+                  "role": "speaker",
+                  "status": "invited"
+                },
+                {
+                  "key": "monali",
+                  "role": "speaker",
+                  "status": "invited"
+                }
+              ],
+              "label": "Vendor Insights · Special Fireside Chat"
+            },
+            {
+              "start": "12:45",
+              "end": "13:00",
               "title": "Building Connected Healthcare at Scale: Lessons from the Middle East",
               "format": "lecture",
               "type": "speaking",
@@ -1087,7 +1043,7 @@
               "label": "Vendor Insights · Special Lecture"
             },
             {
-              "start": "13:15",
+              "start": "13:00",
               "end": "14:00",
               "title": "Lunch Break",
               "format": "break",
@@ -1303,7 +1259,7 @@
           "name": "MoU Signing",
           "short_name": "MoU Signing",
           "strapline": null,
-          "room": "Main Ballroom",
+          "room": "Ballroom",
           "colour": "#7A5C2E",
           "sessions": [
             {
@@ -1320,7 +1276,7 @@
         {
           "name": "ZIMAM Digital Health Innovation Awards",
           "strapline": "Awards evening",
-          "room": "Main Ballroom",
+          "room": "Ballroom",
           "colour": "#B8862B",
           "sessions": [
             {
@@ -1342,13 +1298,13 @@
         {
           "name": "Digital Health Competency-based Framework Workshop",
           "strapline": "The Future of the Digital Health Workforce in the Age of AI",
-          "room": "Room 1",
+          "room": "Meeting Room A, Level 8",
           "colour": "#2E7D5B",
           "sessions": [
             {
               "start": "08:00",
               "end": "08:45",
-              "title": "Registration, arrival coffee and networking",
+              "title": "Registration and networking",
               "format": "break",
               "type": "non_speaking",
               "people": [],

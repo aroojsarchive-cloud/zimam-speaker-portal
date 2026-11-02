@@ -10,12 +10,15 @@ export function BoardingCard({
   roles,
   slides,
   lateBy = 0,
+  online = false,
 }: {
   e: Engagement;
   roles: string[];
   slides: "received" | "needed" | null;
   /** Minutes this room is running late today (0 if on time or not today). */
   lateBy?: number;
+  /** Joining remotely: show "Online" instead of the room. */
+  online?: boolean;
 }) {
   const s = e.session;
   const briefReady = s.notes.some((n) => n.kind === "published");
@@ -39,10 +42,10 @@ export function BoardingCard({
         </div>
         <div className="text-right">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">Room</p>
-          <p className="text-[1.85rem] font-semibold leading-none">{roomParts(s.track.room).name}</p>
+          <p className="text-[1.85rem] font-semibold leading-none">{online ? "Online" : roomParts(s.track.room).name}</p>
         </div>
       </div>
-      <p className="-mt-2 px-5 pb-3 text-right text-sm text-ink-muted">{roomParts(s.track.room).where}</p>
+      <p className="-mt-2 px-5 pb-3 text-right text-sm text-ink-muted">{online ? "You're joining remotely" : roomParts(s.track.room).where}</p>
 
       {lateBy > 0 && (
         <p className="-mt-2 px-5 pb-3 text-sm font-semibold text-warning">

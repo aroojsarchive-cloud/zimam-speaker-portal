@@ -40,7 +40,11 @@ export const roomParts = (room: string | null) => {
   return { name: name || "TBC", where: [...rest, eventConfig.venue].join(" · ") };
 };
 
-export const displayName =(p: { salutation: string | null; full_name: string }) =>
+/** Joining remotely: the whole session is online ("Keynote (Online)"), or its notes say "<name> joins online". */
+export const joinsOnline = (s: { label: string | null; description: string | null }, fullName: string) =>
+  /\bonline\b/i.test(s.label ?? "") || (s.description ?? "").toLowerCase().includes(`${fullName.toLowerCase()} joins online`);
+
+export const displayName = (p: { salutation: string | null; full_name: string }) =>
   [p.salutation, p.full_name].filter(Boolean).join(" ");
 
 const TITLES = new Set(["dr", "prof", "mr", "mrs", "ms", "miss", "he", "eng", "sir", "dame"]);

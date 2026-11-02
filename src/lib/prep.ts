@@ -21,6 +21,8 @@ export type PrepEngagement = {
   presents: boolean;
   briefPublished: boolean;
   checkedInAt: string | null;
+  /** Joining remotely: no room to be in, nothing to check in to. */
+  online: boolean;
 };
 
 /** A programme the person hosts (MC / co-chair): they must be there before its first session. */
@@ -93,13 +95,13 @@ export function prepSteps(opts: {
   const checkedDays = new Set(opts.engagements.filter((e) => e.checkedInAt).map((e) => eventDateKey(e.start)));
   const arrivals = [
     ...speaking
-      .filter((e) => !e.checkedInAt)
+      .filter((e) => !e.checkedInAt && !e.online)
       .map((e) => ({ start: e.start, room: e.room, href: `/sessions/${e.sessionId}`, hosting: false })),
     ...(opts.hosting ?? [])
       .filter((h) => !h.checkedInAt && !checkedDays.has(eventDateKey(h.start)))
       .map((h) => ({ start: h.start, room: h.room, href: `/host/${h.trackId}`, hosting: true })),
   ].sort((a, b) => a.start.localeCompare(b.start));
-  if (speaking.length || opts.hosting?.length) {
+  if (speaking.some((e) => !e.online) || opts.hosting?.length) {
     const first = arrivals[0] ?? null;
     steps.push({
       key: "checkin",

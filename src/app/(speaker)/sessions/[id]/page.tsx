@@ -6,7 +6,7 @@ import { eventConfig as ev } from "@/config/event";
 import { getMe } from "@/lib/me";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionDetail, signedUrls } from "@/lib/speaker-data";
-import { displayName, formatLabel, roleLabel, roomParts } from "@/lib/labels";
+import { displayName, formatLabel, joinsOnline, roleLabel, roomParts } from "@/lib/labels";
 import { eventDateKey, eventToday, formatLongDay, formatRange, formatTime, minutesBetween, shifted } from "@/lib/time";
 import { RunningOrder } from "@/components/RunningOrder";
 import { ScheduleNotice } from "@/components/ScheduleNotice";
@@ -46,6 +46,8 @@ async function SessionContent({ params }: { params: PageProps<"/sessions/[id]">[
     .eq("session_id", id)
     .eq("person_id", me.personId);
   const myRoles = (mine ?? []).map((a) => a.role);
+  const myName = stage.find((m) => m.person.id === me.personId)?.person.full_name;
+  const online = myRoles.length > 0 && !!myName && joinsOnline(s, myName);
   const myIds = (mine ?? []).map((a) => a.id);
   const reviewed = (mine ?? []).length > 0 && (mine ?? []).every((a) => a.reviewed_at);
   const noSlides = (mine ?? []).length > 0 && (mine ?? []).every((a) => a.no_slides);
@@ -87,10 +89,10 @@ async function SessionContent({ params }: { params: PageProps<"/sessions/[id]">[
             </div>
             <div className="text-right">
               <dt className="text-xs font-semibold uppercase tracking-[0.12em] text-white/60">Room</dt>
-              <dd className="text-[1.9rem] font-semibold leading-none">{roomParts(s.track.room).name}</dd>
+              <dd className="text-[1.9rem] font-semibold leading-none">{online ? "Online" : roomParts(s.track.room).name}</dd>
             </div>
           </dl>
-          <p className="mt-2 text-right text-sm text-white/70">{roomParts(s.track.room).where}</p>
+          <p className="mt-2 text-right text-sm text-white/70">{online ? `You're joining remotely · on stage: ${s.track.room ?? "TBC"}` : roomParts(s.track.room).where}</p>
           {lateBy > 0 && (
             <p role="status" className="mt-3 rounded-lg bg-warning px-3 py-2 text-sm font-semibold text-white">
               {s.track.room ?? "This room"} is running about {lateBy} minutes late. This session should now start around{" "}
@@ -102,7 +104,14 @@ async function SessionContent({ params }: { params: PageProps<"/sessions/[id]">[
               Speaker guidelines: timing and slides ›
             </Link>
           )}
-          {myRoles.length > 0 && (
+          {online && (
+            <p className="mt-3 rounded-lg bg-white/10 px-3 py-2 text-sm">
+              You&apos;re joining online. Please be connected and ready by{" "}
+              <span className="font-semibold">{formatTime(arriveBy(expectedStart))}</span>, 20 minutes before you start. If you don&apos;t have
+              the joining link yet, message the Speaker Desk.
+            </p>
+          )}
+          {myRoles.length > 0 && !online && (
             <p className="mt-3 rounded-lg bg-white/10 px-3 py-2 text-sm">
               Please be in {s.track.room ?? "the room"} by <span className="font-semibold">{formatTime(arriveBy(expectedStart))}</span>, 20 minutes before you start.
             </p>
@@ -119,7 +128,7 @@ async function SessionContent({ params }: { params: PageProps<"/sessions/[id]">[
         </div>
       </section>
 
-      {isToday && mine?.[0] && (
+      {isToday && mine?.[0] && !online && (
         <div className="mt-4">
           <CheckIn assignmentId={mine[0].id} sessionId={s.id} checkedInAt={mine.find((a) => a.checked_in_at)?.checked_in_at ?? null} />
         </div>
