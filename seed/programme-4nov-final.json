@@ -1243,11 +1243,6 @@
                   "key": "balkhair",
                   "role": "speaker",
                   "status": "confirmed"
-                },
-                {
-                  "key": "redha",
-                  "role": "speaker",
-                  "status": "confirmed"
                 }
               ],
               "label": "Closing"
@@ -1284,7 +1279,8 @@
               "end": "20:00",
               "title": "ZIMAM Digital Health Innovation Awards",
               "format": "award",
-              "type": "non_speaking"
+              "type": "non_speaking",
+              "people": []
             }
           ],
           "short_name": "Awards"
@@ -1298,7 +1294,7 @@
         {
           "name": "Digital Health Competency-based Framework Workshop",
           "strapline": "The Future of the Digital Health Workforce in the Age of AI",
-          "room": "Meeting Room A, Level 8",
+          "room": "Level 8 Meeting Room",
           "colour": "#2E7D5B",
           "sessions": [
             {
@@ -1627,7 +1623,8 @@
               "end": "15:25",
               "title": "Coffee break",
               "format": "break",
-              "type": "non_speaking"
+              "type": "non_speaking",
+              "people": []
             },
             {
               "start": "15:25",
