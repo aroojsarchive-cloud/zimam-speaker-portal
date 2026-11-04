@@ -12,6 +12,7 @@ import { RunningLateBanner } from "@/components/Banners";
 import { Checklist } from "@/components/Checklist";
 import { arriveBy, needsSlides, prepSteps, type PrepEngagement } from "@/lib/prep";
 import { CheckIn } from "@/components/CheckIn";
+import { ScheduleNotice } from "@/components/ScheduleNotice";
 import { eventDateKey, eventToday, formatDay, formatRange, formatTime, notFinished, shifted } from "@/lib/time";
 import { signOut } from "@/app/auth/confirm/actions";
 
@@ -83,6 +84,7 @@ async function MyEventContent() {
   return (
     <>
       <div className="space-y-3">
+        <ScheduleNotice />
         {late.map((e) => (
           <RunningLateBanner
             key={e.id}

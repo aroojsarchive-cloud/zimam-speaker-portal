@@ -673,7 +673,7 @@
             },
             {
               "start": "10:45",
-              "end": "11:45",
+              "end": "11:15",
               "title": "Coffee & Networking Break",
               "format": "break",
               "type": "non_speaking",
@@ -690,8 +690,8 @@
           "colour": "#1F6F8B",
           "sessions": [
             {
-              "start": "11:45",
-              "end": "12:05",
+              "start": "11:15",
+              "end": "11:35",
               "title": "Welcome and Opening Remarks: The Vision for Accountable Health AI: Lessons Learned from Europe & the US",
               "format": "opening",
               "type": "speaking",
@@ -706,8 +706,8 @@
               "block": "Morning · Governing the Machine: Safety, Accountability and the Clinician"
             },
             {
-              "start": "12:05",
-              "end": "12:25",
+              "start": "11:35",
+              "end": "11:55",
               "title": "Intelligent Hospital Roadshow – From Copilot to Orchestrator: Agentic AI in Clinical and Operational Health Systems",
               "format": "keynote",
               "type": "speaking",
@@ -722,8 +722,8 @@
               "label": "GCC Insights · Keynote"
             },
             {
-              "start": "12:25",
-              "end": "13:05",
+              "start": "11:55",
+              "end": "12:35",
               "title": "The Infodemic Comes Home: AI, Misinformation and the Mental Wellbeing of Women & Adolescents",
               "format": "panel",
               "type": "speaking",
@@ -757,8 +757,8 @@
               "label": "Knowledge Transfer · Executive Panel"
             },
             {
-              "start": "13:05",
-              "end": "13:20",
+              "start": "12:35",
+              "end": "12:50",
               "title": "From Decision Support to Intelligent Orchestration: Agentic AI in Clinical and Operational Health Systems",
               "format": "lecture",
               "type": "speaking",
@@ -773,8 +773,8 @@
               "label": "Vendor Insights · Special Lecture"
             },
             {
-              "start": "13:20",
-              "end": "13:45",
+              "start": "12:50",
+              "end": "13:15",
               "title": "The Oversight Imperative — Human-in-the-Loop Design to Realise Responsible AI",
               "format": "fireside",
               "type": "speaking",
@@ -803,7 +803,7 @@
               "label": "UAE Insights · Fireside Chat"
             },
             {
-              "start": "13:45",
+              "start": "13:15",
               "end": "14:00",
               "title": "Lunch Break",
               "format": "break",
@@ -956,8 +956,8 @@
           "colour": "#5B4B9A",
           "sessions": [
             {
-              "start": "11:45",
-              "end": "12:10",
+              "start": "11:15",
+              "end": "11:40",
               "title": "Welcome Note & Framing: The Perspective of HIEs in the UAE's Digital Health Strategy",
               "format": "opening",
               "type": "speaking",
@@ -973,8 +973,8 @@
               "block": "Morning · From Exchange to Utility: Setting the Scene"
             },
             {
-              "start": "12:10",
-              "end": "12:25",
+              "start": "11:40",
+              "end": "11:55",
               "title": "The Business Case for Standards in Connected Care: Highlights from the OECD Report",
               "format": "keynote",
               "type": "speaking",
@@ -989,8 +989,8 @@
               "label": "Learning from the World · Keynote"
             },
             {
-              "start": "12:25",
-              "end": "12:55",
+              "start": "11:55",
+              "end": "12:25",
               "title": "Boosting HIE Clinical Engagement: Agentic-AI Record Summarisation Advancements",
               "format": "fireside",
               "type": "speaking",
@@ -1019,8 +1019,8 @@
               "label": "Vendor Insights · Special Fireside Chat"
             },
             {
-              "start": "12:55",
-              "end": "13:10",
+              "start": "12:25",
+              "end": "12:40",
               "title": "Building Connected Healthcare at Scale: Lessons from the Middle East",
               "format": "lecture",
               "type": "speaking",
@@ -1035,7 +1035,7 @@
               "label": "Vendor Insights · Special Lecture"
             },
             {
-              "start": "13:10",
+              "start": "12:40",
               "end": "14:00",
               "title": "Lunch Break",
               "format": "break",
