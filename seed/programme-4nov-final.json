@@ -19,7 +19,7 @@
     },
     {
       "key": "yasir",
-      "salutation": "Mr",
+      "salutation": "Dr",
       "full_name": "Yasir Khan",
       "title": null,
       "organisation": null,
@@ -131,7 +131,7 @@
     },
     {
       "key": "ghose",
-      "salutation": "Prof",
+      "salutation": "Adjunct Professor",
       "full_name": "Anita Ghose",
       "title": null,
       "organisation": null,
@@ -219,8 +219,8 @@
     },
     {
       "key": "yacin",
-      "salutation": "Dr",
-      "full_name": "Yacin Hadjiyat",
+      "salutation": "Pr",
+      "full_name": "Yacine Hadjiat",
       "title": "Head of Innovation",
       "organisation": "Dubai Health",
       "country": "UAE"
@@ -467,7 +467,7 @@
     {
       "key": "lazure",
       "salutation": "Mr",
-      "full_name": "Donald Lazure",
+      "full_name": "Donald Lazure, PA",
       "title": "Enterprise Clinical Strategy Lead",
       "organisation": "Commure",
       "country": "USA",
@@ -511,7 +511,7 @@
     {
       "key": "steff",
       "salutation": null,
-      "full_name": "Steff Riet T Taelman",
+      "full_name": "Steff Taelman",
       "title": "Senior Researcher - Data Driven Health",
       "organisation": "VITO (Flemish Institute of Technological Research)",
       "country": null
@@ -990,23 +990,7 @@
             },
             {
               "start": "11:55",
-              "end": "12:15",
-              "title": "Health Information Exchange in Qatar: Expanding the Data Perimeter to Include Population Health & Social Care",
-              "format": "keynote",
-              "type": "speaking",
-              "people": [
-                {
-                  "key": "juliet",
-                  "role": "keynote",
-                  "status": "confirmed",
-                  "presents": true
-                }
-              ],
-              "label": "GCC Insights · Keynote"
-            },
-            {
-              "start": "12:15",
-              "end": "12:45",
+              "end": "12:25",
               "title": "Boosting HIE Clinical Engagement: Agentic-AI Record Summarisation Advancements",
               "format": "fireside",
               "type": "speaking",
@@ -1035,8 +1019,8 @@
               "label": "Vendor Insights · Special Fireside Chat"
             },
             {
-              "start": "12:45",
-              "end": "13:00",
+              "start": "12:25",
+              "end": "12:40",
               "title": "Building Connected Healthcare at Scale: Lessons from the Middle East",
               "format": "lecture",
               "type": "speaking",
@@ -1051,7 +1035,7 @@
               "label": "Vendor Insights · Special Lecture"
             },
             {
-              "start": "13:00",
+              "start": "12:40",
               "end": "14:00",
               "title": "Lunch Break",
               "format": "break",
