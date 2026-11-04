@@ -1,5 +1,5 @@
 {
-  "source": "ZIMAM DHF Programme 2026 - final.docx (3).pdf (2 Nov, from Dr Osama)",
+  "source": "ZIMAM_9th_DHF_Programme_2026.docx (3 Nov, final)",
   "event": {
     "name": "9th ZIMAM Digital Health Forum",
     "slug": "zimam-2026",
@@ -539,6 +539,14 @@
       "title": "Research Scientist",
       "organisation": "Mohamed bin Zayed University of Artificial Intelligence",
       "country": "UAE"
+    },
+    {
+      "key": "afsana",
+      "salutation": "Dr",
+      "full_name": "Afsana Faheem",
+      "title": "Programme Director, MSc Clinical Psychology",
+      "organisation": "University of Birmingham Dubai",
+      "country": "UAE"
     }
   ],
   "days": [
@@ -700,7 +708,7 @@
             {
               "start": "11:35",
               "end": "11:55",
-              "title": "Intelligent Hospital Roadshow - From Copilot to Orchestrator: Agentic AI in Clinical and Operational Health Systems",
+              "title": "Intelligent Hospital Roadshow – From Copilot to Orchestrator: Agentic AI in Clinical and Operational Health Systems",
               "format": "keynote",
               "type": "speaking",
               "people": [
@@ -741,9 +749,9 @@
                   "status": "invited"
                 },
                 {
-                  "tbc": "Further panelist (TBC)",
+                  "key": "afsana",
                   "role": "panelist",
-                  "presents": false
+                  "status": "confirmed"
                 }
               ],
               "label": "Knowledge Transfer · Executive Panel"
@@ -1088,14 +1096,9 @@
                   "key": "balkhair",
                   "role": "panelist",
                   "status": "confirmed"
-                },
-                {
-                  "key": "brandstatter",
-                  "role": "panelist",
-                  "status": "invited"
                 }
               ],
-              "label": "Panel 1 · GCC & MENA Discussion Panel",
+              "label": "GCC & MENA Panel Discussion",
               "description": "Drawing on the O3C Interoperability Maturity Model and the Civitas Health Data Utility Framework, this panel will map HIEs in the region to a common HIE maturity ladder. Panelists will debate what Level 3 vs Level 5 maturity means in practice, what the most common obstacles to progression are, and what investment and governance decisions are required to reach Health Data Utility status."
             },
             {
@@ -1193,11 +1196,6 @@
                   "status": "confirmed"
                 },
                 {
-                  "tbc": "Representative, Malaffi / DoH Abu Dhabi Clinical Informatics, UAE (TBC)",
-                  "role": "panelist",
-                  "presents": false
-                },
-                {
                   "key": "amlung",
                   "role": "panelist",
                   "status": "invited"
@@ -1206,11 +1204,6 @@
                   "key": "kadoura",
                   "role": "panelist",
                   "status": "invited"
-                },
-                {
-                  "tbc": "GCC / Egypt / Morocco practitioner sharing a regional deployment story (TBC)",
-                  "role": "panelist",
-                  "presents": false
                 }
               ],
               "label": "Panel 2 · Thematic Discussion Panel",
@@ -1300,7 +1293,7 @@
             {
               "start": "08:00",
               "end": "08:45",
-              "title": "Registration and networking",
+              "title": "Registration and Networking",
               "format": "break",
               "type": "non_speaking",
               "people": [],
